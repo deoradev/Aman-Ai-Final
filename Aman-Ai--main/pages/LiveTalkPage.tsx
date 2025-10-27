@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { LiveServerMessage, Modality, Blob as GenAIBlob, FunctionDeclaration, Type } from '@google/genai';
 import { useLocalization } from '../hooks/useLocalization';
@@ -10,6 +11,7 @@ import { PERSONAS } from '../constants';
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import { MoodEntry, Persona } from '../types';
 import { ai } from '../services/geminiService';
+import Logo from '../components/Logo';
 
 type LiveSessionState = 'idle' | 'connecting' | 'live' | 'speaking' | 'error' | 'closed';
 interface TranscriptMessage {
@@ -342,6 +344,7 @@ const LiveTalkPage: React.FC = () => {
         return (
              <div className="py-12 flex-grow flex items-center justify-center">
                 <div className="text-center p-8 bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg max-w-lg mx-auto">
+                    <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('live_talk.title')}</h2>
                     <p className="text-base-600 dark:text-base-400 mb-6">{t('prevention_plan_page.no_program_error')}</p>
                     <a href="/#/programs" className="inline-block bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 transition-colors">

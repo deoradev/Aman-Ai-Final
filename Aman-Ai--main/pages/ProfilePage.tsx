@@ -5,6 +5,7 @@ import { useLocalization } from '../hooks/useLocalization';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import SEOMeta from '../components/SEOMeta';
 import { getAllUserData, deleteAllUserData } from '../utils';
+import Logo from '../components/Logo';
 
 const ExportModal: React.FC<{ onConfirm: () => void; onClose: () => void; }> = ({ onConfirm, onClose }) => {
     const { t } = useLocalization();
@@ -12,6 +13,7 @@ const ExportModal: React.FC<{ onConfirm: () => void; onClose: () => void; }> = (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16">
             <div className="bg-base-50 dark:bg-base-800 rounded-2xl shadow-soft-lg max-w-md w-full">
                 <div className="p-6">
+                    <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-primary-500 mb-4">{t('profile.export.modal.title')}</h2>
                     <p className="text-base-600 dark:text-base-300 mb-6">{t('profile.export.modal.text')}</p>
                     <div className="flex justify-end space-x-4">
@@ -51,6 +53,7 @@ const DeleteModal: React.FC<{
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16">
             <div className="bg-base-50 dark:bg-base-800 rounded-2xl shadow-soft-lg max-w-md w-full">
                 <div className="p-6">
+                    <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-warning-500 mb-4">{t('profile.delete.modal.title')}</h2>
                     <p className="text-base-600 dark:text-base-300 mb-4">{t('profile.delete.modal.text')}</p>
                     <input

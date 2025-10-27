@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocalization } from '../hooks/useLocalization';
+import Logo from './Logo';
 
 const Footer: React.FC = () => {
     const { t } = useLocalization();
@@ -7,6 +8,9 @@ const Footer: React.FC = () => {
         <footer className="bg-base-800 dark:bg-base-900 text-base-200">
             <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="text-center">
+                    <div className="flex justify-center mb-4">
+                        <Logo />
+                    </div>
                     <p className="text-lg font-semibold text-primary-400">Aman Digital Care</p>
                     <p className="mt-2 text-sm text-base-300">{t('footer.subtitle')}</p>
                     <div className="mt-4">

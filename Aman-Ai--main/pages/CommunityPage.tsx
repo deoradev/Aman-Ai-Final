@@ -4,6 +4,7 @@ import { CommunityPost } from '../types';
 import { formatTimeAgo } from '../utils';
 import SEOMeta from '../components/SEOMeta';
 import PullToRefresh from '../components/PullToRefresh';
+import Logo from '../components/Logo';
 
 const POST_STORAGE_KEY = 'amandigitalcare-community-posts';
 const REPORTED_POST_STORAGE_KEY = 'amandigitalcare-reported-posts';
@@ -116,6 +117,7 @@ const ReportConfirmModal: React.FC<{ onConfirm: () => void, onCancel: () => void
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16" role="alertdialog" aria-modal="true" aria-labelledby="report-dialog-title">
             <div className="bg-white dark:bg-base-800 rounded-2xl shadow-soft-lg w-full max-w-sm">
                 <div className="p-6">
+                    <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 id="report-dialog-title" className="text-xl font-bold text-primary-500 mb-4">{t('community.report_confirm_title')}</h2>
                     <p className="text-base-600 dark:text-base-300 mb-6">{t('community.report_confirm_text')}</p>
                     <div className="flex justify-end gap-4">
