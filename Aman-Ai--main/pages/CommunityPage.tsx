@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
+import { useAuth } from '../hooks/useAuth';
 import { CommunityPost } from '../types';
 import { formatTimeAgo } from '../utils';
 import SEOMeta from '../components/SEOMeta';
@@ -7,7 +8,7 @@ import PullToRefresh from '../components/PullToRefresh';
 import Logo from '../components/Logo';
 
 const POST_STORAGE_KEY = 'amandigitalcare-community-posts';
-const REPORTED_POST_STORAGE_KEY = 'amandigitalcare-reported-posts';
+
 
 const VoicePost: React.FC<{ post: CommunityPost }> = ({ post }) => {
     const { t } = useLocalization();
@@ -143,6 +144,7 @@ const Toast: React.FC<{ message: string, show: boolean }> = ({ message, show }) 
 
 const CommunityPage: React.FC = () => {
     const { t } = useLocalization();
+    const { getScopedKey } = useAuth();
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [newPostContent, setNewPostContent] = useState('');
     const [isPosting, setIsPosting] = useState(false);
@@ -175,7 +177,7 @@ const CommunityPage: React.FC = () => {
             if (storedPosts) {
                 setPosts(JSON.parse(storedPosts));
             }
-            const storedReported = localStorage.getItem(REPORTED_POST_STORAGE_KEY);
+            const storedReported = localStorage.getItem(getScopedKey('reported-posts'));
             if (storedReported) {
                 setReportedPostIds(new Set(JSON.parse(storedReported)));
             }
@@ -184,7 +186,7 @@ const CommunityPage: React.FC = () => {
             setPosts([]);
             setReportedPostIds(new Set());
         }
-    }, []);
+    }, [getScopedKey]);
 
     const savePosts = (updatedPosts: CommunityPost[]) => {
         setPosts(updatedPosts);
@@ -207,7 +209,7 @@ const CommunityPage: React.FC = () => {
         newReportedIds.add(reportingPostId);
         setReportedPostIds(newReportedIds);
         try {
-            localStorage.setItem(REPORTED_POST_STORAGE_KEY, JSON.stringify(Array.from(newReportedIds)));
+            localStorage.setItem(getScopedKey('reported-posts'), JSON.stringify(Array.from(newReportedIds)));
             triggerToast();
         } catch (error) {
             console.error("Failed to save reported post", error);

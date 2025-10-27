@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import Logo from './Logo';
 
@@ -26,11 +27,17 @@ const Footer: React.FC = () => {
                     </div>
                     <div className="mt-6 border-t border-base-700 pt-6">
                         <div className="flex justify-center gap-x-6 gap-y-2 flex-wrap text-sm text-base-300 mb-4">
-                            <a href="/#/" className="hover:text-white hover:underline transition-colors">{t('nav.home')}</a>
-                            <a href="/#/programs" className="hover:text-white hover:underline transition-colors">{t('nav.programs')}</a>
-                            <a href="/#/resources" className="hover:text-white hover:underline transition-colors">{t('nav.resources')}</a>
-                            <a href="/#/about" className="hover:text-white hover:underline transition-colors">{t('nav.about')}</a>
-                            <a href="/#/contact" className="hover:text-white hover:underline transition-colors">{t('nav.contact')}</a>
+                            <NavLink to="/" className="hover:text-white hover:underline transition-colors">{t('nav.home')}</NavLink>
+                            <NavLink to="/programs" className="hover:text-white hover:underline transition-colors">{t('nav.programs')}</NavLink>
+                            <NavLink to="/resources" className="hover:text-white hover:underline transition-colors">{t('nav.resources')}</NavLink>
+                            <NavLink to="/about" className="hover:text-white hover:underline transition-colors">{t('nav.about')}</NavLink>
+                            <NavLink to="/contact" className="hover:text-white hover:underline transition-colors">{t('nav.contact')}</NavLink>
+                        </div>
+                         <div className="flex justify-center gap-x-4 gap-y-2 flex-wrap text-xs text-base-400 mb-4">
+                            <NavLink to="/privacy-policy" className="hover:text-white hover:underline transition-colors">{t('footer.privacy_policy')}</NavLink>
+                            <NavLink to="/terms-of-service" className="hover:text-white hover:underline transition-colors">{t('footer.terms_of_service')}</NavLink>
+                            <NavLink to="/disclaimer" className="hover:text-white hover:underline transition-colors">{t('footer.disclaimer')}</NavLink>
+                            <NavLink to="/cookie-policy" className="hover:text-white hover:underline transition-colors">{t('footer.cookie_policy')}</NavLink>
                         </div>
                         <p className="text-sm text-base-400">
                             {t('footer.copyright', { year: new Date().getFullYear() })}

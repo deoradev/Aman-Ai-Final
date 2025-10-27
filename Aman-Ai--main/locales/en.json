@@ -26,7 +26,11 @@
   },
   "footer": {
     "subtitle": "Your confidential companion for addiction recovery and mental wellness.",
-    "copyright": "© {year} Aman Digital Care. A non-profit initiative by AMAN AI Foundation. All rights reserved."
+    "copyright": "© {year} Aman Digital Care. A non-profit initiative by AMAN AI Foundation. All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "disclaimer": "Disclaimer",
+    "cookie_policy": "Cookie Policy"
   },
   "offline": {
     "indicator": "Offline",
@@ -831,6 +835,22 @@
     "conversation_practice": {
       "title": "Conversation Practice | Aman Digital Care",
       "description": "Build confidence by practicing difficult conversations in a safe, judgment-free space with an AI partner."
+    },
+    "privacy_policy": {
+      "title": "Privacy Policy | Aman Digital Care",
+      "description": "Read our Privacy Policy to understand how Aman Digital Care handles your data. We prioritize your privacy with local storage and full data control."
+    },
+    "terms_of_service": {
+      "title": "Terms of Service | Aman Digital Care",
+      "description": "Review the Terms of Service for using the Aman Digital Care application, including our medical disclaimer and user responsibilities."
+    },
+    "disclaimer": {
+      "title": "Disclaimer | Aman Digital Care",
+      "description": "Important disclaimer regarding the use of Aman Digital Care. Our app is a supportive tool, not a substitute for professional medical advice."
+    },
+    "cookie_policy": {
+      "title": "Cookie Policy | Aman Digital Care",
+      "description": "Learn about how Aman Digital Care uses local storage to save your progress and preferences, and how to manage your data."
     }
   }
 }

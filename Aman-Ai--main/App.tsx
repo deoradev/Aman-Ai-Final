@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider, useLocalization } from './hooks/useLocalization';
@@ -31,6 +32,10 @@ const ConversationPracticePage = lazy(() => import('./pages/ConversationPractice
 const GroupSessionPage = lazy(() => import('./pages/GroupSessionPage'));
 const PreventionPlanPage = lazy(() => import('./pages/PreventionPlanPage'));
 const SoberCirclePage = lazy(() => import('./pages/SoberCirclePage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
 
 
 
@@ -153,6 +158,10 @@ const AppContent: React.FC = () => {
             <Route path="/our-approach" element={<PageWrapper><ApproachPage /></PageWrapper>} />
             <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />
             <Route path="/profile" element={<PageWrapper><ProfilePage /></PageWrapper>} />
+            <Route path="/privacy-policy" element={<PageWrapper><PrivacyPolicyPage /></PageWrapper>} />
+            <Route path="/terms-of-service" element={<PageWrapper><TermsOfServicePage /></PageWrapper>} />
+            <Route path="/disclaimer" element={<PageWrapper><DisclaimerPage /></PageWrapper>} />
+            <Route path="/cookie-policy" element={<PageWrapper><CookiePolicyPage /></PageWrapper>} />
           </Routes>
         </Suspense>
       </main>
