@@ -61,8 +61,19 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Legacy Section */}
+      <section className="py-16 bg-base-100 dark:bg-base-800/50">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.legacy.title')}</h2>
+            <div className="space-y-4 text-base-700 dark:text-base-300 leading-relaxed">
+              <p>{t('about.legacy.p1')}</p>
+              <p>{t('about.legacy.p2')}</p>
+            </div>
+        </div>
+      </section>
+
       {/* Values Section */}
-      <section className="bg-base-100 dark:bg-base-800/50 py-16">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 text-center mb-12">{t('about.values.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -83,7 +94,7 @@ const AboutPage: React.FC = () => {
       </section>
       
       {/* Foundation Section */}
-      <section className="py-16">
+      <section className="py-16 bg-base-100 dark:bg-base-800/50">
         <div className="container mx-auto px-4 text-center max-w-3xl">
           <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.foundation.title')}</h2>
           <p className="text-base-700 dark:text-base-300 leading-relaxed">
@@ -93,7 +104,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-base-100 dark:bg-base-800/50">
+      <section className="py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.cta.title')}</h2>
           <p className="text-base-600 dark:text-base-300 max-w-2xl mx-auto mb-8">

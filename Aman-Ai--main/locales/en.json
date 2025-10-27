@@ -375,6 +375,11 @@
         "p1": "To leverage technology to provide free, confidential, and immediate support for individuals struggling with addiction and mental health challenges. We believe everyone deserves a chance to heal, regardless of their circumstances.",
         "p2": "Aman Digital Care is built on the principles of empathy, accessibility, and evidence-based care, making recovery support available to anyone, anytime."
     },
+    "legacy": {
+        "title": "Rooted in a Legacy of Care",
+        "p1": "Aman Digital Care is more than just an application; it's the digital evolution of a mission that began in 2001. Our founder's family has operated a de-addiction, rehabilitation, and mental health NGO for over two decades, providing offline support to more than 200,000 individuals on their path to recovery.",
+        "p2": "Our journey began in Delhi, India, working with incarcerated individuals struggling with addiction in Tihar Jail. This deep, real-world experience, born from a commitment to help those in the most challenging circumstances, is the bedrock of our approach. From those humble beginnings, the Aman Foundation is now transforming into the world's best mental health companion, bringing decades of compassionate, effective care into the digital space to support you."
+    },
     "values": {
         "title": "Our Core Values",
         "accessibility": {
@@ -793,8 +798,8 @@
         "description": "Explore our free library of expert articles, guided exercises, and recovery tools designed to support your sobriety and mental wellness journey at every step."
     },
     "about": {
-        "title": "Our Mission for Free Mental Health Support | About Aman Digital Care",
-        "description": "Discover the mission behind Aman Digital Care. We are a non-profit dedicated to providing free, accessible, and confidential AI support for addiction and mental health."
+        "title": "Our Mission & Legacy | About Aman Digital Care",
+        "description": "Discover the mission of Aman Digital Care. From helping inmates in Tihar Jail, Delhi, to becoming a global mental health companion, our legacy is built on 20+ years of real-world recovery support."
     },
     "approach": {
         "title": "Our Clinical Approach to Digital Recovery | Aman Digital Care",
