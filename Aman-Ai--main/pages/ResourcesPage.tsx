@@ -57,6 +57,7 @@ const ResourcesPage: React.FC = () => {
         "@type": "Article",
         "headline": resource.title,
         "description": resource.description,
+        "datePublished": "2024-07-30",
         "author": {
           "@type": "Organization",
           "name": "Aman Digital Care"

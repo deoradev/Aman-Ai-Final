@@ -14,9 +14,28 @@ const ApproachPage: React.FC = () => {
     "description": t('seo.approach.description'),
     "url": `${baseUrl}/#/our-approach`,
     "mainEntity": {
-      "@type": "Organization",
-      "name": "Aman Digital Care",
-      "description": "Our approach to digital wellness is grounded in science, powered by empathy, and committed to safety."
+      "@type": "ItemList",
+      "name": "Therapeutic Approaches",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": t('approach_page.section1_item1_title'),
+          "description": t('approach_page.section1_item1_text')
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": t('approach_page.section1_item2_title'),
+          "description": t('approach_page.section1_item2_text')
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": t('approach_page.section1_item3_title'),
+          "description": t('approach_page.section1_item3_text')
+        }
+      ]
     }
   };
 

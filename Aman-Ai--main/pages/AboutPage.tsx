@@ -19,7 +19,12 @@ const AboutPage: React.FC = () => {
       "name": "Aman Digital Care",
       "url": baseUrl + '/',
       "logo": `${baseUrl}/assets/icons/icon-512x512.png`,
-      "missionStatement": t('about.mission.p1')
+      "missionStatement": t('about.mission.p1'),
+      "foundingDate": "2001",
+      "founder": {
+        "@type": "Person",
+        "name": "Aman Gupta"
+      }
     }
   };
   

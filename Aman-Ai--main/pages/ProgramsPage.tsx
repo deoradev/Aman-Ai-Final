@@ -386,6 +386,7 @@ const ProgramsPage: React.FC = () => {
           "@type": "Course",
           "name": program.name,
           "description": program.description,
+          "courseCode": program.id,
           "provider": {
             "@type": "Organization",
             "name": "Aman Digital Care"
