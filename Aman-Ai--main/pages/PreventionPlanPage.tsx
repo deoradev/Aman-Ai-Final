@@ -280,22 +280,22 @@ const PreventionPlanPage: React.FC = () => {
                                     const args = call.args as Partial<PreventionPlan>;
                                     const newItems = new Set<string>();
 
-                                    (args.triggers || []).forEach((t: string) => newItems.add(`triggers-${t}`));
-                                    (args.copingStrategies || []).forEach((s: string) => newItems.add(`copingStrategies-${s}`));
-                                    (args.supportNetwork || []).forEach((c: { name: string }) => newItems.add(`supportNetwork-${c.name}`));
                                     if (args.myWhy) newItems.add('myWhy-main');
+                                    if (Array.isArray(args.triggers)) args.triggers.forEach((t: string) => newItems.add(`triggers-${t}`));
+                                    if (Array.isArray(args.copingStrategies)) args.copingStrategies.forEach((s: string) => newItems.add(`copingStrategies-${s}`));
+                                    if (Array.isArray(args.supportNetwork)) args.supportNetwork.forEach((c: { name: string }) => c.name && newItems.add(`supportNetwork-${c.name}`));
 
                                     setNewlyAdded(newItems);
 
                                     setPlan(p => ({
                                         ...p,
                                         myWhy: args.myWhy || p.myWhy,
-                                        triggers: [...new Set([...p.triggers, ...(args.triggers || [])])],
-                                        copingStrategies: [...new Set([...p.copingStrategies, ...(args.copingStrategies || [])])],
-                                        supportNetwork: [
+                                        triggers: Array.isArray(args.triggers) ? [...new Set([...p.triggers, ...args.triggers])] : p.triggers,
+                                        copingStrategies: Array.isArray(args.copingStrategies) ? [...new Set([...p.copingStrategies, ...args.copingStrategies])] : p.copingStrategies,
+                                        supportNetwork: Array.isArray(args.supportNetwork) ? [
                                             ...p.supportNetwork,
-                                            ...(args.supportNetwork || []).filter(nc => !p.supportNetwork.some(ec => ec.name.toLowerCase() === nc.name.toLowerCase()))
-                                        ]
+                                            ...args.supportNetwork.filter(nc => nc && nc.name && !p.supportNetwork.some(ec => ec.name.toLowerCase() === nc.name.toLowerCase()))
+                                        ] : p.supportNetwork
                                     }));
                                     
                                     sessionPromiseRef.current?.then(session => session.sendToolResponse({ functionResponses: [{id: call.id, name: call.name, response: { result: 'Plan updated.' }}]}));
@@ -334,7 +334,7 @@ const PreventionPlanPage: React.FC = () => {
                 <div className="text-center p-8 bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg max-w-lg mx-auto">
                     <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('prevention_plan_page.title')}</h2>
-                    <p className="text-base-600 dark:text-base-400 mb-6">{t('prevention_plan_page.no_program_error')}</p>
+                    <p className="text-base-600 dark:text-base-300 mb-6">{t('prevention_plan_page.no_program_error')}</p>
                     <a href="/#/programs" className="inline-block bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 transition-colors">
                         {t('prevention_plan_page.select_program_link')}
                     </a>
