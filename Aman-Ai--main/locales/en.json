@@ -126,8 +126,22 @@
       "item3_title": "Zero Judgment",
       "item3_desc": "Aman AI is trained to be an empathetic, supportive listener, available 24/7 without judgment."
     },
-    "testimonials": {
-      "title": "Stories of Hope"
+    "journey_preview": {
+      "title": "A Glimpse of the Journey",
+      "subtitle": "See what your first 90 days could look like.",
+      "day1_tab": "Day 1",
+      "day30_tab": "Day 30",
+      "day90_tab": "Day 90",
+      "sample_challenge_title": "Sample Challenge",
+      "day1_title": "The First Step: Building Your Foundation",
+      "day1_desc": "Your journey begins by establishing a new routine. On Day 1, you'll choose your program, get your first daily challenge, and take a moment to log your mood and thoughts. It's about taking one manageable step forward.",
+      "day1_challenge_task": "Write down one core reason why you're starting this journey. This will be your 'why'—your anchor in challenging moments.",
+      "day30_title": "One Month In: Seeing Progress",
+      "day30_desc": "After 30 days of consistent effort, you'll start to see real changes. Your 'Growth Garden' begins to flourish, you'll have a streak of journal entries to look back on, and you'll have developed new coping strategies.",
+      "day30_challenge_task": "Use the AI Toolkit to practice a 5-minute mindfulness meditation. Notice how you feel before and after.",
+      "day90_title": "90 Days: A New Beginning",
+      "day90_desc": "Completing the 90-day program is a monumental achievement. You've built a strong foundation of healthy habits, gained deep insights into your patterns, and developed a toolkit of strategies for long-term well-being.",
+      "day90_challenge_task": "Reflect on your journey. Write a short letter to the person you were on Day 1, acknowledging how far you've come."
     },
     "final_cta": {
       "title": "Ready to Start Your Journey?",

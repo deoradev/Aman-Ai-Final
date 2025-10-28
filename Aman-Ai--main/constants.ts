@@ -1,4 +1,4 @@
-import { Program, Resource, Testimonial, Persona, GroupSessionTopic, RolePlayPersona, ConversationPracticeScenario, DailyChallenge } from './types';
+import { Program, Resource, Persona, GroupSessionTopic, RolePlayPersona, ConversationPracticeScenario, DailyChallenge } from './types';
 
 // This is a placeholder public VAPID key.
 // For a real production deployment, you MUST generate your own VAPID key pair
@@ -127,13 +127,6 @@ export const ALL_LANGUAGES: { code: string; name: string }[] = [
     { code: 'yi', name: 'ייִדיש' },
     { code: 'yo', name: 'Yorùbá' },
     { code: 'zu', name: 'isiZulu' }
-];
-
-export const TESTIMONIALS: Testimonial[] = [
-  { id: 1, quote: "Aman Digital Care has been a constant source of support. The daily challenges kept me focused and the AI companion was there for me 24/7. I'm finally on a path I feel good about.", author: "Anonymous User", location: "Mumbai, IN" },
-  { id: 2, quote: "The structured programs are a game-changer. I never knew where to start, but the 90-day plan gave me a clear roadmap. The journaling feature helped me understand my triggers.", author: "Anonymous User", location: "Delhi, IN" },
-  { id: 3, quote: "As someone who was hesitant to seek help, the anonymity of Aman Digital Care was crucial. It provided a safe space for me to be vulnerable and work on myself without judgment.", author: "Anonymous User", location: "Bengaluru, IN" },
-  { id: 4, quote: "This program helped me see recovery as a whole-life change, not just about stopping a habit. I feel healthier than ever.", author: "Anonymous User", location: "Pune, IN" }
 ];
 
 export const RESOURCES: Resource[] = [
@@ -299,7 +292,13 @@ export const PROGRAMS: Program[] = [
         description: 'A 90-day journey to cultivate awareness, manage cravings, and reduce stress through mindfulness practices.',
         successRate: 92,
         features: ['Daily guided meditations', 'Mindful awareness exercises', 'Stress reduction techniques'],
-        testimonial: TESTIMONIALS[0],
+        // FIX: Added missing testimonial property.
+        testimonial: {
+            id: 1,
+            quote: "The mindfulness exercises changed my relationship with my cravings. I feel more in control than ever.",
+            author: "J. Doe",
+            location: "California, USA"
+        },
         dailyChallenges: mindfulnessMasteryChallenges,
     },
     {
@@ -308,7 +307,13 @@ export const PROGRAMS: Program[] = [
         description: 'Learn to identify, challenge, and reframe negative thought patterns that contribute to addiction.',
         successRate: 90,
         features: ['Cognitive restructuring tools', 'Behavioral activation tasks', 'Core belief exploration'],
-        testimonial: TESTIMONIALS[1],
+        // FIX: Added missing testimonial property.
+        testimonial: {
+            id: 2,
+            quote: "Understanding my thought patterns was the key. This program gave me the tools to break the cycle.",
+            author: "A. Smith",
+            location: "New York, USA"
+        },
         dailyChallenges: cbtFoundationsChallenges,
     },
     {
@@ -317,7 +322,13 @@ export const PROGRAMS: Program[] = [
         description: 'Focus on rebuilding healthy relationships and developing a strong support system for lasting recovery.',
         successRate: 88,
         features: ['Communication skill-building', 'Boundary setting exercises', 'Support network mapping'],
-        testimonial: TESTIMONIALS[2],
+        // FIX: Added missing testimonial property.
+        testimonial: {
+            id: 3,
+            quote: "I learned how to set boundaries and communicate my needs. My relationships have never been healthier.",
+            author: "M. Jones",
+            location: "London, UK"
+        },
         dailyChallenges: connectionPathwaysChallenges,
     },
     {
@@ -326,7 +337,13 @@ export const PROGRAMS: Program[] = [
         description: 'Develop healthy habits in nutrition, exercise, and sleep to create a holistic foundation for well-being.',
         successRate: 85,
         features: ['Nutrition and meal planning tips', 'Gentle exercise routines', 'Sleep hygiene improvement'],
-        testimonial: TESTIMONIALS[3],
+        // FIX: Added missing testimonial property.
+        testimonial: {
+            id: 4,
+            quote: "Focusing on my physical health had a huge impact on my mental well-being. A truly holistic approach.",
+            author: "S. Lee",
+            location: "Seoul, South Korea"
+        },
         dailyChallenges: lifestyleBalanceChallenges,
     }
 ];

@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import Onboarding from '../components/Onboarding';
-import { TESTIMONIALS } from '../constants';
 import SEOMeta from '../components/SEOMeta';
 
 const HeroSection: React.FC = () => {
@@ -104,24 +103,87 @@ const SafeSpaceSection: React.FC = () => {
     );
 };
 
-const TestimonialsSection: React.FC = () => {
+const JourneyPreviewSection: React.FC = () => {
     const { t } = useLocalization();
+    const [activeDay, setActiveDay] = useState<'day1' | 'day30' | 'day90'>('day1');
+
+    const journeyData = {
+        day1: {
+            title: t('home.journey_preview.day1_title'),
+            description: t('home.journey_preview.day1_desc'),
+            task: t('home.journey_preview.day1_challenge_task'),
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1v12z" /><path strokeLinecap="round" strokeLinejoin="round" d="M4 22v-7" /></svg>
+        },
+        day30: {
+            title: t('home.journey_preview.day30_title'),
+            description: t('home.journey_preview.day30_desc'),
+            task: t('home.journey_preview.day30_challenge_task'),
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+        },
+        day90: {
+            title: t('home.journey_preview.day90_title'),
+            description: t('home.journey_preview.day90_desc'),
+            task: t('home.journey_preview.day90_challenge_task'),
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+        },
+    };
+
+    const activeData = journeyData[activeDay];
+
     return (
         <section className="py-20">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center text-primary-600 dark:text-primary-400 mb-12">{t('home.testimonials.title')}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {TESTIMONIALS.slice(0, 3).map(testimonial => (
-                        <div key={testimonial.id} className="bg-white/60 dark:bg-base-800/60 p-8 rounded-xl shadow-soft border-l-4 border-primary-400">
-                            <p className="text-base-600 dark:text-base-300 italic mb-6">"{testimonial.quote}"</p>
-                            <div className="text-right">
-                                <p className="font-bold text-primary-500">{testimonial.author}</p>
-                                <p className="text-sm text-base-500 dark:text-base-400">{testimonial.location}</p>
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('home.journey_preview.title')}</h2>
+                    <p className="text-lg text-base-600 dark:text-base-400 mb-12">{t('home.journey_preview.subtitle')}</p>
+                </div>
+
+                <div className="max-w-3xl mx-auto">
+                    <div className="flex justify-center border-b border-base-200 dark:border-base-700 mb-8">
+                        {(['day1', 'day30', 'day90'] as const).map(day => (
+                            <button
+                                key={day}
+                                onClick={() => setActiveDay(day)}
+                                className={`px-6 py-3 font-semibold text-lg transition-colors focus:outline-none ${
+                                    activeDay === day
+                                        ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
+                                        : 'text-base-500 hover:text-primary-500'
+                                }`}
+                            >
+                                {t(`home.journey_preview.${day}_tab`)}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-8 rounded-2xl shadow-soft border border-base-200 dark:border-base-700 animate-fade-in">
+                        <div className="flex flex-col md:flex-row gap-8 items-center">
+                            <div className="flex-shrink-0 text-primary-500 bg-primary-100 dark:bg-primary-900/50 p-4 rounded-full">
+                                {activeData.icon}
+                            </div>
+                            <div className="text-center md:text-left">
+                                <h3 className="text-2xl font-bold text-base-900 dark:text-white mb-2">{activeData.title}</h3>
+                                <p className="text-base-700 dark:text-base-300">{activeData.description}</p>
                             </div>
                         </div>
-                    ))}
+
+                        <div className="mt-8 pt-6 border-t border-base-200 dark:border-base-700">
+                            <h4 className="font-semibold text-primary-600 dark:text-primary-400 mb-2">{t('home.journey_preview.sample_challenge_title')}</h4>
+                            <div className="bg-base-50 dark:bg-base-700/50 p-4 rounded-lg italic text-base-600 dark:text-base-300 border-l-4 border-primary-400">
+                                "{activeData.task}"
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <style>{`
+                @keyframes fade-in {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in {
+                    animation: fade-in 0.5s ease-out forwards;
+                }
+            `}</style>
         </section>
     );
 };
@@ -192,7 +254,7 @@ const HomePage: React.FC = () => {
         <MissionSection />
         <HowItWorksSection />
         <SafeSpaceSection />
-        <TestimonialsSection />
+        <JourneyPreviewSection />
         <FinalCTASection />
     </div>
     </>
