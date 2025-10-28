@@ -93,46 +93,47 @@
     }
   },
   "home": {
-      "hero": {
-          "title": "A New Beginning, Every Day",
-          "subtitle": "A confidential, 24/7 AI-powered companion for addiction and mental health support, offering personalized programs and daily guidance.",
-          "button": "Start Your Journey"
-      },
-      "banner": "A non-profit initiative, free for everyone, always.",
-      "features": {
-          "title": "How Aman Digital Care Supports You",
-          "programs": {
-              "title": "Structured Programs",
-              "description": "Evidence-based 90-day programs for a clear path to recovery."
-          },
-          "ai": {
-              "title": "24/7 AI Companion",
-              "description": "Anonymous, non-judgmental support from Aman, your AI guide."
-          },
-          "tracking": {
-              "title": "Progress Tracking",
-              "description": "Log moods, journals, and goals to visualize your growth."
-          },
-          "resources": {
-              "title": "Wellness Toolkit",
-              "description": "Access guided meditations, coping exercises, and articles."
-          }
-      },
-      "stats": {
-          "users": "10,000+ Lives Touched",
-          "success": "92% Success Rate",
-          "programs": "4 Tailored Programs"
-      },
-      "signup": {
-          "title": "Join Our Community",
-          "cta": "Sign up to receive updates, encouragement, and new feature announcements from the AMAN AI Foundation.",
-          "placeholder": "Enter your email address",
-          "button": "Sign Up",
-          "success": "Thank you for joining!"
-      },
-      "testimonials": {
-          "title": "Stories of Hope"
-      }
+    "hero": {
+      "title": "Your Safe Space for Healing & Growth",
+      "subtitle": "Aman Digital Care is a free, confidential AI companion designed to support you on your journey through addiction and mental health challenges. You are not alone.",
+      "button": "Start Your Journey"
+    },
+    "mission": {
+      "title": "Why We're Here",
+      "subtitle": "Rooted in a legacy of compassion, dedicated to accessible support for all.",
+      "p1": "Our mission is simple: to provide a safe, non-judgmental space for healing. Born from over two decades of real-world addiction and mental health support, Aman Digital Care is a non-profit initiative dedicated to making recovery accessible to everyone, anytime.",
+      "p2": "We believe in empowering you with the tools you need, right on your own device, with complete privacy."
+    },
+    "how_it_works": {
+      "title": "Your Path to Wellness",
+      "subtitle": "A clear, supportive journey designed around you.",
+      "step1_title": "1. Choose Your Program",
+      "step1_desc": "Start with an evidence-informed, 90-day program tailored to your needs, like Mindfulness or CBT.",
+      "step2_title": "2. Get Daily Guidance",
+      "step2_desc": "Receive daily challenges, log your moods, and journal your thoughts to build healthy habits.",
+      "step3_title": "3. Talk Anytime, 24/7",
+      "step3_desc": "Chat with Aman, your AI companion, for support, to practice conversations, or to use a wellness tool when you need it most.",
+      "step4_title": "4. See Your Growth",
+      "step4_desc": "Visualize your progress through personal analytics, celebrate milestones, and watch your 'Growth Garden' flourish."
+    },
+    "safe_space": {
+      "title": "A Safe & Confidential Space",
+      "subtitle": "Your privacy and peace of mind are our highest priorities.",
+      "item1_title": "Completely Anonymous",
+      "item1_desc": "You don't need to use your real name. Your journey is your own.",
+      "item2_title": "Data Stays On Your Device",
+      "item2_desc": "Your journal entries and personal data are stored locally on your device, not on our servers.",
+      "item3_title": "Zero Judgment",
+      "item3_desc": "Aman AI is trained to be an empathetic, supportive listener, available 24/7 without judgment."
+    },
+    "testimonials": {
+      "title": "Stories of Hope"
+    },
+    "final_cta": {
+      "title": "Ready to Start Your Journey?",
+      "subtitle": "Take the first step towards a healthier, more balanced life. Your path to recovery is waiting.",
+      "button": "Explore Programs"
+    }
   },
   "programs": {
       "title": "Your Path to Recovery",
