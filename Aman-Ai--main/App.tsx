@@ -36,6 +36,7 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
+const PoliciesPage = lazy(() => import('./pages/PoliciesPage'));
 
 
 
@@ -162,6 +163,7 @@ const AppContent: React.FC = () => {
             <Route path="/terms-of-service" element={<PageWrapper><TermsOfServicePage /></PageWrapper>} />
             <Route path="/disclaimer" element={<PageWrapper><DisclaimerPage /></PageWrapper>} />
             <Route path="/cookie-policy" element={<PageWrapper><CookiePolicyPage /></PageWrapper>} />
+            <Route path="/policies" element={<PageWrapper><PoliciesPage /></PageWrapper>} />
           </Routes>
         </Suspense>
       </main>

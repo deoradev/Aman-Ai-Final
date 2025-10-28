@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type, GenerateContentResponse, Modality } from "@google/genai";
 import { MoodEntry, Resource, AIInsight, JournalEntry, ChatMessage, ToolkitType } from '../types';
 import { getUserContext } from "../utils";
@@ -121,6 +120,7 @@ export const generateToolkitExercise = async (
     - Day: ${context.day} of 90
     - Language: ${context.language}
     - Age: ${context.age || 'Not provided'}
+    - Gender: ${context.gender || 'Not provided'}
 
     TOOLKIT REQUEST: ${toolkitType}
     USER INPUT: "${userInput}"
@@ -130,7 +130,7 @@ export const generateToolkitExercise = async (
     - If the request is 'cbt': Write a step-by-step cognitive reframing exercise based on the user's negative thought. Guide them through identifying the thought, gently questioning the evidence for and against it, and finding an alternative, more balanced thought. Use a supportive, Socratic questioning style. Start with a title like "**Reframing the Thought: '[User's Thought]'**".
     - If the request is 'gratitude': Write a single, insightful, and unique journal prompt designed to evoke feelings of gratitude. Do not just ask for a list (e.g., "List 3 things..."). Instead, ask for a deeper reflection on a single experience or person. The prompt should be creative and thought-provoking. Start with a title like "**A Moment for Gratitude**".
     - If the request is 'future_self': Write a detailed, multi-sensory guided imagery script (300-400 words) based on the user's stated goal. The script should walk them through achieving and experiencing this goal, describing what they see, hear, and feel. Use calming, second-person ("You are...") language. The script must be only the spoken text, without a title, to be used for audio generation.
-    - If the request is 'nutrition': Act as a wellness coach. Generate simple, actionable meal ideas and nutritional tips based on the user's request and their age (${context.age}). If age is not available, provide general advice. Structure the response with markdown (headings, lists). ALWAYS include this exact disclaimer at the end, on its own line: "**Disclaimer:** This is not medical advice. Please consult a healthcare professional for personalized nutritional guidance." Start with a title like "**Nutrition Tips for: [User's Request]**".
+    - If the request is 'nutrition': Act as a wellness coach. Generate simple, actionable meal ideas and nutritional tips based on the user's request and their age (${context.age}) and gender (${context.gender}). If age or gender are not available, provide general advice. Structure the response with markdown (headings, lists). ALWAYS include this exact disclaimer at the end, on its own line: "**Disclaimer:** This is not medical advice. Please consult a healthcare professional for personalized nutritional guidance." Start with a title like "**Nutrition Tips for: [User's Request]**".
 
     RESPONSE FORMAT:
     - Use markdown for structure where applicable (CBT, Nutrition, Meditation, Gratitude).
@@ -502,7 +502,7 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
     Structure your summary to be easily parsable by an AI. Start with the overall emotional state, then detail key events, people involved, and coping strategies used. Be specific.
 
     EXAMPLE SUMMARY:
-    "The user's recent emotional state has been mixed, with feelings of anxiety about work but also pride in maintaining their sobriety. A key stressor is a conflict with their boss, Mr. Chen. However, they've been using coping strategies like going for walks and a talking with their supportive friend, Sarah. They feel positive about their progress in the program."
+    "The user's recent emotional state has been mixed, with feelings of anxiety about work but also pride in maintaining their sobriety. A key stressor is a conflict with their boss, Mr. Chen. However, they've been using coping strategies like going for a walk and a talking with their supportive friend, Sarah. They feel positive about their progress in the program."
 
     Respond ONLY with the summary text, in the user's specified language: ${language}.
 

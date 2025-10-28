@@ -119,6 +119,7 @@ export interface UserContext {
     language: string;
     personaId: string;
     age: number | null;
+    gender: string | null;
 }
 
 export const getUserContext = (): UserContext | null => {
@@ -127,6 +128,7 @@ export const getUserContext = (): UserContext | null => {
     const personaId = localStorage.getItem(getScopedKey('persona')) || 'therapist';
     const language = localStorage.getItem('amandigitalcare-language') || 'en';
     const storedAge = localStorage.getItem(getScopedKey('user-age'));
+    const storedGender = localStorage.getItem(getScopedKey('user-gender'));
 
     if (!storedProgram || !enrollmentDate) {
         return null;
@@ -145,6 +147,7 @@ export const getUserContext = (): UserContext | null => {
             language,
             personaId,
             age: storedAge ? parseInt(storedAge, 10) : null,
+            gender: storedGender || null,
         };
     } catch (e) {
         console.error("Failed to parse user context from localStorage", e);
@@ -209,6 +212,7 @@ export const buildSystemInstruction = async (): Promise<string | null> => {
     - Day: ${context.day} of 90
     - Language: ${context.language}
     - Age: ${context.age || 'Not provided'}
+    - Gender: ${context.gender || 'Not provided'}
     - Memory Summary (Journals & Past Conversations): ${memorySummary}
     ---
     `;
@@ -237,6 +241,8 @@ You are Aman AI, a voice-based, world-class digital recovery companion specializ
 -   Program: ${context.program}
 -   Progress: Day ${context.day} of 90
 -   Language & Adaptability: Your default language is ${context.language}. However, you are multilingual. If the user speaks to you in a different language, you MUST identify it and seamlessly switch to responding in that language for the rest of the conversation. Mirror the user's language.
+-   Age: ${context.age || 'Not provided'}
+-   Gender: ${context.gender || 'Not provided'}
 
 --- AVAILABLE TOOLS ---
 - You have a tool called 'logMood' which you can call to record the user's mood. If the user expresses a clear emotion (e.g., "I'm feeling happy," "I'm sad today"), you should confirm with them and then call this function. For example: "It sounds like you're feeling happy. Would you like me to log that for you?" If they agree, call 'logMood({ mood: "happy" })'.

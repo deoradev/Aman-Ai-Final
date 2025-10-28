@@ -33,11 +33,8 @@ const Footer: React.FC = () => {
                             <NavLink to="/about" className="hover:text-white hover:underline transition-colors">{t('nav.about')}</NavLink>
                             <NavLink to="/contact" className="hover:text-white hover:underline transition-colors">{t('nav.contact')}</NavLink>
                         </div>
-                         <div className="flex justify-center gap-x-4 gap-y-2 flex-wrap text-xs text-base-400 mb-4">
-                            <NavLink to="/privacy-policy" className="hover:text-white hover:underline transition-colors">{t('footer.privacy_policy')}</NavLink>
-                            <NavLink to="/terms-of-service" className="hover:text-white hover:underline transition-colors">{t('footer.terms_of_service')}</NavLink>
-                            <NavLink to="/disclaimer" className="hover:text-white hover:underline transition-colors">{t('footer.disclaimer')}</NavLink>
-                            <NavLink to="/cookie-policy" className="hover:text-white hover:underline transition-colors">{t('footer.cookie_policy')}</NavLink>
+                         <div className="flex justify-center gap-x-4 gap-y-2 flex-wrap text-sm text-base-400 mb-4">
+                            <NavLink to="/policies" className="hover:text-white hover:underline transition-colors">{t('footer.policies')}</NavLink>
                         </div>
                         <p className="text-sm text-base-400">
                             {t('footer.copyright', { year: new Date().getFullYear() })}

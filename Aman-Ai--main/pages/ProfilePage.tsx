@@ -127,14 +127,15 @@ const ProfilePage: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [age, setAge] = useState('');
-  const [ageSaved, setAgeSaved] = useState(false);
+  const [gender, setGender] = useState('');
+  const [profileSaved, setProfileSaved] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
         const savedAge = localStorage.getItem(getScopedKey('user-age'));
-        if (savedAge) {
-            setAge(savedAge);
-        }
+        const savedGender = localStorage.getItem(getScopedKey('user-gender'));
+        if (savedAge) setAge(savedAge);
+        if (savedGender) setGender(savedGender);
     }
   }, [currentUser, getScopedKey]);
 
@@ -143,11 +144,11 @@ const ProfilePage: React.FC = () => {
     if (email.trim() && /\S+@\S+\.\S+/.test(email)) {
       const userEmail = email.trim().toLowerCase();
       login(userEmail);
-      if (age && !isNaN(parseInt(age, 10))) {
-          // Manually construct the scoped key because `getScopedKey` relies on `currentUser` which is set asynchronously.
-          const key = `amandigitalcare-user-${userEmail}-user-age`;
-          localStorage.setItem(key, age);
-      }
+      // Manually construct scoped keys because `getScopedKey` relies on `currentUser` which is set asynchronously.
+      const ageKey = `amandigitalcare-user-${userEmail}-user-age`;
+      const genderKey = `amandigitalcare-user-${userEmail}-user-gender`;
+      if (age && !isNaN(parseInt(age, 10))) localStorage.setItem(ageKey, age);
+      if (gender) localStorage.setItem(genderKey, gender);
       navigate('/dashboard');
     } else {
       setError(t('profile.email_invalid_error'));
@@ -180,13 +181,16 @@ const ProfilePage: React.FC = () => {
       navigate('/');
   };
 
-  const handleSaveAge = (e: React.FormEvent) => {
+  const handleSaveProfileInfo = (e: React.FormEvent) => {
     e.preventDefault();
     if (age && !isNaN(parseInt(age, 10))) {
         localStorage.setItem(getScopedKey('user-age'), age);
-        setAgeSaved(true);
-        setTimeout(() => setAgeSaved(false), 2000);
     }
+    if (gender) {
+        localStorage.setItem(getScopedKey('user-gender'), gender);
+    }
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 2000);
   };
 
   return (
@@ -198,7 +202,7 @@ const ProfilePage: React.FC = () => {
         description={t('seo.profile.description')}
         noIndex={true}
     />
-    <div className="py-16">
+    <div className="flex-grow flex items-center justify-center py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg overflow-hidden">
           <div className="p-8">
@@ -213,21 +217,36 @@ const ProfilePage: React.FC = () => {
                         <p className="font-semibold text-primary-500 text-lg break-words">{currentUser}</p>
                     </div>
 
-                    <form onSubmit={handleSaveAge} className="mt-6">
-                        <label htmlFor="age" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('profile.age_label')}</label>
-                        <div className="flex items-center gap-2 mt-1">
+                    <form onSubmit={handleSaveProfileInfo} className="mt-6 space-y-4">
+                        <div>
+                            <label htmlFor="age" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('profile.age_label')}</label>
                             <input
                                 type="number"
                                 id="age"
                                 value={age}
                                 onChange={(e) => setAge(e.target.value)}
-                                className="w-full px-3 py-2 border border-base-300 dark:border-base-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-base-700 text-base-800 dark:text-white"
+                                className="mt-1 w-full px-3 py-2 border border-base-300 dark:border-base-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-base-700 text-base-800 dark:text-white"
                                 placeholder={t('profile.age_input_placeholder')}
                             />
-                            <button type="submit" className="px-4 py-2 bg-primary-500 text-white font-semibold rounded-lg hover:bg-primary-600 transition-colors w-28 flex-shrink-0">
-                                {ageSaved ? t('profile.saved_button') : t('profile.save_button')}
-                            </button>
                         </div>
+                        <div>
+                            <label htmlFor="gender" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('profile.gender_label')}</label>
+                            <select
+                                id="gender"
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
+                                className="mt-1 w-full px-3 py-2 border border-base-300 dark:border-base-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-base-700 text-base-800 dark:text-white"
+                            >
+                                <option value="">{t('profile.gender_placeholder')}</option>
+                                <option value="male">{t('profile.gender_male')}</option>
+                                <option value="female">{t('profile.gender_female')}</option>
+                                <option value="non-binary">{t('profile.gender_nonbinary')}</option>
+                                <option value="prefer-not-to-say">{t('profile.gender_prefer_not_say')}</option>
+                            </select>
+                        </div>
+                        <button type="submit" className="w-full px-4 py-2 bg-primary-500 text-white font-semibold rounded-lg hover:bg-primary-600 transition-colors">
+                            {profileSaved ? t('profile.saved_button') : t('profile.save_button')}
+                        </button>
                     </form>
 
                     <button
@@ -259,37 +278,50 @@ const ProfilePage: React.FC = () => {
                     <p className="text-sm text-base-700 dark:text-base-300">{t('profile.anonymous_text')}</p>
                 </div>
 
-                <form onSubmit={handleLogin} className="mt-8 space-y-6">
-                  <div className="rounded-lg shadow-sm -space-y-px">
-                      <div>
-                          <label htmlFor="email" className="sr-only">{t('profile.email_placeholder')}</label>
-                          <input
-                              id="email"
-                              name="email"
-                              type="email"
-                              autoComplete="email"
-                              required
-                              value={email}
-                              onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                              className="appearance-none rounded-none rounded-t-lg relative block w-full px-3 py-3 border border-base-300 dark:border-base-600 bg-base-50/50 dark:bg-base-700/50 placeholder-base-500 dark:placeholder-base-400 text-base-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                              placeholder={t('profile.email_placeholder')}
-                          />
-                      </div>
-                      <div>
-                          <label htmlFor="age-login" className="sr-only">{t('profile.age_placeholder')}</label>
-                          <input
-                              id="age-login"
-                              name="age-login"
-                              type="number"
-                              value={age}
-                              onChange={(e) => setAge(e.target.value)}
-                              className="appearance-none rounded-none rounded-b-lg relative block w-full px-3 py-3 border border-base-300 dark:border-base-600 bg-base-50/50 dark:bg-base-700/50 placeholder-base-500 dark:placeholder-base-400 text-base-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                              placeholder={t('profile.age_placeholder')}
-                          />
-                      </div>
+                <form onSubmit={handleLogin} className="mt-8 space-y-4">
+                  <div>
+                      <label htmlFor="email" className="sr-only">{t('profile.email_placeholder')}</label>
+                      <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          required
+                          value={email}
+                          onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                          className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-base-300 dark:border-base-600 bg-base-50/50 dark:bg-base-700/50 placeholder-base-500 dark:placeholder-base-400 text-base-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                          placeholder={t('profile.email_placeholder')}
+                      />
                   </div>
+                   <div>
+                        <label htmlFor="age-login" className="sr-only">{t('profile.age_placeholder')}</label>
+                        <input
+                            id="age-login"
+                            name="age-login"
+                            type="number"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
+                            className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-base-300 dark:border-base-600 bg-base-50/50 dark:bg-base-700/50 placeholder-base-500 dark:placeholder-base-400 text-base-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                            placeholder={t('profile.age_placeholder')}
+                        />
+                    </div>
+                     <div>
+                        <label htmlFor="gender-login" className="sr-only">{t('profile.gender_label')}</label>
+                        <select
+                            id="gender-login"
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-base-300 dark:border-base-600 bg-base-50/50 dark:bg-base-700/50 placeholder-base-500 dark:placeholder-base-400 text-base-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                        >
+                            <option value="">{t('profile.gender_placeholder')}</option>
+                            <option value="male">{t('profile.gender_male')}</option>
+                            <option value="female">{t('profile.gender_female')}</option>
+                            <option value="non-binary">{t('profile.gender_nonbinary')}</option>
+                            <option value="prefer-not-to-say">{t('profile.gender_prefer_not_say')}</option>
+                        </select>
+                    </div>
 
-                  {error && <p className="text-warning-500 text-xs text-center pt-2">{error}</p>}
+                  {error && <p className="text-warning-500 text-xs text-center">{error}</p>}
 
                   <div>
                     <button

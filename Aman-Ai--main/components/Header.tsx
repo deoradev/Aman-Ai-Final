@@ -105,6 +105,7 @@ const Header: React.FC = () => {
         { to: '/about', text: t('nav.about') },
         { to: '/our-approach', text: t('nav.our_approach') },
         { to: '/contact', text: t('nav.contact') },
+        { to: '/policies', text: t('nav.policies_legal') },
       ],
     },
   ];

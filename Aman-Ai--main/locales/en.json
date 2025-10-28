@@ -17,7 +17,8 @@
     "about": "About",
     "contact": "Contact",
     "our_approach": "Our Approach",
-    "login": "Login / Profile"
+    "login": "Login / Profile",
+    "policies_legal": "Policies & Legal"
   },
   "header": {
     "welcome_user": "Welcome, {name}",
@@ -27,10 +28,7 @@
   "footer": {
     "subtitle": "Your confidential companion for addiction recovery and mental wellness.",
     "copyright": "© {year} Aman Digital Care. A non-profit initiative by AMAN AI Foundation. All rights reserved.",
-    "privacy_policy": "Privacy Policy",
-    "terms_of_service": "Terms of Service",
-    "disclaimer": "Disclaimer",
-    "cookie_policy": "Cookie Policy"
+    "policies": "Policies & Legal"
   },
   "offline": {
     "indicator": "Offline",
@@ -439,6 +437,12 @@
     "email_invalid_error": "Please enter a valid email address.",
     "age_label": "Your Age (for personalized wellness advice)",
     "age_input_placeholder": "e.g., 30",
+    "gender_label": "Your Gender (optional)",
+    "gender_placeholder": "Select your gender...",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "gender_nonbinary": "Non-binary",
+    "gender_prefer_not_say": "Prefer not to say",
     "save_button": "Save",
     "saved_button": "Saved!",
     "data_management": {
@@ -776,6 +780,26 @@
     "section4_title": "Your Personal Recovery Toolkit",
     "section4_p1": "We believe in empowering you with the tools for self-guided recovery. Aman Digital Care is a comprehensive toolkit designed to be your primary companion, providing the support, structure, and strategies you need to navigate your journey independently.",
     "cta_button": "Explore Your AI Toolkit"
+  },
+  "policies_page": {
+    "title": "Policies & Legal",
+    "subtitle": "Our commitment to transparency, privacy, and safety.",
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "How we handle your data with respect and confidentiality."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "description": "The rules for using our application and services."
+    },
+    "disclaimer": {
+      "title": "Clinical Disclaimer",
+      "description": "Important information about the scope and limitations of our service."
+    },
+    "cookies": {
+      "title": "Cookie & Local Storage Policy",
+      "description": "How we use browser storage to make the app work for you."
+    }
   },
   "seo": {
     "keywords": {
