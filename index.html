@@ -7,7 +7,7 @@
 
     <!-- PWA & Mobile Meta Tags -->
     <link rel="manifest" href="/Aman-Ai--main/manifest.json" />
-    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="theme-color" content="#f59e0b" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Aman Digital Care" />
@@ -91,13 +91,31 @@
       }
     </style>
     <style type="text/tailwindcss">
-      body {
-        --color-primary: 14 165 233; /* #0ea5e9 */
-        --color-secondary: 56 189 248; /* #38bdf8 */
+      :root {
+        /* Primary: Amber (Yellow) */
+        --color-primary-50: 255 251 235;
+        --color-primary-100: 254 243 199;
+        --color-primary-200: 253 230 138;
+        --color-primary-300: 252 211 77;
+        --color-primary-400: 251 191 36;
+        --color-primary-500: 245 158 11;
+        --color-primary-600: 217 119 6;
+        --color-primary-700: 180 83 9;
+        --color-primary-800: 146 64 14;
+        --color-primary-900: 120 53 15;
       }
-      html.dark body {
-        --color-primary: 56 189 248; /* #38bdf8 */
-        --color-secondary: 125 211 252; /* #7dd3fc */
+      html.dark {
+        /* Primary: Emerald (Green) */
+        --color-primary-50: 236 253 245;
+        --color-primary-100: 209 250 229;
+        --color-primary-200: 167 243 208;
+        --color-primary-300: 110 231 183;
+        --color-primary-400: 52 211 153;
+        --color-primary-500: 16 185 129;
+        --color-primary-600: 5 150 105;
+        --color-primary-700: 4 120 87;
+        --color-primary-800: 6 95 70;
+        --color-primary-900: 6 78 59;
       }
       button, a {
         @apply active:scale-95;
@@ -152,7 +170,19 @@
                 sans: ['Inter', 'sans-serif'],
             },
             colors: {
-              primary: { // Sky
+              primary: {
+                50: 'rgb(var(--color-primary-50) / <alpha-value>)',
+                100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+                200: 'rgb(var(--color-primary-200) / <alpha-value>)',
+                300: 'rgb(var(--color-primary-300) / <alpha-value>)',
+                400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+                500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+                600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+                700: 'rgb(var(--color-primary-700) / <alpha-value>)',
+                800: 'rgb(var(--color-primary-800) / <alpha-value>)',
+                900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+              },
+              secondary: { // Sky
                 50: '#f0f9ff',
                 100: '#e0f2fe',
                 200: '#bae6fd',
@@ -163,18 +193,6 @@
                 700: '#0369a1',
                 800: '#075985',
                 900: '#0c4a6e',
-              },
-              secondary: { // Amber
-                50: '#fffbeb',
-                100: '#fef3c7',
-                200: '#fde68a',
-                300: '#fcd34d',
-                400: '#fbbf24',
-                500: '#f59e0b',
-                600: '#d97706',
-                700: '#b45309',
-                800: '#92400e',
-                900: '#78350f',
               },
               accent: { // Emerald
                 50: '#ecfdf5',
@@ -267,10 +285,10 @@
           width: 128px; /* w-32 */
           height: auto;
           animation: pulse-logo 2s infinite ease-in-out;
-          color: #0ea5e9; /* Tailwind primary-500 */
+          color: #f59e0b; /* primary-500 (Amber) */
         }
         html.dark #root-loader svg {
-          color: #38bdf8; /* Tailwind primary-400 */
+          color: #34d399; /* primary-400 (Emerald) */
         }
 
         @keyframes pulse-logo {
