@@ -125,7 +125,8 @@
       // Prevents FOUC (Flash of Unstyled Content) for dark mode
       (function() {
         const theme = localStorage.getItem('amandigitalcare-theme');
-        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        // Only apply dark mode if it's explicitly stored. Default to light.
+        if (theme === 'dark') {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
