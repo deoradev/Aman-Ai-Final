@@ -16,7 +16,8 @@
     "tailwindcss": "^4.1.16",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
-    "@capacitor/push-notifications": "^7.0.3"
+    "@capacitor/push-notifications": "^7.0.3",
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

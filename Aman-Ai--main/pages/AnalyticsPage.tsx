@@ -1,11 +1,6 @@
-
-
-
-
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ResponsiveContainer, RadialBarChart, RadialBar, Legend, Tooltip } from 'recharts';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { useConnectivity } from '../hooks/useConnectivity';
@@ -359,31 +354,44 @@ const StatCard: React.FC<{ title: string; value: string; subtitle: string }> = (
 const MoodDistributionChart: React.FC<{ data: { happy: number, neutral: number, sad: number } }> = ({ data }) => {
     const { t } = useLocalization();
     const total = data.happy + data.neutral + data.sad;
-    if (total === 0) return <p className="text-center text-base-500 dark:text-base-400 py-4">{t('analytics.no_mood_data')}</p>;
+
+    if (total === 0) return <div className="h-48 flex items-center justify-center text-center text-base-500 dark:text-base-400 py-4">{t('analytics.no_mood_data')}</div>;
     
-    const happyPercent = (data.happy / total) * 100;
-    const neutralPercent = (data.neutral / total) * 100;
-    
+    const chartData = [
+        { name: t('analytics.mood_dist.happy'), value: data.happy, fill: '#34d399' }, // accent-400
+        { name: t('analytics.mood_dist.neutral'), value: data.neutral, fill: '#38bdf8' }, // secondary-400
+        { name: t('analytics.mood_dist.sad'), value: data.sad, fill: '#f87171' }, // warning-400
+    ];
+
     return (
-        <div className="space-y-3">
-            <ProgressBar label={t('analytics.mood_dist.happy')} percent={happyPercent} color="bg-accent-400" value={data.happy} />
-            <ProgressBar label={t('analytics.mood_dist.neutral')} percent={neutralPercent} color="bg-secondary-400" value={data.neutral} />
-            <ProgressBar label={t('analytics.mood_dist.sad')} percent={100 - happyPercent - neutralPercent} color="bg-warning-400" value={data.sad} />
+        <div className="w-full h-48">
+            <ResponsiveContainer>
+                <RadialBarChart 
+                    innerRadius="20%" 
+                    outerRadius="100%" 
+                    data={chartData} 
+                    startAngle={180} 
+                    endAngle={-180}
+                >
+                    <RadialBar 
+                        minAngle={15} 
+                        background 
+                        clockWise 
+                        dataKey='value'
+                    />
+                    <Legend 
+                        iconSize={10} 
+                        layout="horizontal" 
+                        verticalAlign="bottom" 
+                        align="center" 
+                        wrapperStyle={{fontSize: "12px"}}
+                    />
+                    <Tooltip />
+                </RadialBarChart>
+            </ResponsiveContainer>
         </div>
     );
 };
-
-const ProgressBar: React.FC<{ label: string, percent: number, color: string, value: number }> = ({ label, percent, color, value }) => (
-    <div>
-        <div className="flex justify-between mb-1 text-sm font-medium text-base-700 dark:text-base-300">
-            <span>{label}</span>
-            <span>{value}</span>
-        </div>
-        <div className="w-full bg-base-200 dark:bg-base-700 rounded-full h-2.5">
-            <div className={`${color} h-2.5 rounded-full`} style={{ width: `${percent}%` }}></div>
-        </div>
-    </div>
-);
 
 const ActivityCalendar: React.FC<{ data: ActivityData[] }> = ({ data }) => {
     const { t } = useLocalization();
