@@ -690,6 +690,7 @@
   "prevention_plan_page": {
     "title": "Relapse Prevention Plan",
     "subtitle": "Work with Aman AI in a live conversation to build a proactive plan for handling triggers and staying on track.",
+    "transcript_title": "Live Conversation",
     "no_program_error": "You need to be enrolled in a program to create a Prevention Plan.",
     "select_program_link": "Select a program to get started.",
     "initial_greeting": "Welcome. I'm here to help you build a strong relapse prevention plan. This is a powerful step in your recovery. We'll do this together, one step at a time.",

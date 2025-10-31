@@ -7,8 +7,10 @@ import { ai } from '../services/geminiService';
 import { buildPreventionPlanSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import { PreventionPlan } from '../types';
 import SEOMeta from '../components/SEOMeta';
+import TranscriptionBubble from '../components/TranscriptionBubble';
 
 type Status = 'idle' | 'connecting' | 'active' | 'saving' | 'ended' | 'error';
+type Transcription = { author: string, text: string };
 
 const updatePlanFunctionDeclaration: FunctionDeclaration = {
   name: 'updatePlan',
@@ -68,6 +70,7 @@ const PreventionPlanPage: React.FC = () => {
     const [plan, setPlan] = useState<PreventionPlan>({ myWhy: '', triggers: [], copingStrategies: [], supportNetwork: [] });
     const [status, setStatus] = useState<Status>('idle');
     const [error, setError] = useState<string | null>(null);
+    const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
 
     const sessionPromiseRef = useRef<Promise<LiveSession> | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
@@ -117,6 +120,7 @@ const PreventionPlanPage: React.FC = () => {
     const handleStartSession = async () => {
         setStatus('connecting');
         setError(null);
+        setTranscriptions([]);
         try {
             const systemInstruction = buildPreventionPlanSystemInstruction(t);
             if (!systemInstruction) throw new Error("Could not build system instruction.");
@@ -155,6 +159,27 @@ const PreventionPlanPage: React.FC = () => {
                     };
                 },
                 onmessage: async (message: LiveServerMessage) => {
+                    if (message.serverContent?.outputTranscription) {
+                        setTranscriptions(prev => {
+                            const last = prev[prev.length - 1];
+                            if (last?.author === t('live_talk.model')) {
+                                last.text += message.serverContent.outputTranscription.text;
+                                return [...prev.slice(0, -1), last];
+                            }
+                            return [...prev, { author: t('live_talk.model'), text: message.serverContent.outputTranscription.text }];
+                        });
+                    }
+                    if (message.serverContent?.inputTranscription) {
+                         setTranscriptions(prev => {
+                            const last = prev[prev.length - 1];
+                            if (last?.author === t('live_talk.user')) {
+                                last.text += message.serverContent.inputTranscription.text;
+                                return [...prev.slice(0, -1), last];
+                            }
+                            return [...prev, { author: t('live_talk.user'), text: message.serverContent.inputTranscription.text }];
+                        });
+                    }
+
                     if (message.toolCall) {
                         for (const fc of message.toolCall.functionCalls) {
                             if (fc.name === 'updatePlan') {
@@ -189,6 +214,8 @@ const PreventionPlanPage: React.FC = () => {
                 callbacks,
                 config: {
                     responseModalities: [Modality.AUDIO],
+                    inputAudioTranscription: {},
+                    outputAudioTranscription: {},
                     tools: [{ functionDeclarations: [updatePlanFunctionDeclaration] }],
                     systemInstruction,
                 }
@@ -221,6 +248,22 @@ const PreventionPlanPage: React.FC = () => {
                         <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('prevention_plan_page.title')}</h1>
                         <p className="mt-3 text-lg text-base-600 dark:text-base-300">{t('prevention_plan_page.subtitle')}</p>
                     </div>
+
+                     {transcriptions.length > 0 && (
+                        <div className="mb-8">
+                            <h2 className="text-xl font-bold text-primary-500 mb-3 border-b border-primary-200 dark:border-primary-800 pb-2">{t('prevention_plan_page.transcript_title')}</h2>
+                            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-4 rounded-xl shadow-soft max-h-64 overflow-y-auto space-y-4" role="log" aria-live="polite">
+                                {transcriptions.map((transcript, index) => (
+                                    <TranscriptionBubble 
+                                        key={index}
+                                        isUser={transcript.author === t('live_talk.user')}
+                                        author={transcript.author}
+                                        text={transcript.text}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft p-6 space-y-6">
                         <PlanSection title={t('prevention_plan_page.my_why_title')}>
