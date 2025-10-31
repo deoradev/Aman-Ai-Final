@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider, useLocalization } from './hooks/useLocalization';
@@ -8,10 +6,6 @@ import { ThemeProvider } from './hooks/useTheme';
 import { ConnectivityProvider } from './hooks/useConnectivity';
 import { PushNotificationsProvider } from './hooks/usePushNotifications';
 import { useSponsorNotifications } from './hooks/useSponsorNotifications';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import LanguageModal from './components/LanguageModal';
-import CrisisSupportModal from './components/CrisisSupportModal';
 import PageWrapper from './components/PageWrapper';
 
 
@@ -37,6 +31,12 @@ const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
 const PoliciesPage = lazy(() => import('./pages/PoliciesPage'));
+
+// Lazy load other non-page components for performance
+const Header = lazy(() => import('./components/Header'));
+const Footer = lazy(() => import('./components/Footer'));
+const LanguageModal = lazy(() => import('./components/LanguageModal'));
+const CrisisSupportModal = lazy(() => import('./components/CrisisSupportModal'));
 
 
 
@@ -137,9 +137,13 @@ const AppContent: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-base-50 dark:bg-base-900 text-base-800 dark:text-base-200">
       <div className="animated-gradient-bg"></div>
-      {showLanguageModal && <LanguageModal onSelectLanguage={handleLanguageSelect} />}
-      {showCrisisModal && <CrisisSupportModal onClose={() => setShowCrisisModal(false)} />}
-      <Header />
+      <Suspense fallback={null}>
+        {showLanguageModal && <LanguageModal onSelectLanguage={handleLanguageSelect} />}
+        {showCrisisModal && <CrisisSupportModal onClose={() => setShowCrisisModal(false)} />}
+      </Suspense>
+      <Suspense fallback={<div className="h-16" />}>
+        <Header />
+      </Suspense>
       <main className="flex-grow flex flex-col z-10">
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -167,7 +171,9 @@ const AppContent: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       <CrisisButton onClick={() => setShowCrisisModal(true)} />
       <AppUpdateToast show={showUpdateToast} onClose={() => setShowUpdateToast(false)} />
       <style>{`
