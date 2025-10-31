@@ -2,16 +2,15 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useAuth } from '../hooks/useAuth';
-import { GoogleGenAI, LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
+import { LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
-// FIX: MoodEntry is exported from `types`, not `utils`.
 import { MoodEntry } from '../types';
 import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import SEOMeta from '../components/SEOMeta';
 
 type Status = 'idle' | 'connecting' | 'connected' | 'ended' | 'error';
-type Transcription = { author: 'You' | 'Aman AI', text: string };
+type Transcription = { id: number, author: 'You' | 'Aman AI', text: string };
 
 const logMoodFunctionDeclaration: FunctionDeclaration = {
   name: 'logMood',
@@ -27,6 +26,30 @@ const logMoodFunctionDeclaration: FunctionDeclaration = {
     required: ['mood'],
   },
 };
+
+const StatusIndicator: React.FC<{ status: Status }> = ({ status }) => {
+    const { t } = useLocalization();
+
+    const getStatusInfo = () => {
+        switch (status) {
+            case 'connecting':
+                return { text: t('live_talk.status.connecting'), icon: <div className="w-3 h-3 bg-primary-400 rounded-full animate-pulse" />, color: 'text-primary-600 dark:text-primary-300' };
+            case 'connected':
+                return { text: t('live_talk.status.connected'), icon: <div className="w-3 h-3 bg-accent-500 rounded-full animate-pulse" />, color: 'text-accent-600 dark:text-accent-300' };
+            case 'error':
+                 return { text: t('live_talk.status.error'), icon: <div className="w-3 h-3 bg-warning-500 rounded-full" />, color: 'text-warning-600 dark:text-warning-300' };
+            case 'ended':
+                 return { text: t('live_talk.status.closed'), icon: <div className="w-3 h-3 bg-base-400 rounded-full" />, color: 'text-base-500' };
+            default:
+                return { text: t('live_talk.status.idle'), icon: <div className="w-3 h-3 bg-base-400 rounded-full" />, color: 'text-base-500' };
+        }
+    }
+    const { text, icon, color } = getStatusInfo();
+    return <div className={`flex items-center justify-center gap-2 font-semibold text-sm ${color}`}>
+        {icon}
+        <span>{text}</span>
+    </div>;
+}
 
 const LiveTalkPage: React.FC = () => {
   const { t } = useLocalization();
@@ -94,7 +117,7 @@ const LiveTalkPage: React.FC = () => {
   }, []);
 
   const handleStart = async () => {
-    if (status !== 'idle' && status !== 'ended') return;
+    if (status !== 'idle' && status !== 'ended' && status !== 'error') return;
     setStatus('connecting');
     setError(null);
     setTranscriptions([]);
@@ -138,10 +161,10 @@ const LiveTalkPage: React.FC = () => {
         },
         onmessage: async (message: LiveServerMessage) => {
             if (message.serverContent?.outputTranscription) {
-                setTranscriptions(prev => [...prev, { author: 'Aman AI', text: message.serverContent.outputTranscription.text }]);
+                setTranscriptions(prev => [...prev, { id: Date.now(), author: 'Aman AI', text: message.serverContent.outputTranscription.text }]);
             }
             if (message.serverContent?.inputTranscription) {
-                setTranscriptions(prev => [...prev, { author: 'You', text: message.serverContent.inputTranscription.text }]);
+                setTranscriptions(prev => [...prev, { id: Date.now(), author: 'You', text: message.serverContent.inputTranscription.text }]);
             }
 
             if (message.toolCall) {
@@ -149,7 +172,7 @@ const LiveTalkPage: React.FC = () => {
                     if (fc.name === 'logMood' && (fc.args.mood === 'happy' || fc.args.mood === 'neutral' || fc.args.mood === 'sad')) {
                         const todayStr = new Date().toISOString().split('T')[0];
                         const key = getScopedKey('mood-history');
-                        const moods: MoodEntry[] = JSON.parse(localStorage.getItem(key) || '[]');
+                        const moods: MoodEntry[] = JSON.parse(localStorage.getItem(key) || '[]') as MoodEntry[];
                         const newMoods = moods.filter(m => m.date !== todayStr);
                         newMoods.push({ date: todayStr, mood: fc.args.mood });
                         localStorage.setItem(key, JSON.stringify(newMoods));
@@ -177,7 +200,7 @@ const LiveTalkPage: React.FC = () => {
             }
         },
         onerror: (e: ErrorEvent) => {
-            setError(e.message || t('live_talk.error_generic'));
+            setError(e.message || "An unknown error occurred.");
             cleanup();
         },
         onclose: () => {
@@ -208,6 +231,8 @@ const LiveTalkPage: React.FC = () => {
     }
   };
 
+  const isSessionActive = status === 'connecting' || status === 'connected';
+
   return (
     <>
       <SEOMeta title={t('seo.live_talk.title')} description={t('seo.live_talk.description')} noIndex={true} />
@@ -220,9 +245,11 @@ const LiveTalkPage: React.FC = () => {
           <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
             <div className="p-6 text-center">
                 <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAIThinking={false} />
-                <div className="mt-6">
-                  {(status === 'idle' || status === 'ended' || status === 'error') && (
-                    <div className="mt-4">
+                <div className="mt-4">
+                  <StatusIndicator status={status} />
+                </div>
+                {!isSessionActive && (
+                    <div className="mt-4 animate-fade-in">
                         <label className="text-sm font-medium text-base-700 dark:text-base-300">{t('live_talk.voice_selection.title')}</label>
                         <div className="flex justify-center gap-4 mt-2">
                             <div>
@@ -233,7 +260,7 @@ const LiveTalkPage: React.FC = () => {
                                     value="Zephyr" 
                                     checked={selectedVoice === 'Zephyr'}
                                     onChange={() => setSelectedVoice('Zephyr')}
-                                    // FIX: This `disabled` check is redundant and causes a type error because this block is only shown when status is 'idle', 'ended', or 'error'.
+                                    disabled={isSessionActive}
                                     className="sr-only peer"
                                 />
                                 <label htmlFor="female-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
@@ -248,7 +275,7 @@ const LiveTalkPage: React.FC = () => {
                                     value="Puck" 
                                     checked={selectedVoice === 'Puck'}
                                     onChange={() => setSelectedVoice('Puck')}
-                                    // FIX: This `disabled` check is redundant and causes a type error because this block is only shown when status is 'idle', 'ended', or 'error'.
+                                    disabled={isSessionActive}
                                     className="sr-only peer"
                                 />
                                 <label htmlFor="male-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
@@ -257,28 +284,26 @@ const LiveTalkPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                  )}
-                </div>
+                )}
                 <div className="mt-6">
-                    {(status === 'idle' || status === 'ended' || status === 'error') && (
-                        <button onClick={handleStart} disabled={!isOnline} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600 transition-transform hover:scale-105 shadow-soft-lg disabled:bg-base-400">
+                    {!isSessionActive ? (
+                        <button onClick={handleStart} disabled={!isOnline} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600 transition-transform hover:scale-105 shadow-soft-lg disabled:bg-base-400 animate-pulse-slow">
                             {t('live_talk.start_button')}
                         </button>
-                    )}
-                    {(status === 'connecting' || status === 'connected') && (
+                    ) : (
                         <button onClick={cleanup} className="bg-warning-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-warning-600 transition-transform hover:scale-105 shadow-soft-lg">
                             {status === 'connecting' ? t('live_talk.connecting_button') : t('live_talk.stop_button')}
                         </button>
                     )}
                 </div>
                 {error && <p className="text-warning-500 mt-4">{error}</p>}
-                {!isOnline && status !== 'connected' && <p className="text-warning-500 mt-4">{t('offline.feature_unavailable')}</p>}
+                {!isOnline && !isSessionActive && <p className="text-warning-500 mt-4">{t('offline.feature_unavailable')}</p>}
             </div>
             {transcriptions.length > 0 && (
-                <div className="p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700 max-h-80 overflow-y-auto">
+                <div className="p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700 max-h-80 overflow-y-auto" role="log" aria-live="polite">
                     <div className="space-y-3">
-                        {transcriptions.map((t, i) => (
-                            <div key={i}>
+                        {transcriptions.map((t) => (
+                            <div key={t.id} className="animate-fade-in">
                                 <p className={`font-bold text-sm ${t.author === 'You' ? 'text-base-700 dark:text-base-300' : 'text-primary-600 dark:text-primary-400'}`}>{t.author}</p>
                                 <p className="text-base-800 dark:text-base-200">{t.text}</p>
                             </div>
@@ -289,6 +314,21 @@ const LiveTalkPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <style>{`
+          @keyframes fade-in {
+              from { opacity: 0; transform: translateY(5px); }
+              to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+              animation: fade-in 0.5s ease-out forwards;
+          }
+          @keyframes pulse-slow {
+              50% { opacity: 0.8; }
+          }
+          .animate-pulse-slow {
+              animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          }
+      `}</style>
     </>
   );
 };

@@ -24,7 +24,6 @@ const ConversationPracticePage: React.FC = () => {
     };
 
     const handleEnd = (transcript: ChatMessage[]) => {
-        // FIX: Store transcript and context in sessionStorage for the Feedback screen to access.
         sessionStorage.setItem('temp-transcript', JSON.stringify(transcript));
         sessionStorage.setItem('temp-scenario', selectedScenario?.title || '');
         sessionStorage.setItem('temp-persona', selectedPersona?.name || '');
@@ -36,6 +35,21 @@ const ConversationPracticePage: React.FC = () => {
         setSelectedPersona(null);
         setStep('selection');
     };
+    
+    const renderStep = () => {
+        switch(step) {
+            case 'selection':
+                return <SelectionScreen key="selection" onStart={handleStart} />;
+            case 'chat':
+                return selectedScenario && selectedPersona && (
+                    <ChatScreen key="chat" scenario={selectedScenario} persona={selectedPersona} onEnd={handleEnd} onBack={handleRestart} />
+                );
+            case 'feedback':
+                return <FeedbackScreen key="feedback" onRestart={handleRestart} />;
+            default:
+                return null;
+        }
+    }
 
     return (
         <>
@@ -46,13 +60,20 @@ const ConversationPracticePage: React.FC = () => {
             />
             <div className="py-12">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    {step === 'selection' && <SelectionScreen onStart={handleStart} />}
-                    {step === 'chat' && selectedScenario && selectedPersona && (
-                        <ChatScreen scenario={selectedScenario} persona={selectedPersona} onEnd={handleEnd} onBack={handleRestart} />
-                    )}
-                    {step === 'feedback' && <FeedbackScreen onRestart={handleRestart} />}
+                    <div className="page-fade-in">
+                      {renderStep()}
+                    </div>
                 </div>
             </div>
+             <style>{`
+                @keyframes page-fade-in {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .page-fade-in {
+                    animation: page-fade-in 0.5s ease-out forwards;
+                }
+            `}</style>
         </>
     );
 };
@@ -76,12 +97,15 @@ const SelectionScreen: React.FC<{ onStart: (scenario: ConversationPracticeScenar
                         </button>
                         {expandedScenario === scenario.id && (
                             <div className="p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700">
-                                <h3 className="font-semibold text-base-800 dark:text-base-200 mb-3">{t('conversation_practice.choose_persona')}</h3>
+                                <h3 className="font-semibold text-base-800 dark:text-base-200 mb-3">{t('conversation_practice.select_persona')}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {scenario.personas.map(persona => (
-                                        <button key={persona.id} onClick={() => onStart(scenario, persona)} className="text-left p-4 bg-base-100 dark:bg-base-700/50 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/40 hover:ring-2 hover:ring-primary-500 transition-all">
-                                            <p className="font-bold text-base-800 dark:text-base-100">{persona.name}</p>
-                                            <p className="text-sm text-base-600 dark:text-base-400">{persona.description}</p>
+                                        <button key={persona.id} onClick={() => onStart(scenario, persona)} className="text-left p-4 bg-base-100 dark:bg-base-700/50 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/40 hover:ring-2 hover:ring-primary-500 transition-all flex items-center gap-3">
+                                            <span className="text-2xl">{persona.icon}</span>
+                                            <div>
+                                                <p className="font-bold text-base-800 dark:text-base-100">{persona.name}</p>
+                                                <p className="text-sm text-base-600 dark:text-base-400">{persona.description}</p>
+                                            </div>
                                         </button>
                                     ))}
                                 </div>
@@ -147,7 +171,6 @@ const ChatScreen: React.FC<{
         setInput('');
         setIsLoading(true);
         
-        // Add a temporary loading message for the model
         setMessages(prev => [...prev, { role: 'model', text: '' }]);
         
         try {
@@ -188,16 +211,17 @@ const ChatScreen: React.FC<{
     return (
         <div className="max-w-2xl mx-auto flex flex-col h-[calc(100vh-10rem)] bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg overflow-hidden border border-base-200 dark:border-base-700">
             <div className="p-4 border-b border-base-200 dark:border-base-700 text-center relative">
-                 <button onClick={onBack} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-500 hover:text-primary-700 text-sm">
-                    &larr; {t('conversation_practice.back_button')}
+                 <button onClick={onBack} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-500 hover:text-primary-700 text-sm font-semibold">
+                    &larr; {t('conversation_practice.back_to_scenarios')}
                 </button>
                 <h2 className="text-lg font-bold text-primary-600 dark:text-primary-400">{scenario.title}</h2>
-                <p className="text-xs text-base-500 dark:text-base-400">{t('conversation_practice.practicing_with')} {persona.name}</p>
+                <p className="text-xs text-base-500 dark:text-base-400">w/ {persona.name}</p>
             </div>
-            <div className="flex-grow p-4 overflow-y-auto bg-base-50/50 dark:bg-base-900/30">
+            <div className="flex-grow p-4 overflow-y-auto bg-base-50/50 dark:bg-base-900/30" role="log" aria-live="polite">
                 <div className="space-y-4">
                     {messages.map((msg, index) => (
-                         <div key={index} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                         <div key={index} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            {msg.role === 'model' && <div className="w-8 h-8 rounded-full bg-base-200 dark:bg-base-700 flex items-center justify-center flex-shrink-0 mt-1 text-lg">{persona.icon}</div>}
                             <div className={`px-4 py-2 rounded-2xl max-w-[85%] ${msg.role === 'user' ? 'bg-base-800 dark:bg-base-600 text-white rounded-br-none' : 'bg-white dark:bg-base-700 text-base-800 dark:text-base-200 rounded-bl-none'}`}>
                                <div className="flex items-end">
                                     <p className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{msg.text}</p>
@@ -222,7 +246,7 @@ const ChatScreen: React.FC<{
                 </div>
                  <div className="text-center mt-3">
                     <button onClick={() => onEnd(messages)} disabled={isLoading} className="text-sm font-semibold text-primary-600 hover:underline disabled:opacity-50">
-                        {t('conversation_practice.end_session_button')}
+                        {t('conversation_practice.end_session')}
                     </button>
                 </div>
             </div>
@@ -232,33 +256,36 @@ const ChatScreen: React.FC<{
 
 const FeedbackScreen: React.FC<{ onRestart: () => void }> = ({ onRestart }) => {
     const { t, language } = useLocalization();
-    const { getScopedKey } = useAuth();
-    const [feedback, setFeedback] = useState<string | null>(null);
+    const [feedback, setFeedback] = useState<{ well: string, improve: string } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchFeedback = async () => {
-            // NOTE: In a real app, we'd pass the transcript through state, not localStorage.
-            // This is a simplification for this component structure.
             const transcript: ChatMessage[] = JSON.parse(sessionStorage.getItem('temp-transcript') || '[]');
             const scenarioTitle = sessionStorage.getItem('temp-scenario') || '';
             const personaName = sessionStorage.getItem('temp-persona') || '';
             
             if (transcript.length === 0) {
-                setError(t('conversation_practice.feedback.error_no_transcript'));
+                setError(t('chatbot.error_message'));
                 setIsLoading(false);
                 return;
             }
 
             try {
-                // FIX: Map the transcript from ChatMessage format (with `role`) to the format expected by getConversationFeedback (with `speaker`).
                 const formattedTranscript = transcript.map(msg => ({ speaker: msg.role, text: msg.text }));
                 const response = await getConversationFeedback(formattedTranscript, scenarioTitle, personaName, language);
-                setFeedback(response);
+                
+                const wellMatch = response.match(/\*\*What Went Well\*\*\n([\s\S]*?)(?=\*\*Things to Try Next Time\*\*|$)/);
+                const improveMatch = response.match(/\*\*Things to Try Next Time\*\*\n([\s\S]*)/);
+                
+                setFeedback({
+                    well: wellMatch ? wellMatch[1].trim() : "Great job practicing!",
+                    improve: improveMatch ? improveMatch[1].trim() : "Keep up the great work."
+                });
             } catch (err) {
                 console.error("Error getting feedback:", err);
-                setError(t('conversation_practice.feedback.error_generic'));
+                setError(t('chatbot.error_message'));
             } finally {
                 setIsLoading(false);
                 sessionStorage.removeItem('temp-transcript');
@@ -271,24 +298,37 @@ const FeedbackScreen: React.FC<{ onRestart: () => void }> = ({ onRestart }) => {
 
     return (
         <div className="max-w-2xl mx-auto bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg p-6 border border-base-200 dark:border-base-700">
-            <h2 className="text-2xl font-bold text-primary-500 mb-4">{t('conversation_practice.feedback.title')}</h2>
+            <h2 className="text-2xl font-bold text-primary-500 mb-4 text-center">{t('conversation_practice.feedback_title')}</h2>
             {isLoading && (
-                <div className="flex items-center space-x-2">
+                <div className="flex justify-center items-center space-x-2 py-8">
                     <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></div>
                     <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                     <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                    <span className="text-base-600 dark:text-base-300">{t('conversation_practice.feedback.loading')}</span>
+                    <span className="text-base-600 dark:text-base-300">{t('conversation_practice.generating_feedback')}</span>
                 </div>
             )}
-            {error && <p className="text-warning-500">{error}</p>}
+            {error && <p className="text-warning-500 text-center py-8">{error}</p>}
             {feedback && (
-                <div className="bg-base-50/50 dark:bg-base-900/30 p-4 rounded-lg">
-                    <SimpleMarkdownRenderer content={feedback} />
+                <div className="space-y-6">
+                    <div className="bg-accent-50 dark:bg-accent-900/20 p-4 rounded-lg border-l-4 border-accent-500">
+                        <div className="flex items-center gap-3 mb-2">
+                           <span className="text-2xl">👍</span>
+                           <h3 className="text-lg font-bold text-accent-800 dark:text-accent-200">What Went Well</h3>
+                        </div>
+                        <SimpleMarkdownRenderer content={feedback.well} />
+                    </div>
+                     <div className="bg-secondary-50 dark:bg-secondary-900/20 p-4 rounded-lg border-l-4 border-secondary-500">
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-2xl">💡</span>
+                            <h3 className="text-lg font-bold text-secondary-800 dark:text-secondary-200">Things to Try Next Time</h3>
+                        </div>
+                        <SimpleMarkdownRenderer content={feedback.improve} />
+                    </div>
                 </div>
             )}
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
                 <button onClick={onRestart} className="bg-primary-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-primary-600 transition-colors">
-                    {t('conversation_practice.feedback.practice_again_button')}
+                    {t('conversation_practice.practice_again')}
                 </button>
             </div>
         </div>

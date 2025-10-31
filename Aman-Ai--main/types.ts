@@ -1,3 +1,4 @@
+import { GenerateContentResponse } from '@google/genai';
 
 export interface Testimonial {
     id: number;
@@ -49,6 +50,7 @@ export interface RolePlayPersona {
     name: string;
     description: string;
     systemPrompt: string;
+    icon: string;
 }
 
 export interface ConversationPracticeScenario {
