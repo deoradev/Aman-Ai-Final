@@ -195,14 +195,19 @@ const AppContent: React.FC = () => {
                       radial-gradient(circle at 80% 90%, theme(colors.secondary.100 / 0.6), transparent 50%),
                       radial-gradient(circle at 50% 50%, theme(colors.base.50), theme(colors.base.100) 80%);
           background-color: theme(colors.base.50);
-          animation: gradient-animation 25s ease infinite;
           background-size: 200% 200%;
+          background-position: 0% 50%;
         }
         html.dark .animated-gradient-bg {
           background: radial-gradient(circle at 10% 20%, theme(colors.primary.900 / 0.7), transparent 40%),
                       radial-gradient(circle at 80% 90%, theme(colors.secondary.900 / 0.6), transparent 50%),
                       radial-gradient(circle at 50% 50%, theme(colors.base.900), theme(colors.base.800) 80%);
           background-color: theme(colors.base.900);
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .animated-gradient-bg {
+            animation: gradient-animation 25s ease infinite;
+          }
         }
         @keyframes gradient-animation {
             0% { background-position: 0% 50%; }

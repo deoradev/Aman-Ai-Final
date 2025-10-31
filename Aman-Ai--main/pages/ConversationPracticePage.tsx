@@ -92,7 +92,7 @@ const ConversationPracticePage: React.FC = () => {
     const inputAudioContextRef = useRef<AudioContext | null>(null);
     const outputAudioContextRef = useRef<AudioContext | null>(null);
     const mediaStreamSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
-    const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
+    const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
     const nextStartTimeRef = useRef<number>(0);
     const audioPlaybackSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
@@ -106,7 +106,7 @@ const ConversationPracticePage: React.FC = () => {
     const cleanup = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         
-        scriptProcessorRef.current?.disconnect();
+        audioWorkletNodeRef.current?.disconnect();
         mediaStreamSourceRef.current?.disconnect();
         analyserRef.current?.disconnect();
         mediaStreamSourceRef.current?.mediaStream.getTracks().forEach(track => track.stop());
@@ -114,7 +114,7 @@ const ConversationPracticePage: React.FC = () => {
         inputAudioContextRef.current?.close().catch(e => console.error("Error closing input audio context:", e));
         outputAudioContextRef.current?.close().catch(e => console.error("Error closing output audio context:", e));
         
-        scriptProcessorRef.current = null;
+        audioWorkletNodeRef.current = null;
         mediaStreamSourceRef.current = null;
         analyserRef.current = null;
         inputAudioContextRef.current = null;
@@ -191,23 +191,24 @@ const ConversationPracticePage: React.FC = () => {
             sessionPromiseRef.current = ai.live.connect({
                 model: 'gemini-2.5-flash-native-audio-preview-09-2025',
                 callbacks: {
-                    onopen: () => {
+                    onopen: async () => {
                         const inputCtx = inputAudioContextRef.current!;
+                        await inputCtx.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+
                         mediaStreamSourceRef.current = inputCtx.createMediaStreamSource(stream);
-                        scriptProcessorRef.current = inputCtx.createScriptProcessor(4096, 1, 1);
+                        audioWorkletNodeRef.current = new AudioWorkletNode(inputCtx, 'audio-processor');
                         analyserRef.current = inputCtx.createAnalyser();
                         
-                        scriptProcessorRef.current.onaudioprocess = (audioProcessingEvent) => {
-                            const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
-                            const pcmBlob = createBlob(inputData);
+                        audioWorkletNodeRef.current.port.onmessage = (event) => {
+                            const pcmBlob = createBlob(event.data);
                             sessionPromiseRef.current?.then((session) => {
                                 session.sendRealtimeInput({ media: pcmBlob });
                             });
                         };
                         
                         mediaStreamSourceRef.current.connect(analyserRef.current);
-                        analyserRef.current.connect(scriptProcessorRef.current);
-                        scriptProcessorRef.current.connect(inputCtx.destination);
+                        analyserRef.current.connect(audioWorkletNodeRef.current);
+                        audioWorkletNodeRef.current.connect(inputCtx.destination);
                         
                         setSessionState('live');
                         visualize();
