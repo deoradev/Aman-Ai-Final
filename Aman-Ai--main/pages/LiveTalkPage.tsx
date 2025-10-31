@@ -51,6 +51,32 @@ const StatusIndicator: React.FC<{ status: Status }> = ({ status }) => {
     </div>;
 }
 
+const TranscriptionBubble: React.FC<{ author: 'You' | 'Aman AI', text: string }> = ({ author, text }) => {
+    const isUser = author === 'You';
+    return (
+        <div className={`flex items-end gap-3 ${isUser ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+            {!isUser && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-primary-500 dark:text-primary-400">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z M12 7 L 8 11 L 10 16 L 12 14 L 14 16 L 16 11 Z" />
+                    </svg>
+                </div>
+            )}
+            <div className={`px-4 py-2 rounded-2xl max-w-[80%] shadow-sm ${isUser ? 'bg-base-800 dark:bg-base-600 text-white rounded-br-none' : 'bg-white dark:bg-base-700 text-base-800 dark:text-base-200 rounded-bl-none'}`}>
+                <p className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{text}</p>
+            </div>
+             {isUser && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-base-300 dark:bg-base-600 flex items-center justify-center">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-600 dark:text-base-300" viewBox="0 0 20 20" fill="currentColor">
+                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                   </svg>
+                </div>
+            )}
+        </div>
+    );
+};
+
+
 const LiveTalkPage: React.FC = () => {
   const { t } = useLocalization();
   const { isOnline } = useConnectivity();
@@ -60,6 +86,7 @@ const LiveTalkPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
+  const [isAISpeaking, setIsAISpeaking] = useState(false);
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(128));
   const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Puck'>('Zephyr');
 
@@ -73,6 +100,7 @@ const LiveTalkPage: React.FC = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const animationFrameId = useRef<number | null>(null);
+  const processorUrlRef = useRef<string | null>(null);
 
   const cleanup = useCallback(() => {
     animationFrameId.current && cancelAnimationFrame(animationFrameId.current);
@@ -97,7 +125,13 @@ const LiveTalkPage: React.FC = () => {
         audioWorkletNodeRef.current = null;
     }
 
+    if (processorUrlRef.current) {
+        URL.revokeObjectURL(processorUrlRef.current);
+        processorUrlRef.current = null;
+    }
+
     setIsUserSpeaking(false);
+    setIsAISpeaking(false);
     setStatus('ended');
   }, []);
 
@@ -135,7 +169,21 @@ const LiveTalkPage: React.FC = () => {
       if (!inputAudioContextRef.current.audioWorklet) {
         throw new Error("AudioWorklet not supported in this browser.");
       }
-      await inputAudioContextRef.current.audioWorklet.addModule('/audioProcessor.js');
+      
+      const audioProcessorCode = `
+        class AudioProcessor extends AudioWorkletProcessor {
+          constructor() { super(); }
+          process(inputs) {
+            const channel = inputs[0]?.[0];
+            if (channel) { this.port.postMessage(channel.slice()); }
+            return true;
+          }
+        }
+        registerProcessor('audio-processor', AudioProcessor);
+      `;
+      const blob = new Blob([audioProcessorCode], { type: 'application/javascript' });
+      processorUrlRef.current = URL.createObjectURL(blob);
+      await inputAudioContextRef.current.audioWorklet.addModule(processorUrlRef.current);
       audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
       audioWorkletNodeRef.current.port.onmessage = (event) => {
@@ -186,6 +234,7 @@ const LiveTalkPage: React.FC = () => {
 
             const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
             if (audio && outputAudioContextRef.current) {
+                setIsAISpeaking(true);
                 const outCtx = outputAudioContextRef.current;
                 nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outCtx.currentTime);
                 const audioBuffer = await decodeAudioData(decode(audio), outCtx, 24000, 1);
@@ -193,7 +242,12 @@ const LiveTalkPage: React.FC = () => {
                 const sourceNode = outCtx.createBufferSource();
                 sourceNode.buffer = audioBuffer;
                 sourceNode.connect(outCtx.destination);
-                sourceNode.addEventListener('ended', () => sourcesRef.current.delete(sourceNode));
+                sourceNode.addEventListener('ended', () => {
+                    sourcesRef.current.delete(sourceNode);
+                    if (sourcesRef.current.size === 0) {
+                        setIsAISpeaking(false);
+                    }
+                });
                 sourceNode.start(nextStartTimeRef.current);
                 nextStartTimeRef.current += audioBuffer.duration;
                 sourcesRef.current.add(sourceNode);
@@ -244,7 +298,7 @@ const LiveTalkPage: React.FC = () => {
           </div>
           <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
             <div className="p-6 text-center">
-                <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAIThinking={false} />
+                <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAIThinking={isAISpeaking} />
                 <div className="mt-4">
                   <StatusIndicator status={status} />
                 </div>
@@ -300,13 +354,10 @@ const LiveTalkPage: React.FC = () => {
                 {!isOnline && !isSessionActive && <p className="text-warning-500 mt-4">{t('offline.feature_unavailable')}</p>}
             </div>
             {transcriptions.length > 0 && (
-                <div className="p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700 max-h-80 overflow-y-auto" role="log" aria-live="polite">
-                    <div className="space-y-3">
+                <div className="p-4 sm:p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700 max-h-[50vh] overflow-y-auto" role="log" aria-live="polite">
+                    <div className="space-y-4">
                         {transcriptions.map((t) => (
-                            <div key={t.id} className="animate-fade-in">
-                                <p className={`font-bold text-sm ${t.author === 'You' ? 'text-base-700 dark:text-base-300' : 'text-primary-600 dark:text-primary-400'}`}>{t.author}</p>
-                                <p className="text-base-800 dark:text-base-200">{t.text}</p>
-                            </div>
+                           <TranscriptionBubble key={t.id} author={t.author} text={t.text} />
                         ))}
                     </div>
                 </div>

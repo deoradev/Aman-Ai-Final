@@ -35,6 +35,31 @@ const updatePlanFunctionDeclaration: FunctionDeclaration = {
   },
 };
 
+const StatusIndicator: React.FC<{ status: Status, t: (key: string) => string }> = ({ status, t }) => {
+    const getStatusInfo = () => {
+        switch (status) {
+            case 'connecting':
+                return { text: t('live_talk.status.connecting'), color: 'text-primary-600 dark:text-primary-300' };
+            case 'active':
+                return { text: t('live_talk.status.live'), color: 'text-accent-600 dark:text-accent-300' };
+            case 'error':
+                 return { text: t('live_talk.status.error'), color: 'text-warning-600 dark:text-warning-300' };
+            case 'ended':
+                 return { text: t('live_talk.status.closed'), color: 'text-base-500' };
+            default:
+                return null;
+        }
+    }
+    const info = getStatusInfo();
+    if (!info) return null;
+    
+    return <div className={`flex items-center justify-center gap-2 font-semibold text-sm ${info.color}`}>
+        <div className="w-3 h-3 bg-current rounded-full animate-pulse" />
+        <span>{info.text}</span>
+    </div>;
+}
+
+
 const PreventionPlanPage: React.FC = () => {
     const { t } = useLocalization();
     const { getScopedKey } = useAuth();
@@ -49,6 +74,7 @@ const PreventionPlanPage: React.FC = () => {
     const inputAudioContextRef = useRef<AudioContext | null>(null);
     const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
     const outputAudioContextRef = useRef<AudioContext | null>(null);
+    const processorUrlRef = useRef<string | null>(null);
 
     useEffect(() => {
         const storedPlan = localStorage.getItem(getScopedKey('prevention-plan'));
@@ -75,6 +101,11 @@ const PreventionPlanPage: React.FC = () => {
             audioWorkletNodeRef.current = null;
         }
 
+        if (processorUrlRef.current) {
+            URL.revokeObjectURL(processorUrlRef.current);
+            processorUrlRef.current = null;
+        }
+
         setStatus('ended');
     }, []);
 
@@ -95,7 +126,20 @@ const PreventionPlanPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
-            await inputAudioContextRef.current.audioWorklet.addModule('/audioProcessor.js');
+            const audioProcessorCode = `
+                class AudioProcessor extends AudioWorkletProcessor {
+                constructor() { super(); }
+                process(inputs) {
+                    const channel = inputs[0]?.[0];
+                    if (channel) { this.port.postMessage(channel.slice()); }
+                    return true;
+                }
+                }
+                registerProcessor('audio-processor', AudioProcessor);
+            `;
+            const blob = new Blob([audioProcessorCode], { type: 'application/javascript' });
+            processorUrlRef.current = URL.createObjectURL(blob);
+            await inputAudioContextRef.current.audioWorklet.addModule(processorUrlRef.current);
             audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
             const source = inputAudioContextRef.current.createMediaStreamSource(stream);
@@ -126,7 +170,7 @@ const PreventionPlanPage: React.FC = () => {
                             }
                         }
                     }
-                    const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
+                    const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
                     if (audio && outputAudioContextRef.current) {
                         const outCtx = outputAudioContextRef.current;
                         const audioBuffer = await decodeAudioData(decode(audio), outCtx, 24000, 1);
@@ -206,6 +250,8 @@ const PreventionPlanPage: React.FC = () => {
                     </div>
 
                     <div className="mt-8 text-center space-y-4">
+                        <StatusIndicator status={status} t={t} />
+
                         {status === 'idle' || status === 'ended' || status === 'error' ? (
                             <button onClick={handleStartSession} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600">
                                 {plan.myWhy ? "Continue Building Plan" : "Start Building Plan"}
@@ -218,8 +264,8 @@ const PreventionPlanPage: React.FC = () => {
 
                         {error && <p className="text-warning-500 mt-4">{error}</p>}
                         
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <button onClick={handleSavePlan} disabled={status === 'saving'} className="text-sm font-semibold bg-base-800 text-white dark:bg-base-200 dark:text-base-900 py-2 px-6 rounded-lg hover:bg-base-700 dark:hover:bg-base-300 transition-colors disabled:opacity-50">
+                        <div>
+                            <button onClick={handleSavePlan} disabled={status === 'saving' || status === 'active' || status === 'connecting'} className="text-sm font-semibold bg-base-800 text-white dark:bg-base-200 dark:text-base-900 py-2 px-6 rounded-lg hover:bg-base-700 dark:hover:bg-base-300 transition-colors disabled:opacity-50">
                                 {status === 'saving' ? "Saving..." : t('prevention_plan_page.save_button')}
                             </button>
                         </div>
