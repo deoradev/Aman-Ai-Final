@@ -78,6 +78,8 @@ const PreventionPlanPage: React.FC = () => {
     const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
     const outputAudioContextRef = useRef<AudioContext | null>(null);
     const processorUrlRef = useRef<string | null>(null);
+    const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+    const nextStartTimeRef = useRef(0);
 
     useEffect(() => {
         const storedPlan = localStorage.getItem(getScopedKey('prevention-plan'));
@@ -108,6 +110,10 @@ const PreventionPlanPage: React.FC = () => {
             URL.revokeObjectURL(processorUrlRef.current);
             processorUrlRef.current = null;
         }
+
+        sourcesRef.current.forEach(source => source.stop());
+        sourcesRef.current.clear();
+        nextStartTimeRef.current = 0;
 
         setStatus('ended');
     }, []);
@@ -199,11 +205,20 @@ const PreventionPlanPage: React.FC = () => {
                     const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
                     if (audio && outputAudioContextRef.current) {
                         const outCtx = outputAudioContextRef.current;
+                        nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outCtx.currentTime);
                         const audioBuffer = await decodeAudioData(decode(audio), outCtx, 24000, 1);
+                        
                         const sourceNode = outCtx.createBufferSource();
                         sourceNode.buffer = audioBuffer;
                         sourceNode.connect(outCtx.destination);
-                        sourceNode.start();
+                        
+                        sourceNode.addEventListener('ended', () => {
+                            sourcesRef.current.delete(sourceNode);
+                        });
+
+                        sourceNode.start(nextStartTimeRef.current);
+                        nextStartTimeRef.current += audioBuffer.duration;
+                        sourcesRef.current.add(sourceNode);
                     }
                 },
                 onerror: (e: ErrorEvent) => { setError(e.message); cleanup(); },
