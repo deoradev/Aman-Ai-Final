@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { LiveServerMessage, Modality, Blob as GenAIBlob, FunctionDeclaration, Type } from '@google/genai';
 import { useLocalization } from '../hooks/useLocalization';
@@ -220,6 +221,8 @@ const LiveTalkPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
+            await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+            
             const systemInstruction = buildLiveTalkSystemInstruction(t);
             if (!systemInstruction) throw new Error("Could not build system instruction.");
 
@@ -238,18 +241,18 @@ const LiveTalkPage: React.FC = () => {
                         const inputCtx = inputAudioContextRef.current!;
                         mediaStreamSourceRef.current = inputCtx.createMediaStreamSource(stream);
                         analyserRef.current = inputCtx.createAnalyser();
-                        const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
+                        const workletNode = new AudioWorkletNode(inputCtx, 'audio-processor');
                         
-                        scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
-                            const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
+                        workletNode.port.onmessage = (event) => {
+                            const inputData = event.data;
                             sessionPromiseRef.current?.then((session) => {
                                 session.sendRealtimeInput({ media: createBlob(inputData) });
                             });
                         };
                         
                         mediaStreamSourceRef.current.connect(analyserRef.current);
-                        analyserRef.current.connect(scriptProcessor);
-                        scriptProcessor.connect(inputCtx.destination);
+                        analyserRef.current.connect(workletNode);
+                        workletNode.connect(inputCtx.destination);
                         
                         setSessionState('live');
                         visualize();
