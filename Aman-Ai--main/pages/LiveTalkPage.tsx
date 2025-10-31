@@ -300,7 +300,7 @@ const LiveTalkPage: React.FC = () => {
           </div>
           <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
             <div className="p-6 text-center">
-                <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAIThinking={isAISpeaking} />
+                <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAISpeaking={isAISpeaking} />
                 <div className="mt-4">
                   <StatusIndicator status={status} />
                 </div>

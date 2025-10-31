@@ -146,6 +146,11 @@ const PreventionPlanPage: React.FC = () => {
             await inputAudioContextRef.current.audioWorklet.addModule(processorUrlRef.current);
             audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
+            audioWorkletNodeRef.current.port.onmessage = (event) => {
+                const inputData = event.data;
+                sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: createBlob(inputData) }));
+            };
+
             const source = inputAudioContextRef.current.createMediaStreamSource(stream);
             source.connect(audioWorkletNodeRef.current);
             audioWorkletNodeRef.current.connect(inputAudioContextRef.current.destination);
@@ -153,10 +158,6 @@ const PreventionPlanPage: React.FC = () => {
             const callbacks = {
                 onopen: () => {
                     setStatus('active');
-                    audioWorkletNodeRef.current!.port.onmessage = (event) => {
-                        const inputData = event.data;
-                        sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: createBlob(inputData) }));
-                    };
                 },
                 onmessage: async (message: LiveServerMessage) => {
                     if (message.serverContent?.outputTranscription) {
