@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.amandigitalcare.app',
   appName: 'Aman Digital Care',
-  webDir: 'build', // Standard build directory for React apps
+  webDir: 'dist', // Vite's default build output directory
   bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
