@@ -1,4 +1,7 @@
+// FIX: Removed GenAIBlob from this import as it's not defined in './types'.
 import { JournalEntry, Program, Persona, Milestone, MoodEntry, Goal, ChatMessage } from './types';
+// FIX: Added import for Blob from '@google/genai' and aliased it as GenAIBlob.
+import { type Blob as GenAIBlob } from '@google/genai';
 import { PERSONAS } from './constants';
 import { summarizeRecentJournals, summarizeChatHistory } from './services/geminiService';
 
@@ -420,8 +423,17 @@ export const deleteAllUserData = (): void => {
     keysToDelete.forEach(key => localStorage.removeItem(key));
 };
 
-// --- Audio Helper Functions for TTS ---
-function decode(base64: string): Uint8Array {
+// --- Audio Helper Functions ---
+export function encode(bytes: Uint8Array) {
+  let binary = '';
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+export function decode(base64: string): Uint8Array {
   const binaryString = window.atob(base64);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
@@ -431,74 +443,61 @@ function decode(base64: string): Uint8Array {
   return bytes;
 }
 
-function writeString(view: DataView, offset: number, string: string) {
-    for (let i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
+export async function decodeAudioData(
+  data: Uint8Array,
+  ctx: AudioContext,
+  sampleRate: number,
+  numChannels: number,
+): Promise<AudioBuffer> {
+  const dataInt16 = new Int16Array(data.buffer);
+  const frameCount = dataInt16.length / numChannels;
+  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
+
+  for (let channel = 0; channel < numChannels; channel++) {
+    const channelData = buffer.getChannelData(channel);
+    for (let i = 0; i < frameCount; i++) {
+      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
     }
+  }
+  return buffer;
 }
 
-function pcmToWavBlob(pcmData: Uint8Array, sampleRate: number, numChannels: number, bitsPerSample: number): Blob {
-    const dataSize = pcmData.byteLength;
-    const buffer = new ArrayBuffer(44 + dataSize);
-    const view = new DataView(buffer);
-
-    // RIFF header
-    writeString(view, 0, 'RIFF');
-    view.setUint32(4, 36 + dataSize, true);
-    writeString(view, 8, 'WAVE');
-
-    // fmt chunk
-    writeString(view, 12, 'fmt ');
-    view.setUint32(16, 16, true); // chunk size
-    view.setUint16(20, 1, true); // audio format (1 = PCM)
-    view.setUint16(22, numChannels, true);
-    view.setUint32(24, sampleRate, true);
-    const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
-    view.setUint32(28, byteRate, true);
-    const blockAlign = numChannels * (bitsPerSample / 8);
-    view.setUint16(32, blockAlign, true);
-    view.setUint16(34, bitsPerSample, true);
-
-    // data chunk
-    writeString(view, 36, 'data');
-    view.setUint32(40, dataSize, true);
-
-    // PCM data
-    const pcmAsUint8 = new Uint8Array(pcmData);
-    for (let i = 0; i < dataSize; i++) {
-        view.setUint8(44 + i, pcmAsUint8[i]);
-    }
-
-    return new Blob([view], { type: 'audio/wav' });
+export function createBlob(data: Float32Array): GenAIBlob {
+  const l = data.length;
+  const int16 = new Int16Array(l);
+  for (let i = 0; i < l; i++) {
+    int16[i] = data[i] * 32768;
+  }
+  return {
+    data: encode(new Uint8Array(int16.buffer)),
+    mimeType: 'audio/pcm;rate=16000',
+  };
 }
 
-export const playAndReturnAudio = (
+let playbackAudioContext: AudioContext | null = null;
+const getPlaybackAudioContext = (): AudioContext => {
+    if (!playbackAudioContext || playbackAudioContext.state === 'closed') {
+        playbackAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+    }
+    return playbackAudioContext;
+};
+
+export const playAndReturnAudio = async (
     base64Audio: string, 
     onEnded: () => void
-): HTMLAudioElement => {
+): Promise<AudioBufferSourceNode> => {
+    const audioContext = getPlaybackAudioContext();
     const pcmData = decode(base64Audio);
-    // Gemini TTS provides 16-bit PCM at 24000 Hz, mono
-    const wavBlob = pcmToWavBlob(pcmData, 24000, 1, 16);
-    const url = URL.createObjectURL(wavBlob);
-    const audio = new Audio(url);
-
-    const cleanup = () => {
-        onEnded();
-        URL.revokeObjectURL(url);
-        audio.removeEventListener('ended', cleanup);
-        audio.removeEventListener('error', cleanup);
-    };
-
-    audio.addEventListener('ended', cleanup);
-    audio.addEventListener('error', (e) => {
-        console.error("Audio playback error:", e);
-        cleanup();
-    });
     
-    audio.play().catch(e => {
-        console.error("Error starting audio playback:", e);
-        cleanup();
-    });
-
-    return audio;
+    const audioBuffer = await decodeAudioData(pcmData, audioContext, 24000, 1);
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    
+    source.onended = onEnded;
+    
+    source.start();
+    
+    return source;
 };

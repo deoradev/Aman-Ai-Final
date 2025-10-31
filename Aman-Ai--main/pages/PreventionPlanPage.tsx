@@ -5,50 +5,10 @@ import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { PreventionPlan } from '../types';
 import SEOMeta from '../components/SEOMeta';
-import { buildPreventionPlanSystemInstruction, getScopedKey, getUserContext } from '../utils';
+import { buildPreventionPlanSystemInstruction, getScopedKey, getUserContext, encode, decode, decodeAudioData, createBlob } from '../utils';
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import { ai } from '../services/geminiService';
 import Logo from '../components/Logo';
-
-// --- Audio Helper Functions ---
-function encode(bytes: Uint8Array) {
-  let binary = '';
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-function decode(base64: string) {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-}
-async function decodeAudioData(data: Uint8Array, ctx: AudioContext, sampleRate: number, numChannels: number): Promise<AudioBuffer> {
-  const dataInt16 = new Int16Array(data.buffer);
-  const frameCount = dataInt16.length / numChannels;
-  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-  for (let channel = 0; channel < numChannels; channel++) {
-    const channelData = buffer.getChannelData(channel);
-    for (let i = 0; i < frameCount; i++) {
-      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
-    }
-  }
-  return buffer;
-}
-function createBlob(data: Float32Array): GenAIBlob {
-  const l = data.length;
-  const int16 = new Int16Array(l);
-  for (let i = 0; i < l; i++) {
-    int16[i] = data[i] * 32768;
-  }
-  return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
-}
-// --- End Audio Helpers ---
 
 const updatePlanFunctionDeclaration: FunctionDeclaration = {
     name: 'updatePlan',
@@ -194,6 +154,8 @@ const PreventionPlanPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
+            await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+
             const systemInstruction = buildPreventionPlanSystemInstruction(t);
             if (!systemInstruction) throw new Error("Could not build system instruction.");
 
@@ -212,18 +174,18 @@ const PreventionPlanPage: React.FC = () => {
                         const inputCtx = inputAudioContextRef.current!;
                         mediaStreamSourceRef.current = inputCtx.createMediaStreamSource(stream);
                         analyserRef.current = inputCtx.createAnalyser();
-                        const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
+                        const workletNode = new AudioWorkletNode(inputCtx, 'audio-processor');
 
-                        scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
-                            const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
+                        workletNode.port.onmessage = (event) => {
+                            const inputData = event.data;
                             sessionPromiseRef.current?.then((session) => {
                                 session.sendRealtimeInput({ media: createBlob(inputData) });
                             });
                         };
                         
                         mediaStreamSourceRef.current.connect(analyserRef.current);
-                        analyserRef.current.connect(scriptProcessor);
-                        scriptProcessor.connect(inputCtx.destination);
+                        analyserRef.current.connect(workletNode);
+                        workletNode.connect(inputCtx.destination);
                         
                         setSessionState('live');
                         visualize();

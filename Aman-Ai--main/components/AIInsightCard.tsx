@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import { getSponsorInsight } from '../services/geminiService';
 import { MoodEntry, AIInsight, JournalEntry, EchoAffirmation } from '../types';
-import { getScopedKey, playAndReturnAudio } from '../utils';
+import { playAndReturnAudio } from '../utils';
 import { useAuth } from '../hooks/useAuth';
 
 interface SponsorInsightCardProps {
@@ -23,18 +23,18 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     const [isLoading, setIsLoading] = useState(true);
     
     const [isPlayingEcho, setIsPlayingEcho] = useState(false);
-    const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+    const currentAudioRef = useRef<AudioBufferSourceNode | null>(null);
 
     useEffect(() => {
         return () => {
-            currentAudioRef.current?.pause();
+            currentAudioRef.current?.stop();
             currentAudioRef.current = null;
         }
     }, []);
 
     const handlePlayRandomEcho = async () => {
         if (isPlayingEcho) {
-            currentAudioRef.current?.pause();
+            currentAudioRef.current?.stop();
             currentAudioRef.current = null;
             setIsPlayingEcho(false);
             return;
@@ -49,7 +49,7 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
         setIsPlayingEcho(true);
         const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
         
-        currentAudioRef.current = playAndReturnAudio(randomAffirmation.audioDataB64, () => {
+        currentAudioRef.current = await playAndReturnAudio(randomAffirmation.audioDataB64, () => {
             setIsPlayingEcho(false);
             currentAudioRef.current = null;
         });
