@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface SimpleMarkdownRendererProps {
     content: string;
@@ -66,4 +66,4 @@ const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({ content
     return <div className="prose prose-sm md:prose-base max-w-none text-base-800 dark:text-base-200">{elements}</div>;
 };
 
-export default SimpleMarkdownRenderer;
+export default memo(SimpleMarkdownRenderer);

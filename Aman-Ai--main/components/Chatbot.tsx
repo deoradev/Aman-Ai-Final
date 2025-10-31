@@ -250,7 +250,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage }) => {
         <p className="text-sm opacity-90">{t('chatbot.subtitle')}</p>
       </div>
       <div className="flex-grow p-4 overflow-y-auto bg-base-100/50 dark:bg-base-900/30">
-        <div className="space-y-4">
+        <div className="space-y-4" role="log" aria-live="polite">
           {messages.map((msg, index) => (
             <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.isError ? (

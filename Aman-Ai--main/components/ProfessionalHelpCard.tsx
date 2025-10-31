@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface ProfessionalHelpCardProps {
   title: string;
@@ -36,4 +36,4 @@ const ProfessionalHelpCard: React.FC<ProfessionalHelpCardProps> = ({ title, desc
   );
 };
 
-export default ProfessionalHelpCard;
+export default memo(ProfessionalHelpCard);

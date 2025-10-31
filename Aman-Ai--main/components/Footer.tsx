@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import Logo from './Logo';
@@ -46,4 +46,4 @@ const Footer: React.FC = () => {
     );
 }
 
-export default Footer;
+export default memo(Footer);

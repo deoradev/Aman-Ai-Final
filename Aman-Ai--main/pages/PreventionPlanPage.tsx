@@ -327,7 +327,7 @@ const PreventionPlanPage: React.FC = () => {
                             ) : (
                                 <>
                                     <div className="flex-grow p-4 overflow-y-auto">
-                                        <div className="space-y-4">
+                                        <div className="space-y-4" role="log" aria-live="polite">
                                             {transcript.map((msg, i) => (
                                                 <div key={i}>
                                                     <p className={`font-bold ${msg.speaker === 'user' ? 'text-primary-600 dark:text-primary-400' : 'text-base-800 dark:text-base-200'}`}>{msg.speaker === 'user' ? t('live_talk.user') : t('live_talk.model')}</p>

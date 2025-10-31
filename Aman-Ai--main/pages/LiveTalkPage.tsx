@@ -316,14 +316,14 @@ const LiveTalkPage: React.FC = () => {
                             <p className="mt-3 text-lg text-base-600 dark:text-base-300">{t('live_talk.subtitle')}</p>
                         </div>
                         
-                        <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg flex flex-col min-h-[70vh]">
+                        <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg flex flex-col">
                             <div className="p-4 border-b border-base-200 dark:border-base-700 text-center">
                                 <h2 className="font-bold text-primary-600 dark:text-primary-400">{currentPersona?.name || ''}</h2>
                                 <p className="text-sm text-base-500 dark:text-base-400">{getStatusText()}</p>
                             </div>
 
-                            <div className="p-4 bg-base-50/50 dark:bg-base-900/30 flex-grow overflow-y-auto">
-                                <div className="space-y-4">
+                            <div className="p-4 bg-base-50/50 dark:bg-base-900/30 flex-grow overflow-y-auto min-h-[40vh]">
+                                <div className="space-y-4" role="log" aria-live="polite">
                                     {transcript.map((msg, i) => (
                                         <div key={i}>
                                             <p className={`font-bold ${

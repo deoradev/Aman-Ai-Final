@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import ProfessionalHelpCard from './ProfessionalHelpCard';
 import Logo from './Logo';
@@ -70,4 +70,4 @@ const CrisisSupportModal: React.FC<CrisisSupportModalProps> = ({ onClose }) => {
     );
 };
 
-export default CrisisSupportModal;
+export default memo(CrisisSupportModal);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const Logo: React.FC<{ size?: 'normal' | 'large' }> = ({ size = 'normal' }) => {
   const sizeClass = size === 'large' ? 'h-24 w-auto' : 'h-8 w-auto';
@@ -17,4 +17,4 @@ const Logo: React.FC<{ size?: 'normal' | 'large' }> = ({ size = 'normal' }) => {
   );
 };
 
-export default Logo;
+export default memo(Logo);

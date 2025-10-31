@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import { getSponsorInsight } from '../services/geminiService';
@@ -146,4 +146,4 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     );
 };
 
-export default SponsorInsightCard;
+export default memo(SponsorInsightCard);

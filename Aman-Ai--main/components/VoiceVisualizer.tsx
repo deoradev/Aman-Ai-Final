@@ -19,8 +19,18 @@ const VoiceVisualizer: React.FC<VoiceVisualizerProps> = ({ audioData, isUserSpea
     
     // Get theme colors from CSS variables for dynamic theme support
     const computedStyle = getComputedStyle(document.body);
-    const primaryColor = `rgb(${computedStyle.getPropertyValue('--color-primary').trim()})`;
-    const secondaryColor = `rgb(${computedStyle.getPropertyValue('--color-secondary').trim()})`;
+    const primaryColor = `rgb(${computedStyle.getPropertyValue('--color-primary-500').trim()})`;
+    const secondaryColor = `rgb(${computedStyle.getPropertyValue('--color-secondary-500').trim()})`;
+
+    const handleResize = () => {
+      const { width, height } = canvas.getBoundingClientRect();
+      canvas.width = width;
+      canvas.height = height;
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(canvas);
+    handleResize(); // Set initial size
 
     const draw = () => {
       const { width, height } = canvas;
@@ -29,7 +39,7 @@ const VoiceVisualizer: React.FC<VoiceVisualizerProps> = ({ audioData, isUserSpea
       if (isAIThinking) {
         // AI thinking animation
         thinkingPhase.current += 0.05;
-        const radius = width / 4;
+        const radius = Math.min(width, height) / 3;
         const numOrbs = 5;
         for(let i=0; i<numOrbs; i++) {
             const angle = (i/numOrbs) * Math.PI * 2 + thinkingPhase.current;
@@ -77,11 +87,12 @@ const VoiceVisualizer: React.FC<VoiceVisualizerProps> = ({ audioData, isUserSpea
 
     return () => {
         window.cancelAnimationFrame(animationFrameId);
+        resizeObserver.disconnect();
     }
 
   }, [audioData, isUserSpeaking, isAIThinking]);
 
-  return <canvas ref={canvasRef} width="300" height="80" />;
+  return <canvas ref={canvasRef} className="w-full h-[80px]" />;
 };
 
 export default VoiceVisualizer;

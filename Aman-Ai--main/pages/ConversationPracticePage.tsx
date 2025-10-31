@@ -292,7 +292,7 @@ const ConversationPracticePage: React.FC = () => {
                             <p className="text-sm text-base-500 dark:text-base-400">vs. {selectedPersona?.name}</p>
                         </div>
                         <div className="p-4 bg-base-50/50 dark:bg-base-900/30 flex-grow overflow-y-auto">
-                            <div className="space-y-4">
+                            <div className="space-y-4" role="log" aria-live="polite">
                                 {transcript.map((msg, i) => (
                                     <div key={i}>
                                         <p className={`font-bold ${msg.speaker === 'user' ? 'text-primary-600 dark:text-primary-400' : 'text-base-800 dark:text-base-200'}`}>{msg.speaker === 'user' ? t('live_talk.user') : t('live_talk.model')}</p>
@@ -334,7 +334,7 @@ const ConversationPracticePage: React.FC = () => {
                         <p className="mt-3 text-lg text-base-600 dark:text-base-300 max-w-2xl mx-auto">{t('conversation_practice.subtitle')}</p>
                     </div>
 
-                    <div className="max-w-2xl mx-auto w-full bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg flex-grow flex flex-col min-h-[60vh]">
+                    <div className="max-w-2xl mx-auto w-full bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg flex-grow flex flex-col">
                         {renderContent()}
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { DailyChallenge, MoodEntry } from '../types';
 import { useLocalization } from '../hooks/useLocalization';
@@ -87,4 +87,4 @@ const TodayFocus: React.FC<TodayFocusProps> = ({
   );
 };
 
-export default TodayFocus;
+export default memo(TodayFocus);

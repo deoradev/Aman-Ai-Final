@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
@@ -136,7 +137,7 @@ const ChatScreen: React.FC<{ topic: GroupSessionTopic, onBack: () => void }> = (
                 </p>
             </div>
             <div className="p-4 bg-base-50/50 dark:bg-base-900/30 flex-grow overflow-y-auto">
-                <div className="space-y-4">
+                <div className="space-y-4" role="log" aria-live="polite">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex flex-col ${msg.speaker === 'user' ? 'items-end' : 'items-start'}`}>
                             <span className={`text-xs px-2 mb-1 ${msg.speaker === 'user' ? 'text-right' : 'text-left'} ${msg.speaker === 'moderator' ? 'text-primary-600 dark:text-primary-400 font-semibold' : 'text-base-500 dark:text-base-400'}`}>
