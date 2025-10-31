@@ -4,7 +4,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
-import { buildPreventionPlanSystemInstruction, createBlob, decodeAudioData } from '../utils';
+// FIX: Import the `decode` function to correctly handle base64 audio data.
+import { buildPreventionPlanSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import { PreventionPlan } from '../types';
 import SEOMeta from '../components/SEOMeta';
 
@@ -115,7 +116,8 @@ const PreventionPlanPage: React.FC = () => {
                     const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
                     if (audio && outputAudioContextRef.current) {
                         const outCtx = outputAudioContextRef.current;
-                        const audioBuffer = await decodeAudioData(atob(audio), outCtx, 24000, 1);
+                        // FIX: Use the `decode` utility to convert base64 string to Uint8Array before passing to decodeAudioData.
+                        const audioBuffer = await decodeAudioData(decode(audio), outCtx, 24000, 1);
                         const sourceNode = outCtx.createBufferSource();
                         sourceNode.buffer = audioBuffer;
                         sourceNode.connect(outCtx.destination);

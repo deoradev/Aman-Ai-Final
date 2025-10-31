@@ -24,6 +24,10 @@ const ConversationPracticePage: React.FC = () => {
     };
 
     const handleEnd = (transcript: ChatMessage[]) => {
+        // FIX: Store transcript and context in sessionStorage for the Feedback screen to access.
+        sessionStorage.setItem('temp-transcript', JSON.stringify(transcript));
+        sessionStorage.setItem('temp-scenario', selectedScenario?.title || '');
+        sessionStorage.setItem('temp-persona', selectedPersona?.name || '');
         setStep('feedback');
     };
 
@@ -46,7 +50,7 @@ const ConversationPracticePage: React.FC = () => {
                     {step === 'chat' && selectedScenario && selectedPersona && (
                         <ChatScreen scenario={selectedScenario} persona={selectedPersona} onEnd={handleEnd} onBack={handleRestart} />
                     )}
-                    {step === 'feedback' && selectedScenario && <FeedbackScreen onRestart={handleRestart} />}
+                    {step === 'feedback' && <FeedbackScreen onRestart={handleRestart} />}
                 </div>
             </div>
         </>
@@ -248,7 +252,9 @@ const FeedbackScreen: React.FC<{ onRestart: () => void }> = ({ onRestart }) => {
             }
 
             try {
-                const response = await getConversationFeedback(transcript, scenarioTitle, personaName, language);
+                // FIX: Map the transcript from ChatMessage format (with `role`) to the format expected by getConversationFeedback (with `speaker`).
+                const formattedTranscript = transcript.map(msg => ({ speaker: msg.role, text: msg.text }));
+                const response = await getConversationFeedback(formattedTranscript, scenarioTitle, personaName, language);
                 setFeedback(response);
             } catch (err) {
                 console.error("Error getting feedback:", err);
@@ -261,7 +267,7 @@ const FeedbackScreen: React.FC<{ onRestart: () => void }> = ({ onRestart }) => {
             }
         };
         fetchFeedback();
-    }, [t, language, getScopedKey]);
+    }, [t, language]);
 
     return (
         <div className="max-w-2xl mx-auto bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg p-6 border border-base-200 dark:border-base-700">

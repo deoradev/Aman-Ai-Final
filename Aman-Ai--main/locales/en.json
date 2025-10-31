@@ -645,6 +645,7 @@
     "mic_permission": "Microphone permission is required. Please enable it in your browser settings to continue.",
     "start_button": "Start Conversation",
     "stop_button": "End Conversation",
+    "connecting_button": "Connecting...",
     "export_transcript": "Export Transcript",
     "user": "You",
     "model": "Aman AI",

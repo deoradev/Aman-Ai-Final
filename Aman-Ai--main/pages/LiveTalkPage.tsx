@@ -4,7 +4,9 @@ import { useConnectivity } from '../hooks/useConnectivity';
 import { useAuth } from '../hooks/useAuth';
 import { GoogleGenAI, LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
-import { buildLiveTalkSystemInstruction, createBlob, decodeAudioData, MoodEntry } from '../utils';
+// FIX: MoodEntry is exported from `types`, not `utils`.
+import { MoodEntry } from '../types';
+import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import SEOMeta from '../components/SEOMeta';
 
@@ -36,11 +38,12 @@ const LiveTalkPage: React.FC = () => {
   const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(128));
+  const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Puck'>('Zephyr');
 
   const sessionPromiseRef = useRef<Promise<LiveSession> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
-  const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
+  const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
   const outputAudioContextRef = useRef<AudioContext | null>(null);
   const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const nextStartTimeRef = useRef(0);
@@ -54,8 +57,8 @@ const LiveTalkPage: React.FC = () => {
     sessionPromiseRef.current?.then(session => session.close());
     sessionPromiseRef.current = null;
 
-    inputAudioContextRef.current?.close();
-    outputAudioContextRef.current?.close();
+    inputAudioContextRef.current?.close().catch(e => console.error("Error closing input context:", e));
+    outputAudioContextRef.current?.close().catch(e => console.error("Error closing output context:", e));
     inputAudioContextRef.current = null;
     outputAudioContextRef.current = null;
 
@@ -65,8 +68,11 @@ const LiveTalkPage: React.FC = () => {
     sourcesRef.current.forEach(source => source.stop());
     sourcesRef.current.clear();
     
-    scriptProcessorRef.current?.disconnect();
-    scriptProcessorRef.current = null;
+    if (audioWorkletNodeRef.current) {
+        audioWorkletNodeRef.current.port.onmessage = null;
+        audioWorkletNodeRef.current.disconnect();
+        audioWorkletNodeRef.current = null;
+    }
 
     setIsUserSpeaking(false);
     setStatus('ended');
@@ -81,9 +87,8 @@ const LiveTalkPage: React.FC = () => {
         analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
         setAudioData(new Uint8Array(dataArrayRef.current));
 
-        // Simple speaking detection
         const avg = dataArrayRef.current.reduce((sum, val) => sum + Math.abs(val - 128), 0) / dataArrayRef.current.length;
-        setIsUserSpeaking(avg > 2); // Threshold for speaking detection
+        setIsUserSpeaking(avg > 2);
     }
     animationFrameId.current = requestAnimationFrame(visualize);
   }, []);
@@ -104,27 +109,32 @@ const LiveTalkPage: React.FC = () => {
       inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       
-      const source = inputAudioContextRef.current.createMediaStreamSource(stream);
-      scriptProcessorRef.current = inputAudioContextRef.current.createScriptProcessor(4096, 1, 1);
+      if (!inputAudioContextRef.current.audioWorklet) {
+        throw new Error("AudioWorklet not supported in this browser.");
+      }
+      await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+      audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
+
+      audioWorkletNodeRef.current.port.onmessage = (event) => {
+        const inputData = event.data;
+        const pcmBlob = createBlob(inputData);
+        sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: pcmBlob }));
+      };
       
+      const source = inputAudioContextRef.current.createMediaStreamSource(stream);
       analyserRef.current = inputAudioContextRef.current.createAnalyser();
       analyserRef.current.fftSize = 256;
       dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
       
       source.connect(analyserRef.current);
-      analyserRef.current.connect(scriptProcessorRef.current);
-      scriptProcessorRef.current.connect(inputAudioContextRef.current.destination);
+      analyserRef.current.connect(audioWorkletNodeRef.current);
+      audioWorkletNodeRef.current.connect(inputAudioContextRef.current.destination);
 
       visualize();
 
       const callbacks = {
         onopen: () => {
             setStatus('connected');
-            scriptProcessorRef.current!.onaudioprocess = (event) => {
-                const inputData = event.inputBuffer.getChannelData(0);
-                const pcmBlob = createBlob(inputData);
-                sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: pcmBlob }));
-            };
         },
         onmessage: async (message: LiveServerMessage) => {
             if (message.serverContent?.outputTranscription) {
@@ -155,7 +165,7 @@ const LiveTalkPage: React.FC = () => {
             if (audio && outputAudioContextRef.current) {
                 const outCtx = outputAudioContextRef.current;
                 nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outCtx.currentTime);
-                const audioBuffer = await decodeAudioData(atob(audio), outCtx, 24000, 1);
+                const audioBuffer = await decodeAudioData(decode(audio), outCtx, 24000, 1);
                 
                 const sourceNode = outCtx.createBufferSource();
                 sourceNode.buffer = audioBuffer;
@@ -183,6 +193,9 @@ const LiveTalkPage: React.FC = () => {
           inputAudioTranscription: {},
           outputAudioTranscription: {},
           tools: [{ functionDeclarations: [logMoodFunctionDeclaration] }],
+          speechConfig: {
+              voiceConfig: { prebuiltVoiceConfig: { voiceName: selectedVoice } },
+          },
           systemInstruction,
         },
       });
@@ -208,6 +221,45 @@ const LiveTalkPage: React.FC = () => {
             <div className="p-6 text-center">
                 <VoiceVisualizer audioData={audioData} isUserSpeaking={isUserSpeaking} isAIThinking={false} />
                 <div className="mt-6">
+                  {(status === 'idle' || status === 'ended' || status === 'error') && (
+                    <div className="mt-4">
+                        <label className="text-sm font-medium text-base-700 dark:text-base-300">{t('live_talk.voice_selection.title')}</label>
+                        <div className="flex justify-center gap-4 mt-2">
+                            <div>
+                                <input 
+                                    type="radio" 
+                                    id="female-voice" 
+                                    name="voice" 
+                                    value="Zephyr" 
+                                    checked={selectedVoice === 'Zephyr'}
+                                    onChange={() => setSelectedVoice('Zephyr')}
+                                    // FIX: This `disabled` check is redundant and causes a type error because this block is only shown when status is 'idle', 'ended', or 'error'.
+                                    className="sr-only peer"
+                                />
+                                <label htmlFor="female-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
+                                    {t('live_talk.voice_selection.female')}
+                                </label>
+                            </div>
+                            <div>
+                                <input 
+                                    type="radio" 
+                                    id="male-voice" 
+                                    name="voice" 
+                                    value="Puck" 
+                                    checked={selectedVoice === 'Puck'}
+                                    onChange={() => setSelectedVoice('Puck')}
+                                    // FIX: This `disabled` check is redundant and causes a type error because this block is only shown when status is 'idle', 'ended', or 'error'.
+                                    className="sr-only peer"
+                                />
+                                <label htmlFor="male-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
+                                    {t('live_talk.voice_selection.male')}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-6">
                     {(status === 'idle' || status === 'ended' || status === 'error') && (
                         <button onClick={handleStart} disabled={!isOnline} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600 transition-transform hover:scale-105 shadow-soft-lg disabled:bg-base-400">
                             {t('live_talk.start_button')}
@@ -215,7 +267,7 @@ const LiveTalkPage: React.FC = () => {
                     )}
                     {(status === 'connecting' || status === 'connected') && (
                         <button onClick={cleanup} className="bg-warning-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-warning-600 transition-transform hover:scale-105 shadow-soft-lg">
-                            {status === 'connecting' ? t('live_talk.connecting_button') : t('live_talk.end_button')}
+                            {status === 'connecting' ? t('live_talk.connecting_button') : t('live_talk.stop_button')}
                         </button>
                     )}
                 </div>
