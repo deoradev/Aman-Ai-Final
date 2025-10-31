@@ -1,9 +1,6 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
-// FIX: ToolkitType is defined in '../types' and should be imported from there directly.
 import { generateToolkitExercise, generateSpeech } from '../services/geminiService';
 import SEOMeta from '../components/SEOMeta';
 import SimpleMarkdownRenderer from '../components/SimpleMarkdownRenderer';
@@ -115,19 +112,16 @@ const AudioGeneratorCard: React.FC<{
     const [userInput, setUserInput] = useState('');
     const [status, setStatus] = useState<'idle' | 'generating_script' | 'generating_audio' | 'playing' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
-    // FIX: Changed ref type from HTMLAudioElement to AudioBufferSourceNode to match the `playAndReturnAudio` utility function.
     const currentAudioRef = useRef<AudioBufferSourceNode | null>(null);
 
     useEffect(() => {
         return () => {
-            // FIX: Use .stop() for AudioBufferSourceNode.
             currentAudioRef.current?.stop();
         };
     }, []);
 
     const handleStop = () => {
         if (currentAudioRef.current) {
-            // FIX: Use .stop() for AudioBufferSourceNode instead of .pause().
             currentAudioRef.current.stop();
             // The onEnded listener in playAndReturnAudio will handle the rest.
         }
@@ -145,7 +139,6 @@ const AudioGeneratorCard: React.FC<{
             const audioDataB64 = await generateSpeech(script, voice);
             
             setStatus('playing');
-            // FIX: Correctly `await` the async `playAndReturnAudio` function.
             currentAudioRef.current = await playAndReturnAudio(audioDataB64, () => {
                 setStatus('idle');
                 currentAudioRef.current = null;
@@ -212,7 +205,6 @@ const EchoesOfStrength: React.FC = () => {
     const [error, setError] = useState('');
     const [playingId, setPlayingId] = useState<number | null>(null);
 
-    // FIX: Changed ref type from HTMLAudioElement to AudioBufferSourceNode.
     const currentAudioRef = useRef<AudioBufferSourceNode | null>(null);
 
     useEffect(() => {
@@ -224,7 +216,6 @@ const EchoesOfStrength: React.FC = () => {
         } catch (e) { console.error("Could not load affirmations.", e); }
         
         return () => {
-            // FIX: Use .stop() for AudioBufferSourceNode.
             currentAudioRef.current?.stop();
             currentAudioRef.current = null;
         }
@@ -257,7 +248,6 @@ const EchoesOfStrength: React.FC = () => {
     
     const handlePlay = async (affirmation: EchoAffirmation) => {
         if (playingId === affirmation.id) {
-            // FIX: Use .stop() for AudioBufferSourceNode.
             currentAudioRef.current?.stop();
             currentAudioRef.current = null;
             setPlayingId(null);
@@ -265,12 +255,10 @@ const EchoesOfStrength: React.FC = () => {
         }
 
         if (currentAudioRef.current) {
-            // FIX: Use .stop() to halt the currently playing audio.
             currentAudioRef.current.stop();
         }
 
         setPlayingId(affirmation.id);
-        // FIX: Correctly `await` the async `playAndReturnAudio` function.
         currentAudioRef.current = await playAndReturnAudio(affirmation.audioDataB64, () => {
             setPlayingId(null);
             currentAudioRef.current = null;

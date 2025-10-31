@@ -1,6 +1,4 @@
-// FIX: Removed GenAIBlob from this import as it's not defined in './types'.
 import { JournalEntry, Program, Persona, Milestone, MoodEntry, Goal, ChatMessage } from './types';
-// FIX: Added import for Blob from '@google/genai' and aliased it as GenAIBlob.
 import { type Blob as GenAIBlob } from '@google/genai';
 import { PERSONAS } from './constants';
 import { summarizeRecentJournals, summarizeChatHistory } from './services/geminiService';

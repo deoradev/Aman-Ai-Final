@@ -292,7 +292,6 @@ export const PROGRAMS: Program[] = [
         description: 'A 90-day journey to cultivate awareness, manage cravings, and reduce stress through mindfulness practices.',
         successRate: 92,
         features: ['Daily guided meditations', 'Mindful awareness exercises', 'Stress reduction techniques'],
-        // FIX: Added missing testimonial property.
         testimonial: {
             id: 1,
             quote: "The mindfulness exercises changed my relationship with my cravings. I feel more in control than ever.",
@@ -307,7 +306,6 @@ export const PROGRAMS: Program[] = [
         description: 'Learn to identify, challenge, and reframe negative thought patterns that contribute to addiction.',
         successRate: 90,
         features: ['Cognitive restructuring tools', 'Behavioral activation tasks', 'Core belief exploration'],
-        // FIX: Added missing testimonial property.
         testimonial: {
             id: 2,
             quote: "Understanding my thought patterns was the key. This program gave me the tools to break the cycle.",
@@ -322,7 +320,6 @@ export const PROGRAMS: Program[] = [
         description: 'Focus on rebuilding healthy relationships and developing a strong support system for lasting recovery.',
         successRate: 88,
         features: ['Communication skill-building', 'Boundary setting exercises', 'Support network mapping'],
-        // FIX: Added missing testimonial property.
         testimonial: {
             id: 3,
             quote: "I learned how to set boundaries and communicate my needs. My relationships have never been healthier.",
@@ -337,7 +334,6 @@ export const PROGRAMS: Program[] = [
         description: 'Develop healthy habits in nutrition, exercise, and sleep to create a holistic foundation for well-being.',
         successRate: 85,
         features: ['Nutrition and meal planning tips', 'Gentle exercise routines', 'Sleep hygiene improvement'],
-        // FIX: Added missing testimonial property.
         testimonial: {
             id: 4,
             quote: "Focusing on my physical health had a huge impact on my mental well-being. A truly holistic approach.",
