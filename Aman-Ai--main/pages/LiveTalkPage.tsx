@@ -135,7 +135,7 @@ const LiveTalkPage: React.FC = () => {
       if (!inputAudioContextRef.current.audioWorklet) {
         throw new Error("AudioWorklet not supported in this browser.");
       }
-      await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+      await inputAudioContextRef.current.audioWorklet.addModule('/audioProcessor.js');
       audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
       audioWorkletNodeRef.current.port.onmessage = (event) => {
