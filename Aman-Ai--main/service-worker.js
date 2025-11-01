@@ -1,10 +1,11 @@
-const CACHE_NAME = 'amandigitalcare-cache-v18'; // Incremented cache version
+const CACHE_NAME = 'amandigitalcare-cache-v19'; // Incremented cache version
 
 // Essential app shell files to be pre-cached.
 // Other assets will be cached at runtime.
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
+  '/#/offline', // Add the offline page route
   '/Aman-Ai--main/manifest.json',
   '/Aman-Ai--main/assets/favicon.svg',
   '/Aman-Ai--main/locales/en.json'
@@ -73,8 +74,8 @@ self.addEventListener('fetch', event => {
           });
         })
         .catch(() => {
-          // If network fails, serve the cached index.html as a fallback.
-          return caches.match('/');
+          // If network fails, serve the dedicated offline page as a fallback.
+          return caches.match('/#/offline');
         })
     );
     return;

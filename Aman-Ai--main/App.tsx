@@ -35,6 +35,7 @@ const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
 const PoliciesPage = lazy(() => import('./pages/PoliciesPage'));
+const OfflinePage = lazy(() => import('./pages/OfflinePage'));
 
 // Lazy load other non-page components for performance
 const Header = lazy(() => import('./components/Header'));
@@ -201,6 +202,7 @@ const AppContent: React.FC = () => {
             <Route path="/disclaimer" element={<PageWrapper><DisclaimerPage /></PageWrapper>} />
             <Route path="/cookie-policy" element={<PageWrapper><CookiePolicyPage /></PageWrapper>} />
             <Route path="/policies" element={<PageWrapper><PoliciesPage /></PageWrapper>} />
+            <Route path="/offline" element={<PageWrapper><OfflinePage /></PageWrapper>} />
           </Routes>
         </Suspense>
       </main>
