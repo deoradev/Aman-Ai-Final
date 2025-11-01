@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { safeLocalStorage } from '../utils';
 
 type Theme = 'light' | 'dark';
 
@@ -12,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-        const storedTheme = localStorage.getItem('amandigitalcare-theme') as Theme;
+        const storedTheme = safeLocalStorage.getItem('amandigitalcare-theme') as Theme;
         if (storedTheme) {
             return storedTheme;
         }
@@ -26,7 +27,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const root = window.document.documentElement;
     root.classList.remove(theme === 'light' ? 'dark' : 'light');
     root.classList.add(theme);
-    localStorage.setItem('amandigitalcare-theme', theme);
+    safeLocalStorage.setItem('amandigitalcare-theme', theme);
   }, [theme]);
 
   // This effect runs once on mount, adding a class to the body to enable transitions.

@@ -4,6 +4,52 @@ import { PERSONAS } from './constants';
 import { summarizeRecentJournals, summarizeChatHistory } from './services/geminiService';
 
 /**
+ * A safe wrapper around window.localStorage that catches potential exceptions
+ * when localStorage is disabled by the browser (e.g., in private mode).
+ */
+export const safeLocalStorage = {
+  getItem: (key: string): string | null => {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      console.warn(`LocalStorage is not available. Could not read item "${key}"`);
+      return null;
+    }
+  },
+  setItem: (key: string, value: string): void => {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn(`LocalStorage is not available. Could not set item "${key}"`);
+    }
+  },
+  removeItem: (key: string): void => {
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {
+      console.warn(`LocalStorage is not available. Could not remove item "${key}"`);
+    }
+  },
+  key: (index: number): string | null => {
+      try {
+          return window.localStorage.key(index);
+      } catch (e) {
+          console.warn(`LocalStorage is not available. Could not get key at index ${index}.`);
+          return null;
+      }
+  },
+  get length(): number {
+    try {
+      return window.localStorage.length;
+    } catch(e) {
+      console.warn(`LocalStorage is not available. Could not get length.`);
+      return 0;
+    }
+  }
+};
+
+
+/**
  * Converts a base64 string to a Uint8Array.
  * This is a required step for using a VAPID public key with the Push API.
  * @param base64String The base64 string to convert.
@@ -109,7 +155,7 @@ export const formatTimeAgo = (timestamp: number, t: (key: string, params?: { [ke
 };
 
 export const getScopedKey = (key: string): string => {
-    const currentUser = localStorage.getItem('amandigitalcare-currentUser');
+    const currentUser = safeLocalStorage.getItem('amandigitalcare-currentUser');
     const scope = currentUser || 'anonymous';
     return `amandigitalcare-user-${scope}-${key}`;
 };
@@ -124,12 +170,12 @@ export interface UserContext {
 }
 
 export const getUserContext = (): UserContext | null => {
-    const storedProgram = localStorage.getItem(getScopedKey('program'));
-    const enrollmentDate = localStorage.getItem(getScopedKey('enrollmentDate'));
-    const personaId = localStorage.getItem(getScopedKey('persona')) || 'therapist';
-    const language = localStorage.getItem('amandigitalcare-language') || 'en';
-    const storedAge = localStorage.getItem(getScopedKey('user-age'));
-    const storedGender = localStorage.getItem(getScopedKey('user-gender'));
+    const storedProgram = safeLocalStorage.getItem(getScopedKey('program'));
+    const enrollmentDate = safeLocalStorage.getItem(getScopedKey('enrollmentDate'));
+    const personaId = safeLocalStorage.getItem(getScopedKey('persona')) || 'therapist';
+    const language = safeLocalStorage.getItem('amandigitalcare-language') || 'en';
+    const storedAge = safeLocalStorage.getItem(getScopedKey('user-age'));
+    const storedGender = safeLocalStorage.getItem(getScopedKey('user-gender'));
 
     if (!storedProgram || !enrollmentDate) {
         return null;
@@ -158,10 +204,10 @@ export const getUserContext = (): UserContext | null => {
 
 export const buildMemorySummary = async (language: string): Promise<string> => {
     try {
-        const moods: MoodEntry[] = JSON.parse(localStorage.getItem(getScopedKey('mood-history')) || '[]').slice(-3);
-        const journals: JournalEntry[] = JSON.parse(localStorage.getItem(getScopedKey('journal-entries')) || '[]').slice(-3);
-        const goals: Goal[] = JSON.parse(localStorage.getItem(getScopedKey('goals')) || '[]');
-        const chatHistory: ChatMessage[] = JSON.parse(localStorage.getItem(getScopedKey('chat-history')) || '[]');
+        const moods: MoodEntry[] = JSON.parse(safeLocalStorage.getItem(getScopedKey('mood-history')) || '[]').slice(-3);
+        const journals: JournalEntry[] = JSON.parse(safeLocalStorage.getItem(getScopedKey('journal-entries')) || '[]').slice(-3);
+        const goals: Goal[] = JSON.parse(safeLocalStorage.getItem(getScopedKey('goals')) || '[]');
+        const chatHistory: ChatMessage[] = JSON.parse(safeLocalStorage.getItem(getScopedKey('chat-history')) || '[]');
         
         const journalSummary = await summarizeRecentJournals(journals, language);
         const chatSummary = await summarizeChatHistory(chatHistory, language);
@@ -226,7 +272,7 @@ export const buildLiveTalkSystemInstruction = (t: (key: string, params?: { [key:
     }
 
     const selectedPersona = PERSONAS.find(p => p.id === context.personaId) || PERSONAS[0];
-    const currentUser = localStorage.getItem('amandigitalcare-currentUser');
+    const currentUser = safeLocalStorage.getItem('amandigitalcare-currentUser');
     const userName = currentUser ? getUserName(currentUser) : t('utils.user_name.guest');
 
     return `
@@ -389,15 +435,15 @@ export const getAllUserData = (): { [key: string]: any } => {
     const data: { [key: string]: any } = {};
     const prefix = getScopedKey('').slice(0, -1); // Get the prefix without the final key name
 
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
+    for (let i = 0; i < safeLocalStorage.length; i++) {
+        const key = safeLocalStorage.key(i);
         if (key && key.startsWith(prefix)) {
             // Clean up the key name for the export file
             const cleanKey = key.replace(prefix, '').slice(1);
             try {
-                data[cleanKey] = JSON.parse(localStorage.getItem(key)!);
+                data[cleanKey] = JSON.parse(safeLocalStorage.getItem(key)!);
             } catch (e) {
-                data[cleanKey] = localStorage.getItem(key);
+                data[cleanKey] = safeLocalStorage.getItem(key);
             }
         }
     }
@@ -411,14 +457,14 @@ export const deleteAllUserData = (): void => {
     const prefix = getScopedKey('').slice(0, -1);
     const keysToDelete: string[] = [];
 
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
+    for (let i = 0; i < safeLocalStorage.length; i++) {
+        const key = safeLocalStorage.key(i);
         if (key && key.startsWith(prefix)) {
             keysToDelete.push(key);
         }
     }
 
-    keysToDelete.forEach(key => localStorage.removeItem(key));
+    keysToDelete.forEach(key => safeLocalStorage.removeItem(key));
 };
 
 // --- Audio Helper Functions ---

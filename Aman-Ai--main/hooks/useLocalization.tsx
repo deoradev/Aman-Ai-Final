@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import { translateAll } from '../services/translationService';
+import { safeLocalStorage } from '../utils';
 
 // Define the structure for our translations
 type Translations = { [key: string]: any };
@@ -23,7 +24,7 @@ const getNestedTranslation = (obj: Translations, key: string): any => {
 
 export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<string>(() => {
-    return localStorage.getItem('amandigitalcare-language') || 'en';
+    return safeLocalStorage.getItem('amandigitalcare-language') || 'en';
   });
   
   const [sourceTranslations, setSourceTranslations] = useState<Translations | null>(null);
@@ -55,7 +56,7 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
   useEffect(() => {
     if (!sourceTranslations) return; // Wait for English to load
 
-    localStorage.setItem('amandigitalcare-language', language);
+    safeLocalStorage.setItem('amandigitalcare-language', language);
     document.documentElement.lang = language;
 
     if (language === 'en') {
