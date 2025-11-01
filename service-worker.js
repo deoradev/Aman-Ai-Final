@@ -1,14 +1,15 @@
-const CACHE_NAME = 'amandigitalcare-cache-v19'; // Incremented cache version
+const CACHE_NAME = 'amandigitalcare-cache-v21'; // Incremented cache version
 
 // Essential app shell files to be pre-cached.
 // Other assets will be cached at runtime.
 const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/#/offline', // Add the offline page route
-  '/manifest.json',
-  '/assets/favicon.svg',
-  '/locales/en.json'
+  // With the new root scope, we can and should cache the main entry point.
+  '/index.html', 
+  '/Aman-Ai--main/manifest.json',
+  '/Aman-Ai--main/assets/favicon.svg',
+  '/Aman-Ai--main/locales/en.json',
+  '/Aman-Ai--main/assets/icons/icon-192x192.png',
+  '/Aman-Ai--main/assets/icons/icon-512x512.png'
 ];
 
 // Install event: Pre-cache the app shell.
@@ -19,6 +20,9 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('[Service Worker] Pre-caching app shell');
         return cache.addAll(URLS_TO_CACHE);
+      })
+      .catch(err => {
+        console.error('[Service Worker] Pre-caching failed:', err);
       })
   );
 });
@@ -74,8 +78,10 @@ self.addEventListener('fetch', event => {
           });
         })
         .catch(() => {
-          // If network fails, serve the dedicated offline page as a fallback.
-          return caches.match('/#/offline');
+          // If network fails, serve the main index.html from cache.
+          // This allows the React app to load and handle its own routing, including showing an offline page.
+          // This now works because index.html is pre-cached.
+          return caches.match('/index.html');
         })
     );
     return;
@@ -92,6 +98,8 @@ self.addEventListener('fetch', event => {
               cache.put(request, networkResponse.clone());
             }
             return networkResponse;
+          }).catch(err => {
+            console.warn(`[Service Worker] Fetch failed for ${request.url}`, err);
           });
           // Return cached response immediately if available, otherwise wait for network.
           return cachedResponse || fetchPromise;
@@ -137,8 +145,8 @@ self.addEventListener('push', event => {
 
   const options = {
     body: data.body,
-    icon: '/assets/icons/icon-192x192.png',
-    badge: '/assets/icons/icon-96x96.png'
+    icon: '/Aman-Ai--main/assets/icons/icon-192x192.png',
+    badge: '/Aman-Ai--main/assets/icons/icon-96x96.png'
   };
 
   event.waitUntil(
@@ -155,13 +163,13 @@ self.addEventListener('notificationclick', event => {
     }).then(clientList => {
       // If a window is already open, focus it
       for (const client of clientList) {
-        if ('focus' in client) {
+        if (client.url === self.registration.scope && 'focus' in client) {
           return client.focus();
         }
       }
       // Otherwise, open a new window
       if (clients.openWindow) {
-        return clients.openWindow('/');
+        return clients.openWindow(self.registration.scope);
       }
     })
   );

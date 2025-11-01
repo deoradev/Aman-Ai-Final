@@ -2,12 +2,12 @@
   "name": "Aman Digital Care - Your Recovery Companion",
   "short_name": "Aman Digital Care",
   "description": "Aman Digital Care offers free, confidential, 24/7 AI-powered support for addiction recovery and mental health. Start your journey with personalized programs and a compassionate digital companion.",
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f8fafc",
   "theme_color": "#0ea5e9",
-  "scope": "/Aman-Ai--main/",
+  "scope": "/",
   "categories": ["health", "lifestyle", "medical"],
   "icons": [
     {

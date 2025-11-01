@@ -23,6 +23,7 @@ window.addEventListener('unhandledrejection', (event) => {
 // --- Service Worker Registration ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Register the service worker directly from the root.
     navigator.serviceWorker.register('/service-worker.js')
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
