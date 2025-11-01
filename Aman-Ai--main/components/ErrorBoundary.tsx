@@ -1,6 +1,7 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 
-interface Props {
+// Fix: Renamed Props to ErrorBoundaryProps to avoid potential naming conflicts.
+interface ErrorBoundaryProps {
   children: ReactNode;
 }
 
@@ -8,10 +9,17 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false
-  };
+// Fix: Changed `Component` to `React.Component` to ensure correct type resolution.
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
+  // Fix: Switched from a class property to a constructor for state initialization.
+  // This is a more traditional and widely supported pattern that can resolve
+  // subtle compiler issues related to class fields and the `this` context, ensuring `this.props` is available.
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = {
+      hasError: false
+    };
+  }
 
   public static getDerivedStateFromError(_: Error): State {
     // Update state so the next render will show the fallback UI.

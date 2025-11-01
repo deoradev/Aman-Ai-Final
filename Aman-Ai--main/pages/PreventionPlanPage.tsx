@@ -9,6 +9,7 @@ import { buildPreventionPlanSystemInstruction, createBlob, decode, decodeAudioDa
 import { PreventionPlan } from '../types';
 import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
+import audioProcessorUrl from '../audioProcessor.js?url';
 
 type Status = 'idle' | 'connecting' | 'active' | 'saving' | 'ended' | 'error';
 type Transcription = { author: string, text: string };
@@ -79,7 +80,6 @@ const PreventionPlanPage: React.FC = () => {
     const inputAudioContextRef = useRef<AudioContext | null>(null);
     const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
     const outputAudioContextRef = useRef<AudioContext | null>(null);
-    const processorUrlRef = useRef<string | null>(null);
     const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
     const nextStartTimeRef = useRef(0);
 
@@ -108,11 +108,6 @@ const PreventionPlanPage: React.FC = () => {
             audioWorkletNodeRef.current = null;
         }
 
-        if (processorUrlRef.current) {
-            URL.revokeObjectURL(processorUrlRef.current);
-            processorUrlRef.current = null;
-        }
-
         sourcesRef.current.forEach(source => source.stop());
         sourcesRef.current.clear();
         nextStartTimeRef.current = 0;
@@ -138,20 +133,7 @@ const PreventionPlanPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
-            const audioProcessorCode = `
-                class AudioProcessor extends AudioWorkletProcessor {
-                constructor() { super(); }
-                process(inputs) {
-                    const channel = inputs[0]?.[0];
-                    if (channel) { this.port.postMessage(channel.slice()); }
-                    return true;
-                }
-                }
-                registerProcessor('audio-processor', AudioProcessor);
-            `;
-            const blob = new Blob([audioProcessorCode], { type: 'application/javascript' });
-            processorUrlRef.current = URL.createObjectURL(blob);
-            await inputAudioContextRef.current.audioWorklet.addModule(processorUrlRef.current);
+            await inputAudioContextRef.current.audioWorklet.addModule(audioProcessorUrl);
             audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
             audioWorkletNodeRef.current.port.onmessage = (event) => {

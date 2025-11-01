@@ -10,6 +10,7 @@ import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } f
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
+import audioProcessorUrl from '../audioProcessor.js?url';
 
 type Status = 'idle' | 'connecting' | 'connected' | 'ended' | 'error';
 type Transcription = { author: string, text: string };
@@ -90,7 +91,6 @@ const LiveTalkPage: React.FC = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const animationFrameId = useRef<number | null>(null);
-  const processorUrlRef = useRef<string | null>(null);
 
   const cleanup = useCallback(() => {
     animationFrameId.current && cancelAnimationFrame(animationFrameId.current);
@@ -113,11 +113,6 @@ const LiveTalkPage: React.FC = () => {
         audioWorkletNodeRef.current.port.onmessage = null;
         audioWorkletNodeRef.current.disconnect();
         audioWorkletNodeRef.current = null;
-    }
-
-    if (processorUrlRef.current) {
-        URL.revokeObjectURL(processorUrlRef.current);
-        processorUrlRef.current = null;
     }
 
     setIsUserSpeaking(false);
@@ -160,20 +155,7 @@ const LiveTalkPage: React.FC = () => {
         throw new Error("AudioWorklet not supported in this browser.");
       }
       
-      const audioProcessorCode = `
-        class AudioProcessor extends AudioWorkletProcessor {
-          constructor() { super(); }
-          process(inputs) {
-            const channel = inputs[0]?.[0];
-            if (channel) { this.port.postMessage(channel.slice()); }
-            return true;
-          }
-        }
-        registerProcessor('audio-processor', AudioProcessor);
-      `;
-      const blob = new Blob([audioProcessorCode], { type: 'application/javascript' });
-      processorUrlRef.current = URL.createObjectURL(blob);
-      await inputAudioContextRef.current.audioWorklet.addModule(processorUrlRef.current);
+      await inputAudioContextRef.current.audioWorklet.addModule(audioProcessorUrl);
       audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
       audioWorkletNodeRef.current.port.onmessage = (event) => {
