@@ -5,7 +5,8 @@ import { CommunityPost } from '../types';
 import { formatTimeAgo } from '../utils';
 import SEOMeta from '../components/SEOMeta';
 import PullToRefresh from '../components/PullToRefresh';
-import Logo from '../components/Logo';
+import { useToast } from '../hooks/useToast';
+import ConfirmModal from '../components/ConfirmModal';
 
 const POST_STORAGE_KEY = 'amandigitalcare-community-posts';
 
@@ -112,39 +113,10 @@ const VoicePost: React.FC<{ post: CommunityPost }> = ({ post }) => {
     );
 };
 
-const ReportConfirmModal: React.FC<{ onConfirm: () => void, onCancel: () => void }> = ({ onConfirm, onCancel }) => {
-    const { t } = useLocalization();
-    return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16" role="alertdialog" aria-modal="true" aria-labelledby="report-dialog-title">
-            <div className="bg-white dark:bg-base-800 rounded-2xl shadow-soft-lg w-full max-w-sm">
-                <div className="p-6">
-                    <div className="flex justify-center mb-4"><Logo /></div>
-                    <h2 id="report-dialog-title" className="text-xl font-bold text-primary-500 mb-4">{t('community.report_confirm_title')}</h2>
-                    <p className="text-base-600 dark:text-base-300 mb-6">{t('community.report_confirm_text')}</p>
-                    <div className="flex justify-end gap-4">
-                        <button onClick={onCancel} className="px-4 py-2 bg-base-200 dark:bg-base-600 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-500 transition-colors">
-                            {t('community.report_cancel_button')}
-                        </button>
-                        <button onClick={onConfirm} className="px-4 py-2 bg-warning-500 text-white font-semibold rounded-lg hover:bg-warning-600 transition-colors">
-                            {t('community.report_confirm_button')}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const Toast: React.FC<{ message: string, show: boolean }> = ({ message, show }) => (
-    <div className={`fixed bottom-5 left-1/2 -translate-x-1/2 bg-base-900 text-white px-4 py-2 rounded-lg shadow-soft-lg transition-all duration-300 ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`} role="status">
-        {message}
-    </div>
-);
-
-
 const CommunityPage: React.FC = () => {
     const { t } = useLocalization();
     const { getScopedKey } = useAuth();
+    const { showToast } = useToast();
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [newPostContent, setNewPostContent] = useState('');
     const [isPosting, setIsPosting] = useState(false);
@@ -168,8 +140,6 @@ const CommunityPage: React.FC = () => {
     
     // Reporting State
     const [reportingPostId, setReportingPostId] = useState<number | null>(null);
-    const [showToast, setShowToast] = useState(false);
-
 
     useEffect(() => {
         try {
@@ -196,11 +166,6 @@ const CommunityPage: React.FC = () => {
             console.error("Failed to save community posts to localStorage", error);
         }
     };
-    
-    const triggerToast = () => {
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
-    }
 
     const handleConfirmReport = () => {
         if (reportingPostId === null) return;
@@ -210,7 +175,7 @@ const CommunityPage: React.FC = () => {
         setReportedPostIds(newReportedIds);
         try {
             localStorage.setItem(getScopedKey('reported-posts'), JSON.stringify(Array.from(newReportedIds)));
-            triggerToast();
+            showToast(t('community.report_success'), 'success');
         } catch (error) {
             console.error("Failed to save reported post", error);
         }
@@ -346,8 +311,16 @@ const CommunityPage: React.FC = () => {
                 description={t('seo.community.description')}
                 noIndex={true}
             />
-            {reportingPostId !== null && <ReportConfirmModal onConfirm={handleConfirmReport} onCancel={() => setReportingPostId(null)} />}
-            <Toast message={t('community.report_success')} show={showToast} />
+            <ConfirmModal
+                isOpen={reportingPostId !== null}
+                onClose={() => setReportingPostId(null)}
+                onConfirm={handleConfirmReport}
+                title={t('community.report_confirm_title')}
+                text={t('community.report_confirm_text')}
+                confirmText={t('community.report_confirm_button')}
+                cancelText={t('community.report_cancel_button')}
+                variant="warning"
+            />
             <PullToRefresh onRefresh={handleRefresh}>
                 <div className="py-12 bg-base-100 dark:bg-base-900/50 flex-grow">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">

@@ -6,6 +6,7 @@ import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useAuth } from '../hooks/useAuth';
 import { buildSystemInstruction, getScopedKey } from '../utils';
+import ConfirmModal from './ConfirmModal';
 
 interface ChatbotProps {
     proactiveMessage?: string;
@@ -23,6 +24,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatSessionRef = useRef<Chat | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isCrisisModalOpen, setIsCrisisModalOpen] = useState(false);
   
   const messagesRef = useRef(messages);
   useEffect(() => {
@@ -210,9 +212,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage }) => {
   };
 
   const handleCrisis = () => {
-    if (window.confirm(t('chatbot.crisis_confirm'))) {
-      handleSend("I am in a crisis right now and need immediate help.");
-    }
+    setIsCrisisModalOpen(true);
+  };
+
+  const confirmCrisis = () => {
+    handleSend("I am in a crisis right now and need immediate help.");
+    setIsCrisisModalOpen(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -244,6 +249,17 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage }) => {
   }
 
   return (
+    <>
+    <ConfirmModal
+      isOpen={isCrisisModalOpen}
+      onClose={() => setIsCrisisModalOpen(false)}
+      onConfirm={confirmCrisis}
+      title={t('chatbot.crisis_button')}
+      text={t('chatbot.crisis_confirm')}
+      confirmText="Yes, I need help"
+      cancelText="Cancel"
+      variant="warning"
+    />
     <div className="flex flex-col h-full bg-base-50/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
       <div className="p-4 bg-primary-500 text-white text-center">
         <h2 className="text-xl font-bold">{t('chatbot.title')}</h2>
@@ -343,6 +359,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

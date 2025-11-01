@@ -12,7 +12,7 @@ import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
 
 type Status = 'idle' | 'connecting' | 'connected' | 'ended' | 'error';
-type Transcription = { author: 'You' | 'Aman AI', text: string };
+type Transcription = { author: string, text: string };
 
 const logMoodFunctionDeclaration: FunctionDeclaration = {
   name: 'logMood',

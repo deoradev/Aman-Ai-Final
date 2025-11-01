@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider, useLocalization } from './hooks/useLocalization';
 import { AuthProvider } from './hooks/useAuth';
@@ -8,6 +8,9 @@ import { PushNotificationsProvider } from './hooks/usePushNotifications';
 import { useSponsorNotifications } from './hooks/useSponsorNotifications';
 import PageWrapper from './components/PageWrapper';
 import ErrorBoundary from './components/ErrorBoundary';
+
+import { ToastContext, Toast, ToastType } from './hooks/useToast';
+import { ToastContainer } from './components/ToastContainer';
 
 
 // Lazy load all page components
@@ -39,6 +42,24 @@ const Footer = lazy(() => import('./components/Footer'));
 const LanguageModal = lazy(() => import('./components/LanguageModal'));
 const CrisisSupportModal = lazy(() => import('./components/CrisisSupportModal'));
 
+const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [toasts, setToasts] = useState<Toast[]>([]);
+
+    const showToast = useCallback((message: string, type: ToastType = 'info') => {
+        const id = Date.now() + Math.random();
+        setToasts(prevToasts => [...prevToasts, { id, message, type }]);
+        setTimeout(() => {
+            setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
+        }, 4000);
+    }, []);
+
+    return (
+        <ToastContext.Provider value={{ showToast }}>
+            {children}
+            <ToastContainer toasts={toasts} />
+        </ToastContext.Provider>
+    );
+};
 
 
 const PageLoader: React.FC = () => (
@@ -229,9 +250,11 @@ const App: React.FC = () => {
             <ThemeProvider>
               <LocalizationProvider>
                 <PushNotificationsProvider>
+                  <ToastProvider>
                     <ErrorBoundary>
                         <AppContent />
                     </ErrorBoundary>
+                  </ToastProvider>
                 </PushNotificationsProvider>
               </LocalizationProvider>
             </ThemeProvider>

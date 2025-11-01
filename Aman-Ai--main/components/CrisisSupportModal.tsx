@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import ProfessionalHelpCard from './ProfessionalHelpCard';
 import Logo from './Logo';
+import { useToast } from '../hooks/useToast';
 
 interface CrisisSupportModalProps {
     onClose: () => void;
@@ -9,9 +10,10 @@ interface CrisisSupportModalProps {
 
 const CrisisSupportModal: React.FC<CrisisSupportModalProps> = ({ onClose }) => {
     const { t } = useLocalization();
+    const { showToast } = useToast();
 
     const startCrisisChat = () => {
-        alert("A high-priority alert has been sent to the AMAN AI. The chat on your dashboard is now in crisis mode.");
+        showToast("A high-priority alert has been sent to the AMAN AI.", 'warning');
         onClose();
     };
     

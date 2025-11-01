@@ -12,6 +12,7 @@ import GrowthGarden from '../components/GrowthGarden';
 import SponsorInsightCard from '../components/AIInsightCard';
 import TodayFocus from '../components/TodayFocus';
 import PullToRefresh from '../components/PullToRefresh';
+import ConfirmModal from '../components/ConfirmModal';
 
 const getGreeting = (t: (key: string) => string) => {
   const hour = new Date().getHours();
@@ -71,6 +72,8 @@ const useDashboardLogic = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [newGoalText, setNewGoalText] = useState('');
   const [editingGoal, setEditingGoal] = useState<{ id: number; text: string } | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [goalToDelete, setGoalToDelete] = useState<number | null>(null);
 
   // Persona State
   const [selectedPersona, setSelectedPersona] = useState<string>('therapist');
@@ -266,11 +269,23 @@ const useDashboardLogic = () => {
   };
 
   const handleDeleteGoal = (id: number) => {
-    if (program && window.confirm(t('dashboard.goals.delete_confirm'))) {
-        const updatedGoals = goals.filter(goal => goal.id !== id);
-        setGoals(updatedGoals);
-        localStorage.setItem(getScopedKey('goals'), JSON.stringify(updatedGoals));
+    setGoalToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+  
+  const confirmDeleteGoal = () => {
+    if (program && goalToDelete !== null) {
+      const updatedGoals = goals.filter(goal => goal.id !== goalToDelete);
+      setGoals(updatedGoals);
+      localStorage.setItem(getScopedKey('goals'), JSON.stringify(updatedGoals));
     }
+    setGoalToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const cancelDeleteGoal = () => {
+    setGoalToDelete(null);
+    setIsDeleteModalOpen(false);
   };
 
   const handlePersonaChange = (personaId: string) => {
@@ -308,8 +323,9 @@ const useDashboardLogic = () => {
     moodHistory, journalText, setJournalText, isJournalSaved, hasJournaledToday, journalReflection, goals, newGoalText, setNewGoalText,
     editingGoal, setEditingGoal, selectedPersona, suggestedResource, journalEntries,
     setSuggestedResource, newMilestones, dismissMilestone, wellnessLog, setWellnessLog, preventionPlan, showNewFeaturesToast,
+    isDeleteModalOpen, 
     handleCompleteChallenge, handleMoodSelect, handleSaveJournal, handleSaveWellness,
-    handleAddGoal, handleToggleGoal, handleEditClick, handleCancelEdit, handleSaveEdit, handleDeleteGoal,
+    handleAddGoal, handleToggleGoal, handleEditClick, handleCancelEdit, handleSaveEdit, handleDeleteGoal, confirmDeleteGoal, cancelDeleteGoal,
     handlePersonaChange, handleDismissNewFeatures, navigate
   };
 };
@@ -499,8 +515,9 @@ const DashboardPage: React.FC = () => {
     moodHistory, journalText, setJournalText, isJournalSaved, hasJournaledToday, journalReflection, goals, newGoalText, setNewGoalText,
     editingGoal, setEditingGoal, selectedPersona, suggestedResource, journalEntries,
     setSuggestedResource, newMilestones, dismissMilestone, wellnessLog, setWellnessLog, preventionPlan, showNewFeaturesToast,
+    isDeleteModalOpen, 
     handleCompleteChallenge, handleMoodSelect, handleSaveJournal, handleSaveWellness,
-    handleAddGoal, handleToggleGoal, handleEditClick, handleCancelEdit, handleSaveEdit, handleDeleteGoal,
+    handleAddGoal, handleToggleGoal, handleEditClick, handleCancelEdit, handleSaveEdit, handleDeleteGoal, confirmDeleteGoal, cancelDeleteGoal,
     handlePersonaChange, handleDismissNewFeatures, navigate
   } = useDashboardLogic();
   
@@ -544,6 +561,16 @@ const DashboardPage: React.FC = () => {
         title="Your Dashboard | AMAN AI"
         description="Track your recovery progress, complete daily challenges, and chat with your AI companion."
         noIndex={true}
+    />
+    <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={cancelDeleteGoal}
+        onConfirm={confirmDeleteGoal}
+        title="Delete Goal"
+        text={t('dashboard.goals.delete_confirm')}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="warning"
     />
     <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen">

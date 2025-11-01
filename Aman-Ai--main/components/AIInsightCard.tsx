@@ -5,6 +5,7 @@ import { getSponsorInsight } from '../services/geminiService';
 import { MoodEntry, AIInsight, JournalEntry, EchoAffirmation } from '../types';
 import { playAndReturnAudio } from '../utils';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 
 interface SponsorInsightCardProps {
     moods: MoodEntry[];
@@ -18,6 +19,7 @@ interface SponsorInsightCardProps {
 const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalEntries, journalStreak, userName, currentDay, completedChallenges }) => {
     const { t, language } = useLocalization();
     const { getScopedKey } = useAuth();
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const [insight, setInsight] = useState<AIInsight | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +44,7 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
 
         const affirmations: EchoAffirmation[] = JSON.parse(localStorage.getItem(getScopedKey('echo-affirmations')) || '[]');
         if (affirmations.length === 0) {
-            alert("You haven't generated any Echoes yet! Go to the AI Toolkit to create your first one.");
+            showToast("You haven't generated any Echoes yet! Go to the AI Toolkit to create your first one.", 'info');
             return;
         }
 
