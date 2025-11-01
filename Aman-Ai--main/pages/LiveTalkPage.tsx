@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useAuth } from '../hooks/useAuth';
-import { LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
+// Fix: Removed 'LiveSession' as it's not an exported member from the module.
+import { LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
 import { MoodEntry } from '../types';
 import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
@@ -78,7 +79,8 @@ const LiveTalkPage: React.FC = () => {
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(128));
   const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Fenrir'>('Zephyr');
 
-  const sessionPromiseRef = useRef<Promise<LiveSession> | null>(null);
+  // Fix: Changed 'LiveSession' to 'any' since it's not exported.
+  const sessionPromiseRef = useRef<Promise<any> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
   const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);

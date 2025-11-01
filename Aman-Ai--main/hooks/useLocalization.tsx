@@ -64,7 +64,7 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
 
     if (!navigator.onLine) {
-      alert("You are offline. The application will be displayed in English.");
+      console.warn("Offline: Cannot fetch new language pack. Defaulting to English.");
       setActiveTranslations(sourceTranslations);
       return;
     }
@@ -76,7 +76,7 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setActiveTranslations(translatedData);
       } catch (e) {
         console.error(`Failed to translate to ${language}`, e);
-        alert(`Could not load translations for your selected language. Defaulting to English.`);
+        // Alert removed for better UX. The app will just stay in English.
         setActiveTranslations(sourceTranslations); // Fallback to English on error
       } finally {
         setIsTranslating(false);

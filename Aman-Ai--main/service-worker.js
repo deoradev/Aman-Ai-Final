@@ -1,97 +1,28 @@
-const CACHE_NAME = 'amandigitalcare-cache-v17'; // Incremented cache version
+const CACHE_NAME = 'amandigitalcare-cache-v18'; // Incremented cache version
 
+// Essential app shell files to be pre-cached.
+// Other assets will be cached at runtime.
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
+  '/Aman-Ai--main/manifest.json',
   '/Aman-Ai--main/assets/favicon.svg',
-  '/Aman-Ai--main/locales/en.json', // Only cache the English source file
-  'https://cdn.tailwindcss.com',
-  // Key CDN imports from importmap
-  'https://aistudiocdn.com/react@^19.2.0',
-  'https://aistudiocdn.com/react-dom@^19.2.0/',
-  'https://aistudiocdn.com/react-router-dom@^7.9.4',
-  'https://aistudiocdn.com/@google/genai@^1.25.0',
-  // App Icons
-  '/Aman-Ai--main/assets/icons/icon-72x72.png',
-  '/Aman-Ai--main/assets/icons/icon-96x96.png',
-  '/Aman-Ai--main/assets/icons/icon-128x128.png',
-  '/Aman-Ai--main/assets/icons/icon-144x144.png',
-  '/Aman-Ai--main/assets/icons/icon-152x152.png',
-  '/Aman-Ai--main/assets/icons/icon-180x180.png',
-  '/Aman-Ai--main/assets/icons/icon-192x192.png',
-  '/Aman-Ai--main/assets/icons/icon-512x512.png',
-  '/Aman-Ai--main/assets/icons/icon-maskable-192x192.png',
-  '/Aman-Ai--main/assets/icons/icon-maskable-512x512.png',
-  // Splash Screens
-  '/Aman-Ai--main/assets/splashscreens/iphone_13_pro_max.png',
-  '/Aman-Ai--main/assets/splashscreens/iphone_13_pro.png',
-  '/Aman-Ai--main/assets/splashscreens/iphone_x.png',
-  '/Aman-Ai--main/assets/splashscreens/iphone_8_plus.png',
-  '/Aman-Ai--main/assets/splashscreens/iphone_8.png',
-  '/Aman-Ai--main/assets/splashscreens/ipad_pro_12.9.png',
-  '/Aman-Ai--main/assets/splashscreens/ipad_pro_10.5.png',
-  '/Aman-Ai--main/assets/splashscreens/ipad_air.png',
-  '/Aman-Ai--main/assets/splashscreens/ipad_mini.png',
+  '/Aman-Ai--main/locales/en.json'
 ];
 
-// Install a service worker
+// Install event: Pre-cache the app shell.
 self.addEventListener('install', event => {
-  self.skipWaiting(); // Force the waiting service worker to become the active service worker.
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('[Service Worker] Pre-caching app shell');
         return cache.addAll(URLS_TO_CACHE);
       })
   );
 });
 
-// Cache and return requests
-self.addEventListener('fetch', event => {
-    // We only want to cache GET requests.
-    if (event.request.method !== 'GET') {
-        return;
-    }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-
-        // Not in cache - fetch from network, then cache it
-        return fetch(event.request).then(
-          networkResponse => {
-            // Check if we received a valid response
-            if(!networkResponse || (networkResponse.status !== 200 && networkResponse.status !== 0) || networkResponse.type === 'error') {
-              return networkResponse;
-            }
-            
-            // Clone the response because it's a stream and can only be consumed once
-            const responseToCache = networkResponse.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return networkResponse;
-          }
-        ).catch(() => {
-            // Fallback for failed fetches, e.g., for navigation requests.
-            if (event.request.mode === 'navigate') {
-                return caches.match('/index.html');
-            }
-        });
-      }
-    )
-  );
-});
-
-
-// Update a service worker and remove old caches
+// Activate event: Clean up old caches.
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
@@ -99,25 +30,100 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
-            console.log('Deleting old cache:', cacheName);
+            console.log('[Service Worker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       ).then(() => {
-        // Claim clients to ensure the new service worker controls the page.
         return self.clients.claim();
       }).then(() => {
-        // After claiming, notify clients that a new version is available.
         self.clients.matchAll().then(clients => {
           clients.forEach(client => client.postMessage({ type: 'APP_UPDATED' }));
         });
-      })
+      });
     })
   );
 });
 
-// --- PUSH NOTIFICATION LISTENERS ---
 
+// Fetch event: Implement robust caching strategies.
+self.addEventListener('fetch', event => {
+  const { request } = event;
+
+  // Ignore non-GET requests (e.g., POST to APIs).
+  if (request.method !== 'GET') {
+    return;
+  }
+  
+  // Ignore requests for browser extensions.
+  if (request.url.startsWith('chrome-extension://')) {
+    return;
+  }
+
+  // Strategy 1: Network First for Navigation
+  // Ensures users always get the latest version of the app page.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          // If fetch is successful, cache the response for offline use.
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, response.clone());
+            return response;
+          });
+        })
+        .catch(() => {
+          // If network fails, serve the cached index.html as a fallback.
+          return caches.match('/');
+        })
+    );
+    return;
+  }
+
+  // Strategy 2: Stale-While-Revalidate for assets (CSS, JS, Fonts, etc.)
+  // Provides a fast response from cache while updating in the background.
+  if (request.destination === 'script' || request.destination === 'style' || request.destination === 'font') {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.match(request).then(cachedResponse => {
+          const fetchPromise = fetch(request).then(networkResponse => {
+            if (networkResponse.ok) {
+              cache.put(request, networkResponse.clone());
+            }
+            return networkResponse;
+          });
+          // Return cached response immediately if available, otherwise wait for network.
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
+  
+  // Strategy 3: Cache First for Images and other static assets
+  // Serves images from cache immediately if available. Good for performance.
+  if (request.destination === 'image' || request.url.includes('/Aman-Ai--main/assets/')) {
+     event.respondWith(
+      caches.match(request)
+        .then(response => {
+          return response || fetch(request).then(networkResponse => {
+            if (networkResponse.ok) {
+                return caches.open(CACHE_NAME).then(cache => {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                });
+            }
+            return networkResponse;
+          });
+        })
+    );
+    return;
+  }
+  
+});
+
+
+// --- PUSH NOTIFICATION LISTENERS ---
 self.addEventListener('push', event => {
   let data = { title: 'New message', body: 'You have a new message from Aman Digital Care.' };
   try {
@@ -130,8 +136,8 @@ self.addEventListener('push', event => {
 
   const options = {
     body: data.body,
-    icon: '/assets/icons/icon-192x192.png',
-    badge: '/assets/icons/icon-96x96.png'
+    icon: '/Aman-Ai--main/assets/icons/icon-192x192.png',
+    badge: '/Aman-Ai--main/assets/icons/icon-96x96.png'
   };
 
   event.waitUntil(

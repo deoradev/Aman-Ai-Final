@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { LiveSession, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
+// Fix: Removed 'LiveSession' as it's not an exported member from the module.
+import { LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
 import { buildPreventionPlanSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import { PreventionPlan } from '../types';
@@ -72,7 +73,8 @@ const PreventionPlanPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
 
-    const sessionPromiseRef = useRef<Promise<LiveSession> | null>(null);
+    // Fix: Changed 'LiveSession' to 'any' since it's not exported.
+    const sessionPromiseRef = useRef<Promise<any> | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const inputAudioContextRef = useRef<AudioContext | null>(null);
     const audioWorkletNodeRef = useRef<AudioWorkletNode | null>(null);
@@ -190,11 +192,12 @@ const PreventionPlanPage: React.FC = () => {
                     if (message.toolCall) {
                         for (const fc of message.toolCall.functionCalls) {
                             if (fc.name === 'updatePlan') {
+                                // Fix: Add type assertions to handle 'unknown' type from fc.args
                                 setPlan(prev => ({
-                                    myWhy: fc.args.myWhy || prev.myWhy,
-                                    triggers: [...new Set([...prev.triggers, ...(fc.args.triggers || [])])],
-                                    copingStrategies: [...new Set([...prev.copingStrategies, ...(fc.args.copingStrategies || [])])],
-                                    supportNetwork: [...prev.supportNetwork, ...(fc.args.supportNetwork || [])]
+                                    myWhy: (fc.args.myWhy as string) || prev.myWhy,
+                                    triggers: [...new Set([...prev.triggers, ...((fc.args.triggers as string[]) || [])])],
+                                    copingStrategies: [...new Set([...prev.copingStrategies, ...((fc.args.copingStrategies as string[]) || [])])],
+                                    supportNetwork: [...prev.supportNetwork, ...((fc.args.supportNetwork as { name: string; contactInfo: string }[]) || [])]
                                 }));
                                 sessionPromiseRef.current?.then(session => session.sendToolResponse({
                                     functionResponses: { id: fc.id, name: fc.name, response: { result: "ok" } }

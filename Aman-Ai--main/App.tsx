@@ -7,6 +7,7 @@ import { ConnectivityProvider } from './hooks/useConnectivity';
 import { PushNotificationsProvider } from './hooks/usePushNotifications';
 import { useSponsorNotifications } from './hooks/useSponsorNotifications';
 import PageWrapper from './components/PageWrapper';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 // Lazy load all page components
@@ -228,7 +229,9 @@ const App: React.FC = () => {
             <ThemeProvider>
               <LocalizationProvider>
                 <PushNotificationsProvider>
-                    <AppContent />
+                    <ErrorBoundary>
+                        <AppContent />
+                    </ErrorBoundary>
                 </PushNotificationsProvider>
               </LocalizationProvider>
             </ThemeProvider>

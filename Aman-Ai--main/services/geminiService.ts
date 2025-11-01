@@ -68,7 +68,7 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
         return JSON.parse(jsonText);
 
     } catch (error) {
-        console.error("Error getting analytics insights:", error);
+        console.error("Error getting analytics insights:", error, { name: (error as Error).name, message: (error as Error).message });
         throw new Error("Failed to generate insights from AI.");
     }
 };
@@ -96,7 +96,7 @@ export const getJournalReflection = async (journalText: string, language: string
         });
         return response.text;
     } catch (error) {
-        console.error("Error generating journal reflection:", error);
+        console.error("Error generating journal reflection:", error, { name: (error as Error).name, message: (error as Error).message });
         return ""; // Return empty string on failure to avoid showing an error
     }
 };
@@ -147,7 +147,7 @@ export const generateToolkitExercise = async (
         });
         return response.text;
     } catch (error) {
-        console.error(`Error generating toolkit exercise (${toolkitType}):`, error);
+        console.error(`Error generating toolkit exercise (${toolkitType}):`, error, { name: (error as Error).name, message: (error as Error).message });
         throw new Error("Failed to generate exercise from AI.");
     }
 };
@@ -172,7 +172,7 @@ export const generateSpeech = async (text: string, voiceName: string): Promise<s
         }
         return base64Audio;
     } catch (error) {
-        console.error("Error generating speech:", error);
+        console.error("Error generating speech:", error, { name: (error as Error).name, message: (error as Error).message });
         throw new Error("Failed to generate speech from AI.");
     }
 };
@@ -215,7 +215,7 @@ export const getConversationFeedback = async (
         });
         return response.text;
     } catch (error) {
-        console.error("Error getting conversation feedback:", error);
+        console.error("Error getting conversation feedback:", error, { name: (error as Error).name, message: (error as Error).message });
         throw new Error("Failed to generate feedback from AI.");
     }
 };
@@ -301,7 +301,7 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
         });
         return JSON.parse(response.text.trim());
     } catch (error) {
-        console.error("Error getting sponsor insight:", error);
+        console.error("Error getting sponsor insight:", error, { name: (error as Error).name, message: (error as Error).message });
         return {
             type: 'encouragement',
             title: 'A Gentle Reminder',
@@ -325,7 +325,7 @@ export const generateNotificationMessage = async (type: 'morning' | 'journal_nud
         });
         return response.text;
     } catch (error) {
-        console.error("Error generating notification message:", error);
+        console.error("Error generating notification message:", error, { name: (error as Error).name, message: (error as Error).message });
         return "";
     }
 };
@@ -377,7 +377,7 @@ export const getSuggestedResource = async (journalText: string, programName: str
         }
         return null;
     } catch (error) {
-        console.error("Error getting suggested resource:", error);
+        console.error("Error getting suggested resource:", error, { name: (error as Error).name, message: (error as Error).message });
         return null;
     }
 };
@@ -442,7 +442,7 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
 
         return JSON.parse(response.text.trim());
     } catch (error) {
-        console.error("Error in group session response generation:", error);
+        console.error("Error in group session response generation:", error, { name: (error as Error).name, message: (error as Error).message });
         return {
             moderatorResponse: "I'm sorry, I'm having a little trouble at the moment. But thank you for sharing, that's a very thoughtful point.",
             simulatedPeerResponses: []
@@ -475,7 +475,7 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
         });
         return response;
     } catch (error) {
-        console.error("Error finding sober-friendly places:", error);
+        console.error("Error finding sober-friendly places:", error, { name: (error as Error).name, message: (error as Error).message });
         throw new Error("Failed to find places using AI.");
     }
 };
@@ -519,7 +519,7 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
         });
         return response.text;
     } catch (error) {
-        console.error("Error summarizing journals:", error);
+        console.error("Error summarizing journals:", error, { name: (error as Error).name, message: (error as Error).message });
         return "Could not retrieve user data summary.";
     }
 };
@@ -559,7 +559,7 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
         });
         return response.text;
     } catch (error) {
-        console.error("Error summarizing chat history:", error);
+        console.error("Error summarizing chat history:", error, { name: (error as Error).name, message: (error as Error).message });
         return "Could not summarize chat history.";
     }
 };
