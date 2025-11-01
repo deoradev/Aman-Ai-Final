@@ -226,7 +226,7 @@ const LiveTalkPage: React.FC = () => {
                         const key = getScopedKey('mood-history');
                         const moods: MoodEntry[] = JSON.parse(localStorage.getItem(key) || '[]') as MoodEntry[];
                         const newMoods = moods.filter(m => m.date !== todayStr);
-                        newMoods.push({ date: todayStr, mood: fc.args.mood });
+                        newMoods.push({ date: todayStr, mood: fc.args.mood as 'happy' | 'neutral' | 'sad' });
                         localStorage.setItem(key, JSON.stringify(newMoods));
 
                         sessionPromiseRef.current?.then(session => session.sendToolResponse({
