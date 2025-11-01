@@ -44,8 +44,9 @@
     "message": "Preparing your path to recovery..."
   },
   "app_update": {
-    "title": "App Updated!",
-    "message": "You have the latest version of Aman Digital Care with new features and improvements.",
+    "title": "Update Available",
+    "message": "A new version of Aman Digital Care is ready. Reload to get the latest features.",
+    "reload": "Reload",
     "dismiss": "Dismiss"
   },
   "crisis": {

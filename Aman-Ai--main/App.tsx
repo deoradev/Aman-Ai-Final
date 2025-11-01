@@ -85,19 +85,30 @@ const CrisisButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 const AppUpdateToast: React.FC<{ show: boolean; onClose: () => void }> = ({ show, onClose }) => {
     const { t } = useLocalization();
 
+    const handleReload = () => {
+        window.location.reload();
+    };
+
     if (!show) return null;
 
     return (
         <div className="fixed bottom-24 right-6 bg-base-800 text-white p-4 rounded-xl shadow-soft-lg z-[100] max-w-sm animate-fade-in-up">
             <div className="flex items-start">
                 <div className="flex-shrink-0 pt-0.5">
-                    <svg className="h-6 w-6 text-accent-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg className="h-6 w-6 text-accent-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M20 20v-5h-5" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 9a9 9 0 0114.13-4.13" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 15a9 9 0 01-14.13 4.13" />
                     </svg>
                 </div>
                 <div className="ml-3 w-0 flex-1">
                     <p className="text-sm font-semibold">{t('app_update.title')}</p>
                     <p className="mt-1 text-sm text-base-300">{t('app_update.message')}</p>
+                    <div className="mt-3">
+                        <button onClick={handleReload} className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-base-800 focus:ring-primary-500">
+                            {t('app_update.reload')}
+                        </button>
+                    </div>
                 </div>
                 <div className="ml-4 flex-shrink-0 flex">
                     <button onClick={onClose} className="inline-flex text-base-400 hover:text-white">
