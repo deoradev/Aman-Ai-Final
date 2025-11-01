@@ -6,9 +6,9 @@ const URLS_TO_CACHE = [
   '/',
   '/index.html',
   '/#/offline', // Add the offline page route
-  '/Aman-Ai--main/manifest.json',
-  '/Aman-Ai--main/assets/favicon.svg',
-  '/Aman-Ai--main/locales/en.json'
+  '/manifest.json',
+  '/assets/favicon.svg',
+  '/locales/en.json'
 ];
 
 // Install event: Pre-cache the app shell.
@@ -103,7 +103,7 @@ self.addEventListener('fetch', event => {
   
   // Strategy 3: Cache First for Images and other static assets
   // Serves images from cache immediately if available. Good for performance.
-  if (request.destination === 'image' || request.url.includes('/Aman-Ai--main/assets/')) {
+  if (request.destination === 'image' || request.url.includes('/assets/')) {
      event.respondWith(
       caches.match(request)
         .then(response => {
@@ -137,8 +137,8 @@ self.addEventListener('push', event => {
 
   const options = {
     body: data.body,
-    icon: '/Aman-Ai--main/assets/icons/icon-192x192.png',
-    badge: '/Aman-Ai--main/assets/icons/icon-96x96.png'
+    icon: '/assets/icons/icon-192x192.png',
+    badge: '/assets/icons/icon-96x96.png'
   };
 
   event.waitUntil(

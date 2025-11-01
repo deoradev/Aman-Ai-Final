@@ -20,6 +20,21 @@ window.addEventListener('unhandledrejection', (event) => {
   });
 });
 
+// --- Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed: ', error);
+        // Here you could show a toast to the user indicating offline functionality might be limited.
+      });
+  });
+}
+// ---------------------------------
+
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
