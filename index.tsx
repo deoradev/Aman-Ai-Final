@@ -11,7 +11,6 @@ window.addEventListener('error', (event) => {
     colno: event.colno,
     error: event.error
   });
-  // In a production app, you might send this to a logging service.
 });
 
 window.addEventListener('unhandledrejection', (event) => {
@@ -23,14 +22,23 @@ window.addEventListener('unhandledrejection', (event) => {
 // --- Service Worker Registration ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Register the service worker directly from the root.
-    navigator.serviceWorker.register('/service-worker.js')
+    // Use a relative path. In standard deployments, this resolves correctly.
+    // In preview environments, cross-origin restrictions often block SWs.
+    const swUrl = './service-worker.js';
+    
+    navigator.serviceWorker.register(swUrl)
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
       })
       .catch(error => {
-        console.error('ServiceWorker registration failed: ', error);
-        // Here you could show a toast to the user indicating offline functionality might be limited.
+        // Handle common environment-specific errors gracefully.
+        // "Script origin" errors occur when the SW file is served from a different origin 
+        // or when running in a null-origin iframe (common in online code editors).
+        if (error.message.includes('Script origin') || error.message.includes('MIME type')) {
+            console.info('ServiceWorker functionality disabled: Environment restriction (Script origin/MIME type). This is normal in preview mode.');
+        } else {
+             console.warn('ServiceWorker registration failed:', error);
+        }
       });
   });
 }

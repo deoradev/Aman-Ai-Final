@@ -44,7 +44,7 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-pro-preview', // Upgraded for deeper analytical reasoning
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -90,8 +90,9 @@ export const getJournalReflection = async (journalText: string, language: string
     - Respond ONLY with the text of the reflection, no extra formatting.
     `;
     try {
+        // Upgraded to Gemini 3 for higher EQ and better empathy
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
@@ -142,7 +143,7 @@ export const generateToolkitExercise = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-pro', // Using a more powerful model for higher quality therapeutic content
+            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for high-quality creative writing and therapeutic structuring
             contents: prompt,
         });
         return response.text;
@@ -210,7 +211,7 @@ export const getConversationFeedback = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-pro',
+            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for nuanced psychological feedback
             contents: prompt,
         });
         return response.text;
@@ -284,7 +285,7 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-pro', // Use a more capable model for nuanced, sponsor-like text
+            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3. This is critical for the "Sponsor" persona to feel authentic and deep.
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -319,8 +320,9 @@ export const generateNotificationMessage = async (type: 'morning' | 'journal_nud
     - Do not include any titles or labels.
     `;
     try {
+        // Upgraded to Gemini 3 for better tone control in short messages
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
@@ -359,7 +361,7 @@ export const getSuggestedResource = async (journalText: string, programName: str
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.5-flash', // Flash is sufficient and fast for selection tasks
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -417,7 +419,7 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
 
      try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-pro',
+            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for realistic, multi-character simulation
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -459,7 +461,7 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.5-flash", // Flash is robust for tools
             contents: prompt,
             config: {
                 tools: [{ googleMaps: {} }],
@@ -513,8 +515,9 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
     `;
 
     try {
+        // Summary is key for context, use Gemini 3 for high fidelity understanding
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
@@ -554,7 +557,7 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-pro-preview', // Gemini 3 for high fidelity summary
             contents: prompt,
         });
         return response.text;
