@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from '../components/Logo';
@@ -8,115 +9,87 @@ const AboutPage: React.FC = () => {
   const { t } = useLocalization();
   const baseUrl = "https://amandigitalcare.com";
 
-  const aboutSchema = {
+  const orgSchema = {
     "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "name": t('seo.about.title'),
-    "description": t('seo.about.description'),
-    "url": `${baseUrl}/#/about`,
-    "mainEntity": {
+    "@type": "NGO",
+    "name": "Aman Digital Care",
+    "parentOrganization": {
       "@type": "Organization",
-      "name": "Aman Digital Care",
-      "url": baseUrl + '/',
-      "logo": `${baseUrl}/assets/icons/icon-512x512.png`,
-      "missionStatement": t('about.mission.p1'),
-      "foundingDate": "2001",
-      "founder": {
-        "@type": "Person",
-        "name": "Aman Gupta"
-      }
+      "name": "AMAN AI Foundation"
+    },
+    "foundingDate": "2001",
+    "description": "Global mental health and addiction recovery companion leveraging artificial intelligence to make support accessible to all.",
+    "url": baseUrl,
+    "logo": `${baseUrl}/assets/icons/icon-512x512.png`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Delhi",
+      "addressCountry": "IN"
     }
   };
   
   return (
     <>
     <SEOMeta
-        title={t('seo.about.title')}
-        description={t('seo.about.description')}
-        keywords={`about Aman Digital Care, mental health mission, ${t('seo.keywords.default')}`}
+        title="Our Mission & 20-Year Legacy | Aman Digital Care"
+        description="From Tihar Jail to a global AI companion, Aman Digital Care has supported over 200,000 individuals in their recovery journey. Discover our non-profit mission."
+        keywords="recovery non-profit, Aman Foundation, mental health legacy, free sobriety support, addiction rehabilitation history"
         canonicalUrl={`${baseUrl}/#/about`}
-        schema={aboutSchema}
+        schema={orgSchema}
     />
     <div className="bg-base-50 dark:bg-base-900">
-      {/* Hero Section */}
       <section className="bg-primary-500 text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-extrabold">{t('about.title')}</h1>
+          <h1 className="text-4xl font-extrabold">About Our Mission</h1>
           <p className="mt-4 text-lg max-w-3xl mx-auto text-primary-100">
-            {t('about.subtitle')}
+            Aman Digital Care is the digital evolution of a two-decade commitment to healing and human dignity.
           </p>
         </div>
       </section>
 
-      {/* Mission Section */}
       <section className="py-16">
         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.mission.title')}</h2>
+          <article>
+            <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">Born in Rehabilitation</h2>
             <p className="text-base-700 dark:text-base-300 leading-relaxed mb-4">
-              {t('about.mission.p1')}
+              Since 2001, our founder's family has been at the forefront of addiction treatment. What started as intensive support in Delhi's Tihar Jail has grown into a global movement.
             </p>
             <p className="text-base-700 dark:text-base-300 leading-relaxed">
-              {t('about.mission.p2')}
+              We have seen first-hand that recovery is possible for anyone, provided they have the right tools and a safe, non-judgmental space to grow.
             </p>
-          </div>
+          </article>
           <div className="flex justify-center my-8">
-            <Logo size="large" />
-          </div>
-        </div>
-      </section>
-
-      {/* Legacy Section */}
-      <section className="py-16 bg-base-100 dark:bg-base-800/50">
-        <div className="container mx-auto px-4 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.legacy.title')}</h2>
-            <div className="space-y-4 text-base-700 dark:text-base-300 leading-relaxed">
-              <p>{t('about.legacy.p1')}</p>
-              <p>{t('about.legacy.p2')}</p>
-            </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 text-center mb-12">{t('about.values.title')}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-base-800 dark:text-base-100 mb-2">{t('about.values.accessibility.title')}</h3>
-              <p className="text-base-600 dark:text-base-400">{t('about.values.accessibility.description')}</p>
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-base-800 dark:text-base-100 mb-2">{t('about.values.empathy.title')}</h3>
-              <p className="text-base-600 dark:text-base-400">{t('about.values.empathy.description')}</p>
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-base-800 dark:text-base-100 mb-2">{t('about.values.integrity.title')}</h3>
-              <p className="text-base-600 dark:text-base-400">{t('about.values.integrity.description')}</p>
+            <div className="p-10 bg-white dark:bg-base-800 rounded-full shadow-soft-lg">
+                <Logo size="large" />
             </div>
           </div>
         </div>
       </section>
-      
-      {/* Foundation Section */}
+
       <section className="py-16 bg-base-100 dark:bg-base-800/50">
-        <div className="container mx-auto px-4 text-center max-w-3xl">
-          <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.foundation.title')}</h2>
-          <p className="text-base-700 dark:text-base-300 leading-relaxed">
-            {t('about.foundation.description')}
-          </p>
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+            <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-6">Expertise & Trust (E-A-T)</h2>
+            <div className="grid md:grid-cols-2 gap-8 text-left">
+                <div className="p-6 bg-white/50 dark:bg-base-700/50 rounded-xl">
+                    <h3 className="font-bold text-primary-500 text-lg mb-2">200,000+ Lives Touched</h3>
+                    <p className="text-sm text-base-600 dark:text-base-400">Our real-world NGO roots provide the data and empathy needed to build a truly effective AI companion.</p>
+                </div>
+                <div className="p-6 bg-white/50 dark:bg-base-700/50 rounded-xl">
+                    <h3 className="font-bold text-primary-500 text-lg mb-2">Non-Profit Foundation</h3>
+                    <p className="text-sm text-base-600 dark:text-base-400">Guided by the AMAN AI Foundation, we prioritize human impact over corporate profits.</p>
+                </div>
+            </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('about.cta.title')}</h2>
+          <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">Be Part of the Solution</h2>
           <p className="text-base-600 dark:text-base-300 max-w-2xl mx-auto mb-8">
-            {t('about.cta.description')}
+            Mental health care should be a right, not a luxury. Explore our free programs and start your journey today.
           </p>
-          <NavLink to="/programs" className="inline-block bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600 transition-transform hover:scale-105 shadow-soft-lg">
-            {t('about.cta.button')}
+          <NavLink to="/programs" className="inline-block bg-primary-500 text-white font-bold py-3 px-10 rounded-full text-lg hover:bg-primary-600 transition-transform hover:scale-105 shadow-soft-lg">
+            Start Your Free Journey
           </NavLink>
         </div>
       </section>

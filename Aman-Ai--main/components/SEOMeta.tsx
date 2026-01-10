@@ -8,9 +8,20 @@ interface SEOMetaProps {
   canonicalUrl?: string;
   schema?: object;
   noIndex?: boolean;
+  type?: 'website' | 'article' | 'profile';
+  image?: string;
 }
 
-const SEOMeta: React.FC<SEOMetaProps> = ({ title, description, keywords, canonicalUrl, schema, noIndex }) => {
+const SEOMeta: React.FC<SEOMetaProps> = ({ 
+  title, 
+  description, 
+  keywords, 
+  canonicalUrl, 
+  schema, 
+  noIndex,
+  type = 'website',
+  image = 'https://amandigitalcare.com/assets/icons/icon-512x512.png'
+}) => {
   useEffect(() => {
     // Set Title
     document.title = title;
@@ -26,23 +37,24 @@ const SEOMeta: React.FC<SEOMetaProps> = ({ title, description, keywords, canonic
         element.setAttribute('content', content);
     };
 
-    // Set Meta Description
+    // Standard Meta Tags
     setMetaTag('name', 'description', description);
+    if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Set Open Graph / Twitter descriptions
-    setMetaTag('property', 'og:description', description);
-    setMetaTag('name', 'twitter:description', description);
-    
-    // Set Open Graph / Twitter titles
+    // Open Graph / Facebook (Crucial for Viral Sharing)
     setMetaTag('property', 'og:title', title);
-    setMetaTag('name', 'twitter:title', title);
-
-    // Set Meta Keywords
-    if (keywords) {
-        setMetaTag('name', 'keywords', keywords);
-    }
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:type', type);
+    setMetaTag('property', 'og:image', image);
+    setMetaTag('property', 'og:site_name', 'Aman Digital Care');
     
-    // Set Canonical URL
+    // Twitter
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:title', title);
+    setMetaTag('name', 'twitter:description', description);
+    setMetaTag('name', 'twitter:image', image);
+
+    // Canonical URL (Prevents Duplicate Content Issues)
     if (canonicalUrl) {
         let linkCanonical = document.querySelector('link[rel="canonical"]');
         if(!linkCanonical) {
@@ -54,7 +66,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({ title, description, keywords, canonic
         setMetaTag('property', 'og:url', canonicalUrl);
     }
 
-    // Set Meta Robots for no-indexing
+    // Search Engine Indexing Control
     let metaRobots = document.querySelector('meta[name="robots"]');
     if (noIndex) {
         if (!metaRobots) {
@@ -64,10 +76,10 @@ const SEOMeta: React.FC<SEOMetaProps> = ({ title, description, keywords, canonic
         }
         metaRobots.setAttribute('content', 'noindex, nofollow');
     } else if (metaRobots) {
-        metaRobots.remove();
+        metaRobots.setAttribute('content', 'index, follow');
     }
 
-    // Set JSON-LD Schema
+    // JSON-LD Schema (Structured Data for Rich Snippets / Google Knowledge Graph)
     const scriptId = 'json-ld-schema';
     let scriptTag = document.getElementById(scriptId);
     if (schema) {
@@ -82,7 +94,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({ title, description, keywords, canonic
       scriptTag.remove();
     }
 
-  }, [title, description, keywords, canonicalUrl, schema, noIndex]);
+  }, [title, description, keywords, canonicalUrl, schema, noIndex, type, image]);
 
   return null;
 };

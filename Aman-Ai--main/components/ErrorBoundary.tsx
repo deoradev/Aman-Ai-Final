@@ -47,6 +47,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
+    // Fixed: Standard access to children in a React class component
     return this.props.children; 
   }
 }
