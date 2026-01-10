@@ -8,7 +8,8 @@ interface State {
   hasError: boolean;
 }
 
-// Fixed 'Property props does not exist' by ensuring generic type arguments are passed to Component
+// FIX: Ensure class component properly inherits from Component<ErrorBoundaryProps, State>
+// to allow access to this.props.children within the render method.
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   public state: State = {
     hasError: false
