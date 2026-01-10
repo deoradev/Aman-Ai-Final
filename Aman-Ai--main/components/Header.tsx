@@ -1,12 +1,14 @@
+
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
-import { useConnectivity } from '../hooks/useConnectivity'; // Import the connectivity hook
-import { COMMON_LANGUAGES, ALL_LANGUAGES } from '../constants';
-import { getUserName } from '../utils';
+import { useConnectivity } from '../hooks/useConnectivity';
+import { ALL_LANGUAGES, COMMON_LANGUAGES } from '../constants';
+import { getUserName, calculateJournalStreak } from '../utils';
+import { JournalEntry } from '../types';
 
 interface NavItem {
     to?: string;
@@ -31,7 +33,6 @@ const Dropdown: React.FC<{ item: NavItem }> = ({ item }) => {
         } else {
             document.removeEventListener("mousedown", handleClickOutside);
         }
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -41,23 +42,23 @@ const Dropdown: React.FC<{ item: NavItem }> = ({ item }) => {
         <div className="relative" ref={node}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="px-3 py-2 rounded-md text-sm font-medium transition-colors text-base-700 dark:text-base-300 hover:bg-base-100/50 dark:hover:bg-base-700/50 flex items-center"
+                className="px-3 py-2 rounded-lg text-xs font-bold transition-all text-base-700 dark:text-base-300 hover:bg-base-100/50 dark:hover:bg-base-700/50 flex items-center uppercase tracking-wider"
             >
                 {item.text}
-                <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ml-1.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
             </button>
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-base-50 dark:bg-base-800 rounded-xl shadow-soft-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                <div className="absolute right-0 mt-3 w-52 bg-white/95 dark:bg-base-800/95 backdrop-blur-xl rounded-2xl shadow-soft-lg py-2 border border-white/20 dark:border-base-700/30 z-50">
                     {item.children?.map(child => (
                         <NavLink
                             key={child.to}
                             to={child.to!}
                             onClick={() => setIsOpen(false)}
                             className={({ isActive }) =>
-                                `block px-4 py-2 text-sm transition-colors ${
-                                  isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'
+                                `block px-5 py-2.5 text-sm transition-all ${
+                                  isActive ? 'text-primary-500 font-bold bg-primary-500/5' : 'text-base-600 dark:text-base-400 hover:text-primary-500'
                                 }`
                             }
                         >
@@ -72,10 +73,18 @@ const Dropdown: React.FC<{ item: NavItem }> = ({ item }) => {
 
 const Header: React.FC = () => {
   const { language, setLanguage, t, isTranslating } = useLocalization();
-  const { currentUser } = useAuth();
+  const { currentUser, getScopedKey } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { isOnline } = useConnectivity(); // Use connectivity status
+  const { isOnline } = useConnectivity();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    if (currentUser) {
+        const journals: JournalEntry[] = JSON.parse(localStorage.getItem(getScopedKey('journal-entries')) || '[]');
+        setStreak(calculateJournalStreak(journals));
+    }
+  }, [currentUser, getScopedKey]);
   
   const targetLanguageName = useMemo(() => {
     return ALL_LANGUAGES.find(l => l.code === language)?.name || language;
@@ -110,141 +119,101 @@ const Header: React.FC = () => {
     },
   ];
 
-  const welcomeMessage = currentUser
-    ? t('header.welcome_user', { name: getUserName(currentUser) })
-    : t('header.welcome_anonymous');
-
-  const ThemeToggle: React.FC = () => (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full transition-colors text-base-600 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-base-800 focus:ring-primary-500"
-      aria-label="Toggle dark mode"
-    >
-      {theme === 'light' ? (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
-      ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464A1 1 0 106.465 13.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm-1.414-2.12a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" /></svg>
-      )}
-    </button>
-  );
-
   return (
-    <header className="bg-base-50/80 dark:bg-base-900/80 backdrop-blur-sm shadow-soft sticky top-0 z-40 border-b border-base-200 dark:border-base-800">
+    <header className="bg-white/70 dark:bg-base-900/70 backdrop-blur-xl shadow-soft sticky top-0 z-40 border-b border-white/20 dark:border-base-800/50">
       {isTranslating && (
-        <div className="absolute top-full left-0 w-full bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-200 text-sm font-semibold py-1 px-4 text-center z-30 animate-fade-in-down">
-          <div className="flex items-center justify-center gap-2">
-            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>{t('header.translating_to', { language: targetLanguageName })}</span>
-          </div>
+        <div className="absolute top-full left-0 w-full bg-primary-500 text-white text-[10px] font-black py-0.5 px-4 text-center z-30 uppercase tracking-[0.2em]">
+          {t('header.translating_to', { language: targetLanguageName })}
         </div>
       )}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center gap-6">
             <NavLink to="/"><Logo /></NavLink>
+            
+            {currentUser && streak > 0 && (
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 animate-fade-in">
+                    <span className="text-lg">🔥</span>
+                    <span className="text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-tighter">{streak} Day Streak</span>
+                </div>
+            )}
+
             {!isOnline && (
-                <span className="flex items-center gap-2 px-3 py-1 bg-warning-100 dark:bg-warning-900/50 text-warning-800 dark:text-warning-200 text-xs font-bold rounded-full">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-warning-500"></span>
-                    </span>
+                <span className="flex items-center gap-2 px-3 py-1 bg-warning-500 text-white text-[10px] font-black rounded-full uppercase tracking-widest">
                     {t('offline.indicator')}
                 </span>
             )}
           </div>
-          <nav className="hidden lg:flex items-center space-x-2">
+
+          <nav className="hidden lg:flex items-center space-x-1">
             {navLinks.map(link => (
               link.children ? <Dropdown key={link.text} item={link} /> :
               <NavLink
                 key={link.to}
                 to={link.to!}
-                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}
+                className={({ isActive }) => `px-3 py-2 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${isActive ? 'text-primary-500' : 'text-base-700 dark:text-base-300 hover:text-primary-500'}`}
               >
                 {link.text}
               </NavLink>
             ))}
           </nav>
-          <div className="hidden lg:flex items-center space-x-2">
+
+          <div className="hidden lg:flex items-center gap-4">
             <NavLink
                 to="/profile"
-                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}
+                className={({ isActive }) => `flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full border-2 transition-all ${isActive ? 'border-primary-500 bg-primary-500/5 text-primary-500' : 'border-base-200 dark:border-base-700 text-base-600 dark:text-base-400 hover:border-primary-300'}`}
             >
-              {currentUser ? <span className="truncate max-w-[150px] inline-block">{getUserName(currentUser)}</span> : t('nav.login')}
+              <div className="w-6 h-6 rounded-full bg-base-200 dark:bg-base-700 flex items-center justify-center overflow-hidden">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>
+              </div>
+              <span className="text-xs font-black uppercase tracking-tight truncate max-w-[100px]">{currentUser ? getUserName(currentUser) : t('nav.login')}</span>
             </NavLink>
-            <div className="relative">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="bg-base-100 dark:bg-base-700 border-2 border-base-200 dark:border-base-600 text-base-700 dark:text-base-200 rounded-md py-1 pl-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                aria-label="Select language"
-              >
-                {Object.entries(COMMON_LANGUAGES).map(([code, name]) => (<option key={code} value={code}>{name}</option>))}
-              </select>
-            </div>
-            <ThemeToggle />
-          </div>
-          <div className="-mr-2 flex lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-base-500 hover:text-white hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-base-800 focus:ring-white"
-              aria-expanded={isMobileMenuOpen}
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMobileMenuOpen ? (
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            
+            <button onClick={toggleTheme} className="p-2.5 rounded-xl bg-base-100 dark:bg-base-800 text-base-600 dark:text-base-400 hover:text-primary-500 transition-all border border-base-200 dark:border-base-700 shadow-sm active:scale-90">
+              {theme === 'light' ? (
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
               ) : (
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
               )}
             </button>
+          </div>
+
+          <div className="lg:hidden flex items-center gap-3">
+             <button onClick={toggleTheme} className="p-2 rounded-lg bg-base-100 dark:bg-base-800 text-base-600 dark:text-base-400 active:scale-90">
+                {theme === 'light' ? <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg> : <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464A1 1 0 106.465 13.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm-1.414-2.12a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" /></svg>}
+             </button>
+             <button onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="p-2 rounded-lg text-base-600 dark:text-base-400 active:scale-90">
+               {isMobileMenuOpen ? <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg> : <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>}
+             </button>
           </div>
         </div>
       </div>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <div className="px-3 py-2 flex justify-between items-center">
-                <p className="text-sm font-medium text-base-500 dark:text-base-400">{welcomeMessage}</p>
-                <ThemeToggle />
+        <div className="lg:hidden fixed inset-0 top-20 bg-white/95 dark:bg-base-950/95 backdrop-blur-2xl z-50 overflow-y-auto animate-fade-in-up">
+          <div className="p-6 space-y-6">
+            <div className="flex flex-col gap-4">
+                {navLinks.flatMap(link =>
+                    link.children ? [
+                        <p key={link.text} className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500 mb-2">{link.text}</p>,
+                        ...link.children.map(child => (
+                            <NavLink key={child.to} to={child.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `text-xl font-bold ${isActive ? 'text-primary-500' : 'text-base-900 dark:text-base-100'}`}>{child.text}</NavLink>
+                        ))
+                    ] : [
+                        <NavLink key={link.to} to={link.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `text-xl font-bold ${isActive ? 'text-primary-500' : 'text-base-900 dark:text-base-100'}`}>{link.text}</NavLink>
+                    ]
+                )}
             </div>
-            {navLinks.flatMap(link =>
-                link.children ? [
-                    <p key={link.text} className="px-3 pt-4 pb-1 text-xs font-bold uppercase text-base-500 dark:text-base-400">{link.text}</p>,
-                    ...link.children.map(child => (
-                        <NavLink key={child.to} to={child.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}>{child.text}</NavLink>
-                    ))
-                ] : [
-                    <NavLink key={link.to} to={link.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}>{link.text}</NavLink>
-                ]
-            )}
-            <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'bg-primary-500 text-white' : 'text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}>
-                {currentUser ? getUserName(currentUser) : t('nav.login')}
-            </NavLink>
-            <div className="px-3 pt-2">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="w-full bg-base-100 dark:bg-base-700 border-2 border-base-200 dark:border-base-600 text-base-700 dark:text-base-200 rounded-md py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-primary-500"
-                aria-label="Select language"
-              >
-                {Object.entries(COMMON_LANGUAGES).map(([code, name]) => (<option key={code} value={code}>{name}</option>))}
-              </select>
+            
+            <div className="pt-6 border-t border-base-200 dark:border-base-800">
+                <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between p-4 bg-primary-500 rounded-2xl text-white shadow-lg">
+                    <span className="font-bold">{currentUser ? getUserName(currentUser) : t('nav.login')}</span>
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </NavLink>
             </div>
           </div>
         </div>
       )}
-       <style>{`
-        @keyframes fade-in-down {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-fade-in-down {
-          animation: fade-in-down 0.3s ease-out forwards;
-        }
-      `}</style>
     </header>
   );
 };

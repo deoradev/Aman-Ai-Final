@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
@@ -28,36 +29,6 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     const currentAudioRef = useRef<AudioBufferSourceNode | null>(null);
 
     useEffect(() => {
-        return () => {
-            currentAudioRef.current?.stop();
-            currentAudioRef.current = null;
-        }
-    }, []);
-
-    const handlePlayRandomEcho = async () => {
-        if (isPlayingEcho) {
-            currentAudioRef.current?.stop();
-            currentAudioRef.current = null;
-            setIsPlayingEcho(false);
-            return;
-        }
-
-        const affirmations: EchoAffirmation[] = JSON.parse(localStorage.getItem(getScopedKey('echo-affirmations')) || '[]');
-        if (affirmations.length === 0) {
-            showToast("You haven't generated any Echoes yet! Go to the AI Toolkit to create your first one.", 'info');
-            return;
-        }
-
-        setIsPlayingEcho(true);
-        const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-        
-        currentAudioRef.current = await playAndReturnAudio(randomAffirmation.audioDataB64, () => {
-            setIsPlayingEcho(false);
-            currentAudioRef.current = null;
-        });
-    };
-
-    useEffect(() => {
         const fetchInsight = async () => {
             setIsLoading(true);
             try {
@@ -72,17 +43,11 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
                 });
                 setInsight(fetchedInsight);
             } catch (error) {
-                console.error("Failed to fetch AI sponsor insight:", error);
-                setInsight({
-                    type: 'encouragement',
-                    title: t('dashboard.ai_sponsor.fallback_title'),
-                    text: t('gemini.daily_focus_fallback')
-                });
+                setInsight({ type: 'encouragement', title: 'A Daily Thought', text: t('gemini.daily_focus_fallback') });
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchInsight();
     }, [moods, journalEntries, journalStreak, userName, language, t, currentDay, completedChallenges]);
 
@@ -90,56 +55,43 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
         switch (type) {
             case 'celebration': return '🎉';
             case 'suggestion': return '💡';
-            case 'reflection': return '🤔';
-            case 'encouragement': return '💖';
+            case 'reflection': return '🧠';
             case 'garden': return '🌱';
             default: return '✨';
         }
     };
 
     return (
-        <section className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-xl shadow-soft border-l-4 border-primary-500">
-            <h2 className="text-xl font-bold text-primary-500 mb-4">{isLoading ? t('dashboard.ai_insight.loading') : insight?.title || t('dashboard.ai_sponsor.title')}</h2>
+        <section className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-700/30 relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-1 h-full bg-primary-500" />
+            <h2 className="text-lg font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-6">Aman's Deep Insight</h2>
+            
             {isLoading ? (
-                 <div className="flex items-center gap-4">
-                    <div className="animate-pulse rounded-full bg-base-200 dark:bg-base-700 h-8 w-8"></div>
-                    <div className="animate-pulse space-y-2 flex-grow">
-                        <div className="h-4 bg-base-200 dark:bg-base-700 rounded w-full"></div>
-                        <div className="h-4 bg-base-200 dark:bg-base-700 rounded w-2/3"></div>
-                    </div>
+                 <div className="flex flex-col gap-4">
+                    <div className="h-4 bg-base-200 dark:bg-base-700 rounded-full w-3/4 animate-pulse" />
+                    <div className="h-4 bg-base-200 dark:bg-base-700 rounded-full w-full animate-pulse" />
                 </div>
             ) : insight ? (
                 <>
-                    <div className="flex items-start gap-4">
-                        <div className="text-3xl mt-1">{getIcon(insight.type)}</div>
-                        <div>
-                            <p className="text-base-700 dark:text-base-300 text-md italic">"{insight.text}"</p>
-                            <p className="text-right text-sm font-semibold text-primary-600 dark:text-primary-400 mt-2">- Aman AI</p>
+                    <div className="flex items-start gap-5">
+                        <div className="text-4xl bg-base-100 dark:bg-base-900 p-3 rounded-2xl shadow-inner">{getIcon(insight.type)}</div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-base-900 dark:text-white text-lg leading-tight mb-2">{insight.title}</h3>
+                            <p className="text-base-600 dark:text-base-300 text-sm leading-relaxed italic">"{insight.text}"</p>
                         </div>
                     </div>
-                     <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
+                     <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button 
-                            onClick={handlePlayRandomEcho}
-                            className="bg-secondary-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-secondary-600 flex-shrink-0 flex items-center justify-center gap-2"
-                        >
-                            {isPlayingEcho ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M18 3a1 1 0 00-1.447-.894L4 7.424V4a1 1 0 00-2 0v12a1 1 0 002 0v-3.424l12.553 5.318A1 1 0 0018 17V3z" /></svg>
-                            )}
-                            {t('dashboard.ai_sponsor.listen_echo_button')}
-                        </button>
-                         <button 
                             onClick={() => navigate('/toolkit')}
-                            className="bg-base-200 text-base-800 dark:bg-base-700 dark:text-base-200 font-bold py-2 px-5 rounded-lg transition-colors hover:bg-base-300 dark:hover:bg-base-600 flex-shrink-0"
+                            className="bg-base-900 text-white dark:bg-base-100 dark:text-base-900 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-widest hover:scale-105 transition-all"
                         >
-                            {t('dashboard.toolkit_prompt.button')}
+                            Open Toolkit
                         </button>
                         <button 
                             onClick={() => navigate('/live-talk')}
-                            className="bg-primary-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-primary-600 flex-shrink-0"
+                            className="bg-primary-500 text-white font-black py-3 px-4 rounded-xl text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-primary-500/20"
                         >
-                            {t('dashboard.proactive_checkin.talk_button')}
+                            Live Voice Chat
                         </button>
                     </div>
                 </>

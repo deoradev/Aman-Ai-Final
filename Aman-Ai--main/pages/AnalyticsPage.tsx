@@ -1,12 +1,10 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { ResponsiveContainer, RadialBarChart, RadialBar, Legend, Tooltip } from 'recharts';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { useConnectivity } from '../hooks/useConnectivity';
-import { MoodEntry, JournalEntry, Program, Milestone, WellnessEntry, AIInsight } from '../types';
-import { getAnalyticsInsights } from '../services/geminiService';
+import { MoodEntry, JournalEntry, Program, Milestone, WellnessEntry } from '../types';
 import { calculateJournalStreak, calculateMilestones } from '../utils';
 import MoodTrendChart from '../components/MoodTrendChart';
 import SEOMeta from '../components/SEOMeta';
@@ -16,167 +14,127 @@ import { useToast } from '../hooks/useToast';
 const AnalyticsPage: React.FC = () => {
   const { t, language } = useLocalization();
   const { getScopedKey } = useAuth();
-  const { isOnline } = useConnectivity();
   const { showToast } = useToast();
-  const navigate = useNavigate();
-
   const [program, setProgram] = useState<Program | null>(null);
   const [currentDay, setCurrentDay] = useState<number>(0);
   const [journalStreak, setJournalStreak] = useState(0);
   const [completedChallenges, setCompletedChallenges] = useState(0);
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [wellnessHistory, setWellnessHistory] = useState<WellnessEntry[]>([]);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
 
   useEffect(() => {
     try {
-      const prog: Program | null = JSON.parse(localStorage.getItem(getScopedKey('program')) || 'null');
-      setProgram(prog);
-      if (prog) {
+      const progStr = localStorage.getItem(getScopedKey('program'));
+      if (progStr) {
+        const prog: Program = JSON.parse(progStr);
+        setProgram(prog);
         const enrollmentDateStr = localStorage.getItem(getScopedKey('enrollmentDate'));
-        const startDate = new Date(enrollmentDateStr || new Date());
-        const today = new Date();
-        const diffTime = Math.abs(today.getTime() - startDate.getTime());
-        const day = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        const day = Math.floor(Math.abs(new Date().getTime() - new Date(enrollmentDateStr!).getTime()) / (1000 * 60 * 60 * 24)) + 1;
         setCurrentDay(day > 90 ? 90 : day);
-
+        
         const journal: JournalEntry[] = JSON.parse(localStorage.getItem(getScopedKey('journal-entries')) || '[]');
         const moods: MoodEntry[] = JSON.parse(localStorage.getItem(getScopedKey('mood-history')) || '[]');
         const wellness: WellnessEntry[] = JSON.parse(localStorage.getItem(getScopedKey('wellness-log')) || '[]');
         const completed: number[] = JSON.parse(localStorage.getItem(getScopedKey('completedChallenges')) || '[]');
         
-        setJournalEntries(journal);
         setMoodHistory(moods);
         setWellnessHistory(wellness);
         setCompletedChallenges(completed.length);
         const streak = calculateJournalStreak(journal);
         setJournalStreak(streak);
-
-        setMilestones(calculateMilestones({
-          currentDay: day,
-          journalStreak: streak,
-          completedChallenges: completed.length
-        }));
+        setMilestones(calculateMilestones({ currentDay: day, journalStreak: streak, completedChallenges: completed.length }));
       }
     } catch (e) { console.error(e); }
   }, [getScopedKey, language]);
 
   const shareMilestone = async (m: Milestone) => {
-    const shareData = {
-        title: `I reached a recovery milestone: ${m.title}`,
-        text: `I just unlocked the "${m.title}" milestone on Aman Digital Care! 🌟 It's a free and confidential AI companion for mental health. Check it out:`,
-        url: 'https://amandigitalcare.com'
-    };
-
+    const text = `I just hit a massive recovery milestone: "${m.title}"! Aman AI is helping me heal in private. 🌟 Join the mission: https://amandigitalcare.com #AmanAI #MentalHealth #Recovery`;
     if (navigator.share) {
         try {
-            await navigator.share(shareData);
+            await navigator.share({ title: 'My Recovery Progress', text, url: 'https://amandigitalcare.com' });
             showToast("Shared successfully!", "success");
-        } catch (err) {
-            console.log('Error sharing:', err);
-        }
+        } catch (err) {}
     } else {
-        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        showToast("Milestone copied to clipboard! Share it with your supporters.", "success");
+        navigator.clipboard.writeText(text);
+        showToast("Copied to clipboard! Share on Instagram or WhatsApp.", "success");
     }
   };
 
-  if (!program) {
-    return (
-        <div className="flex items-center justify-center h-screen text-center">
-            <div>
-                <p className="text-xl text-base-600 dark:text-base-400">{t('analytics.no_program')}</p>
-                <NavLink to="/programs" className="text-primary-500 underline font-semibold">{t('analytics.select_program_link')}</NavLink>
-            </div>
+  if (!program) return (
+    <div className="flex items-center justify-center h-[70vh] text-center p-6">
+        <div className="max-w-sm">
+            <h1 className="text-3xl font-black text-base-900 dark:text-white mb-4">No active journey found</h1>
+            <NavLink to="/programs" className="bg-primary-500 text-white px-8 py-3 rounded-xl font-black uppercase text-xs">Choose a program</NavLink>
         </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <>
-    <SEOMeta
-        title="My Recovery Progress | Aman Digital Care Journey"
-        description="See your mood trends, journal streaks, and recovery milestones. Aman Digital Care helps you stay on track with private analytics."
-        noIndex={true}
-    />
-    <div className="py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('analytics.title')}</h1>
-          <p className="mt-3 text-lg text-base-600 dark:text-base-300 max-w-3xl mx-auto">{t('analytics.subtitle')}</p>
-        </div>
+    <SEOMeta title="My Progress Insights | Aman AI" description="Visualize your sobriety and mental health trends." noIndex={true} />
+    <div className="py-12 container mx-auto px-4 lg:px-8">
+        <header className="mb-12 text-center">
+            <h1 className="text-4xl md:text-5xl font-black text-base-900 dark:text-white uppercase tracking-tighter">Your Analytics</h1>
+            <p className="text-base-500 font-bold mt-2">Personal data science for your mental wellness.</p>
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <StatCard title={t('analytics.program_progress.title')} value={`${Math.round((currentDay/90)*100)}%`} subtitle={t('analytics.stat.progress_subtitle', { day: currentDay })} />
-              <StatCard title={t('analytics.streak.title')} value={journalStreak.toString()} subtitle={t('analytics.streak.days')} />
-              <StatCard title={t('dashboard.completion.challenges_completed')} value={completedChallenges.toString()} subtitle={t('analytics.stat.challenges_subtitle')} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <StatTile title="Recovery Path" value={`${Math.round((currentDay/90)*100)}%`} subtitle={`${currentDay} of 90 Days`} />
+              <StatTile title="Streak" value={journalStreak.toString()} subtitle="Consecutive Days" />
+              <StatTile title="Success" value={completedChallenges.toString()} subtitle="Challenges Done" />
             </div>
             
-            <Card title={t('analytics.mood.title')}>
+            <ChartCard title="Mood Trajectory">
                 <MoodTrendChart data={moodHistory} />
-            </Card>
+            </ChartCard>
 
-            <Card title={t('analytics.wellness.title')}>
+            <ChartCard title="Wellness Correlation">
                 <WellnessTrendChart data={wellnessHistory} />
-            </Card>
+            </ChartCard>
           </div>
           
-          <div className="space-y-6">
-             <Card title={t('analytics.milestones.title')}>
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                    {milestones.length > 0 ? (
-                        [...milestones].reverse().map(m => (
-                            <div key={m.id} className="flex items-center justify-between p-4 bg-base-50 dark:bg-base-700/50 rounded-xl group transition-all hover:bg-primary-50 dark:hover:bg-primary-900/10 border border-transparent hover:border-primary-200">
-                                <div className="flex items-center gap-4">
-                                    <span className="text-3xl">{m.icon}</span>
-                                    <div>
-                                        <p className="font-bold text-base-800 dark:text-base-200 text-sm leading-tight">{m.title}</p>
-                                        <p className="text-xs text-base-500 dark:text-base-400 mt-1">{m.description}</p>
-                                    </div>
+          <div className="lg:col-span-4 space-y-8">
+             <section className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-700/30">
+                <h2 className="text-xl font-black text-base-900 dark:text-white mb-6">Unlocked Achievements</h2>
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                    {milestones.length > 0 ? milestones.slice().reverse().map(m => (
+                        <div key={m.id} className="p-4 bg-base-100/50 dark:bg-base-900/50 rounded-2xl border border-white/10 flex items-center justify-between group transition-all hover:bg-primary-500/10">
+                            <div className="flex items-center gap-4">
+                                <span className="text-3xl filter drop-shadow-md">{m.icon}</span>
+                                <div>
+                                    <p className="font-black text-base-900 dark:text-white text-sm leading-tight">{m.title}</p>
+                                    <p className="text-[10px] uppercase font-bold text-base-500 mt-1">{m.description}</p>
                                 </div>
-                                <button 
-                                    onClick={() => shareMilestone(m)}
-                                    className="p-2 text-primary-500 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-base-800 rounded-full shadow-sm"
-                                    aria-label="Share this milestone"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
-                                </button>
                             </div>
-                        ))
-                    ) : (
-                        <p className="text-center text-base-50 dark:text-base-400 py-4">{t('analytics.milestones.empty')}</p>
-                    )}
+                            <button onClick={() => shareMilestone(m)} className="bg-white dark:bg-base-700 p-2 rounded-xl shadow-sm opacity-100 md:opacity-0 group-hover:opacity-100 transition-all">
+                                📤
+                            </button>
+                        </div>
+                    )) : <p className="text-center text-base-400 py-10 font-bold">Start your first task to unlock!</p>}
                 </div>
-            </Card>
-
-            <div className="bg-primary-600 text-white p-6 rounded-2xl shadow-soft">
-                <h3 className="font-bold text-lg mb-2">Spread the Word</h3>
-                <p className="text-sm opacity-90 mb-4">Aman AI is a free non-profit tool. Sharing your progress helps others find the support they need.</p>
-                <NavLink to="/about" className="text-white font-bold text-sm underline hover:opacity-80">Learn about our mission &rarr;</NavLink>
-            </div>
+            </section>
           </div>
         </div>
-      </div>
     </div>
     </>
   );
 };
 
-const Card: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-xl shadow-soft border border-base-200/50 dark:border-base-700/50">
-        <h2 className="text-lg font-bold text-primary-600 dark:text-primary-400 mb-4">{title}</h2>
-        {children}
+const StatTile = ({ title, value, subtitle }: any) => (
+    <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-6 rounded-3xl border border-white/20 dark:border-base-700/30 text-center shadow-soft">
+        <p className="text-[10px] font-black text-base-400 uppercase tracking-widest mb-1">{title}</p>
+        <p className="text-4xl font-black text-primary-500">{value}</p>
+        <p className="text-[10px] font-bold text-base-500 uppercase">{subtitle}</p>
     </div>
 );
 
-const StatCard: React.FC<{ title: string; value: string; subtitle: string }> = ({ title, value, subtitle }) => (
-    <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-5 rounded-xl shadow-soft text-center border-b-2 border-primary-500">
-        <p className="text-xs font-bold text-base-400 dark:text-base-500 uppercase tracking-widest">{title}</p>
-        <p className="text-4xl font-extrabold text-base-900 dark:text-white mt-1">{value}</p>
-        <p className="text-xs text-base-500 dark:text-base-400">{subtitle}</p>
+const ChartCard = ({ title, children }: any) => (
+    <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-700/30">
+        <h2 className="text-lg font-black text-base-900 dark:text-white uppercase opacity-80 mb-6">{title}</h2>
+        {children}
     </div>
 );
 

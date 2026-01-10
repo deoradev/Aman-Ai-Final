@@ -1,3 +1,4 @@
+
 import React, { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { DailyChallenge, MoodEntry } from '../types';
@@ -23,64 +24,81 @@ const TodayFocus: React.FC<TodayFocusProps> = ({
   const { t } = useLocalization();
 
   return (
-    <section className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft border border-base-200 dark:border-base-700">
-      <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-4">{t('dashboard.today_focus.title')}</h2>
+    <section className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-700/30 overflow-hidden relative group">
+      {/* Background Accent */}
+      <div className="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-primary-500/5 rounded-full blur-3xl transition-transform duration-700 group-hover:scale-150"></div>
       
-      <div className="space-y-6">
-        {/* Step 1: Mood */}
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold text-lg">1</div>
-          <div className="flex-grow">
-            <h3 className="font-semibold text-base-800 dark:text-base-200">{t('dashboard.mood.title')}</h3>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {(['happy', 'neutral', 'sad'] as const).map(mood => (
-                <button
-                  key={mood}
-                  onClick={() => onMoodSelect(mood)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium border-2 transition-colors ${selectedMood === mood ? 'bg-base-800 border-base-800 text-white dark:bg-base-200 dark:border-base-200 dark:text-base-900' : 'border-base-300 dark:border-base-600 text-base-600 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-700'}`}
-                >
-                  {t(`dashboard.mood.${mood}`)}
-                </button>
-              ))}
-            </div>
-             <div className="mt-3">
-                <NavLink to="/analytics" className="text-sm font-bold text-primary-600 hover:underline">
-                    {t('dashboard.today_focus.view_analytics_link')} &rarr;
-                </NavLink>
-            </div>
-          </div>
+      <div className="relative z-10">
+        <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-black tracking-tight text-base-900 dark:text-white uppercase opacity-80">{t('dashboard.today_focus.title')}</h2>
+            <NavLink to="/analytics" className="text-xs font-bold px-3 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full hover:bg-primary-500 hover:text-white transition-all">
+                {t('dashboard.today_focus.view_analytics_link')}
+            </NavLink>
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Step 1: Mood */}
+            <div className="bg-white/50 dark:bg-base-700/20 p-5 rounded-2xl border border-white/20 dark:border-base-700/50 flex flex-col h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center font-black text-xs">01</span>
+                    <h3 className="font-bold text-base-900 dark:text-base-100 text-sm">{t('dashboard.mood.title')}</h3>
+                </div>
+                <div className="flex flex-col gap-2 mt-auto">
+                    {(['happy', 'neutral', 'sad'] as const).map(mood => (
+                        <button
+                            key={mood}
+                            onClick={() => onMoodSelect(mood)}
+                            className={`w-full py-2.5 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-2 ${
+                                selectedMood === mood 
+                                ? 'bg-primary-500 border-primary-500 text-white shadow-lg shadow-primary-500/30' 
+                                : 'bg-transparent border-base-200 dark:border-base-700 text-base-600 dark:text-base-400 hover:border-primary-300'
+                            }`}
+                        >
+                            <span className="text-lg">{mood === 'happy' ? '😊' : mood === 'neutral' ? '😐' : '😔'}</span>
+                            {t(`dashboard.mood.${mood}`)}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
-        {/* Step 2: Challenge */}
-        {dailyChallenge && (
-            <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold text-lg">2</div>
-                <div className="flex-grow">
-                    <h3 className="font-semibold text-base-800 dark:text-base-200">{t('dashboard.today_focus.challenge_title')} {dailyChallenge.title}</h3>
-                    <p className="text-sm text-base-600 dark:text-base-300 mt-1">{dailyChallenge.task}</p>
-                    <div className="mt-3">
+            {/* Step 2: Challenge */}
+            <div className="bg-white/50 dark:bg-base-700/20 p-5 rounded-2xl border border-white/20 dark:border-base-700/50 flex flex-col h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center font-black text-xs">02</span>
+                    <h3 className="font-bold text-base-900 dark:text-base-100 text-sm">{t('dashboard.today_focus.challenge_title')}</h3>
+                </div>
+                {dailyChallenge && (
+                    <>
+                        <p className="text-xs font-bold text-primary-600 dark:text-primary-400 mb-2 uppercase tracking-widest">{dailyChallenge.title}</p>
+                        <p className="text-xs text-base-600 dark:text-base-300 leading-relaxed mb-4 line-clamp-4">{dailyChallenge.task}</p>
                         <button 
                             onClick={onCompleteChallenge}
                             disabled={isChallengeCompleted}
-                            className="bg-base-800 text-white dark:bg-base-200 dark:text-base-900 font-bold py-2 px-5 rounded-lg text-sm transition-colors disabled:bg-base-300 dark:disabled:bg-base-600 dark:disabled:text-base-400 disabled:cursor-not-allowed hover:bg-base-700 dark:hover:bg-base-300"
+                            className={`mt-auto w-full py-3 rounded-xl text-xs font-black transition-all ${
+                                isChallengeCompleted 
+                                ? 'bg-accent-500 text-white border-accent-500' 
+                                : 'bg-base-900 text-white dark:bg-base-100 dark:text-base-900 hover:bg-primary-500'
+                            }`}
                         >
-                            {isChallengeCompleted ? t('dashboard.challenge_button.completed') : t('dashboard.challenge_button.complete')}
+                            {isChallengeCompleted ? 'COMPLETED' : t('dashboard.challenge_button.complete').toUpperCase()}
                         </button>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
-        )}
 
-        {/* Step 3: Journal */}
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold text-lg">3</div>
-          <div>
-            <h3 className="font-semibold text-base-800 dark:text-base-200">{t('dashboard.today_focus.journal_title')}</h3>
-            <p className="text-sm text-base-600 dark:text-base-300 mt-1">{t('dashboard.today_focus.journal_prompt')}</p>
-            <button onClick={onStartJournal} className="mt-3 text-sm font-bold text-primary-600 hover:underline">
-              {t('dashboard.today_focus.journal_button')} &rarr;
-            </button>
-          </div>
+            {/* Step 3: Journal */}
+            <div className="bg-white/50 dark:bg-base-700/20 p-5 rounded-2xl border border-white/20 dark:border-base-700/50 flex flex-col h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center font-black text-xs">03</span>
+                    <h3 className="font-bold text-base-900 dark:text-base-100 text-sm">{t('dashboard.today_focus.journal_title')}</h3>
+                </div>
+                <p className="text-xs text-base-600 dark:text-base-300 leading-relaxed mb-6 italic opacity-75">
+                    {t('dashboard.today_focus.journal_prompt')}
+                </p>
+                <button onClick={onStartJournal} className="mt-auto w-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 py-3 rounded-xl text-xs font-black border-2 border-primary-500/20 hover:bg-primary-500 hover:text-white transition-all uppercase tracking-wider">
+                    {t('dashboard.today_focus.journal_button')}
+                </button>
+            </div>
         </div>
       </div>
     </section>

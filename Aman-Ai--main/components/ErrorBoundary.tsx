@@ -8,6 +8,7 @@ interface State {
   hasError: boolean;
 }
 
+// Added ErrorBoundaryProps and State to the class inheritance to fix 'Property props does not exist' error
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   public state: State = {
     hasError: false
@@ -47,7 +48,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Fixed: Standard access to children in a React class component
+    // Standard access to children in a React class component
+    // The previous error was caused by missing generic type arguments in the class definition.
     return this.props.children; 
   }
 }
