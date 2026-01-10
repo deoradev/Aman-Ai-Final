@@ -23,10 +23,10 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
   image = 'https://amandigitalcare.com/assets/icons/icon-512x512.png'
 }) => {
   useEffect(() => {
-    // Set Title
+    // Set Page Title
     document.title = title;
 
-    // Helper to create or update meta tags
+    // Helper to update head meta tags
     const setMetaTag = (attr: 'name' | 'property', value: string, content: string) => {
         let element = document.querySelector(`meta[${attr}="${value}"]`) as HTMLMetaElement;
         if (!element) {
@@ -37,24 +37,23 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
         element.setAttribute('content', content);
     };
 
-    // Standard Meta Tags
     setMetaTag('name', 'description', description);
     if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Open Graph / Facebook (Crucial for Viral Sharing)
+    // Open Graph (Social Loops)
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', type);
     setMetaTag('property', 'og:image', image);
     setMetaTag('property', 'og:site_name', 'Aman Digital Care');
     
-    // Twitter
+    // Twitter Card
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', image);
 
-    // Canonical URL (Prevents Duplicate Content Issues)
+    // Canonical link management
     if (canonicalUrl) {
         let linkCanonical = document.querySelector('link[rel="canonical"]');
         if(!linkCanonical) {
@@ -66,7 +65,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
         setMetaTag('property', 'og:url', canonicalUrl);
     }
 
-    // Search Engine Indexing Control
+    // Indexing control
     let metaRobots = document.querySelector('meta[name="robots"]');
     if (noIndex) {
         if (!metaRobots) {
@@ -79,20 +78,36 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
         metaRobots.setAttribute('content', 'index, follow');
     }
 
-    // JSON-LD Schema (Structured Data for Rich Snippets / Google Knowledge Graph)
+    // High-Authority JSON-LD Injection
     const scriptId = 'json-ld-schema';
     let scriptTag = document.getElementById(scriptId);
-    if (schema) {
-      if (!scriptTag) {
-        scriptTag = document.createElement('script');
-        scriptTag.id = scriptId;
-        scriptTag.setAttribute('type', 'application/ld+json');
-        document.head.appendChild(scriptTag);
-      }
-      scriptTag.innerHTML = JSON.stringify(schema, null, 2);
-    } else if (scriptTag) {
-      scriptTag.remove();
+    
+    // Default organization schema if none provided
+    const defaultSchema = {
+      "@context": "https://schema.org",
+      "@type": "MedicalOrganization",
+      "name": "Aman Digital Care",
+      "url": "https://amandigitalcare.com",
+      "logo": "https://amandigitalcare.com/assets/icons/icon-512x512.png",
+      "foundingDate": "2024",
+      "founder": {
+        "@type": "Person",
+        "name": "Aman Gupta",
+        "jobTitle": "Founder & Innovator"
+      },
+      "description": "Evidence-informed AI companion for confidential addiction recovery and mental wellness support.",
+      "nonprofitStatus": "https://schema.org/NGO"
+    };
+
+    const finalSchema = schema || defaultSchema;
+
+    if (!scriptTag) {
+      scriptTag = document.createElement('script');
+      scriptTag.id = scriptId;
+      scriptTag.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(scriptTag);
     }
+    scriptTag.innerHTML = JSON.stringify(finalSchema, null, 2);
 
   }, [title, description, keywords, canonicalUrl, schema, noIndex, type, image]);
 
