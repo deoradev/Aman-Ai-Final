@@ -2,12 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!--
-      CRITICAL: Viewport meta tag for mobile responsiveness.
-      - `width=device-width`: Sets the width of the viewport to the device's screen width.
-      - `initial-scale=1.0`: Sets the initial zoom level to 100%.
-      - `viewport-fit=cover`: Allows the content to extend into the display's safe areas on notched devices.
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Aman Digital Care | AI Companion for Addiction & Mental Health</title>
 
@@ -27,66 +21,38 @@
     <link rel="apple-touch-icon" href="/Aman-Ai--main/assets/icons/icon-120x120.png" sizes="120x120" />
     <link rel="apple-touch-icon" href="/Aman-Ai--main/assets/icons/icon-76x76.png" sizes="76x76" />
 
-    <!-- Apple Splash Screens (Startup Images) -->
-    <!-- iPhone -->
-    <link href="/Aman-Ai--main/assets/splashscreens/iphone_13_pro_max.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/iphone_13_pro.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/iphone_x.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/iphone_8_plus.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/iphone_8.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <!-- iPad -->
-    <link href="/Aman-Ai--main/assets/splashscreens/ipad_pro_12.9.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/ipad_pro_10.5.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/ipad_air.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="/Aman-Ai--main/assets/splashscreens/ipad_mini.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-
     <!-- SEO Meta Tags -->
     <meta name="description" content="Begin your recovery with Aman Digital Care, a free AI companion for addiction & mental health. Get 24/7 confidential support, daily guidance, and proven programs. Start your journey today." />
     <meta name="keywords" content="addiction recovery, mental health support, sobriety app, free mental health, AI therapist, digital wellness, recovery companion, CBT app, mindfulness for addiction, confidential support, substance abuse help, mental wellness journey, addiction chatbot, evidence-based recovery, cognitive behavioral therapy, free wysa alternative, anonymous sobriety support, relapse prevention tool, AI for mental health, digital therapeutics, mental well-being, sobriety coach, online addiction support, virtual sponsor, emotional support AI, self-guided recovery, free addiction counseling app, AI mental wellness coach, daily sobriety tracker, sober living, mental fitness, emotional health, addiction help free" />
     <link rel="canonical" href="https://amandigitalcare.com/" />
 
-    <!-- Open Graph Meta Tags (for social sharing) -->
+    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Aman Digital Care | Free AI for Addiction & Mental Health" />
     <meta property="og:description" content="Begin your recovery with Aman Digital Care, a free AI companion for addiction & mental health. Get 24/7 confidential support, daily guidance, and proven programs. Start your journey today." />
     <meta property="og:image" content="https://amandigitalcare.com/assets/icons/icon-512x512.png" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://amandigitalcare.com/" />
 
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aman Digital Care | Free AI for Addiction & Mental Health" />
-    <meta name="twitter:description" content="Begin your recovery with Aman Digital Care, a free AI companion for addiction & mental health. Get 24/7 confidential support, daily guidance, and proven programs. Start your journey today." />
-    <meta name="twitter:image" content="https://amandigitalcare.com/assets/icons/icon-512x512.png" />
-    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KMGH4R8MNH"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-KMGH4R8MNH');
-    </script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       html, body {
         overflow-x: hidden;
         width: 100%;
+        background-color: #f8fafc;
       }
-      /* Transitions are applied only after the initial render to avoid flashes of color. */
-      /* A class is added to the body via JS to enable them. */
+      html.dark, html.dark body {
+        background-color: #020617; /* High-quality Midnight Black */
+      }
       .enable-transitions * {
         transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-duration: 350ms;
       }
-      /* Safe area insets for fullscreen on devices with notches */
       body {
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
@@ -96,7 +62,6 @@
     </style>
     <style type="text/tailwindcss">
       :root {
-        /* Primary: Amber (Yellow) */
         --color-primary-50: 255 251 235;
         --color-primary-100: 254 243 199;
         --color-primary-200: 253 230 138;
@@ -107,11 +72,9 @@
         --color-primary-700: 180 83 9;
         --color-primary-800: 146 64 14;
         --color-primary-900: 120 53 15;
-
-        --color-secondary-500: 14 165 233; /* Sky 500 */
+        --color-secondary-500: 14 165 233;
       }
       html.dark {
-        /* Enhanced Emerald Green Theme for Dark Mode */
         --color-primary-50: 236 253 245;
         --color-primary-100: 209 250 229;
         --color-primary-200: 167 243 208;
@@ -122,67 +85,30 @@
         --color-primary-700: 4 120 87;
         --color-primary-800: 6 95 70;
         --color-primary-900: 6 78 59;
-
-        /* Brightened Secondary Color (Sky Blue) for High Visibility in Dark Theme */
-        --color-secondary-500: 56 189 248; /* Sky 400 - more vibrant on dark */
+        --color-secondary-500: 56 189 248;
       }
       button, a {
         @apply active:scale-95;
       }
     </style>
     <script>
-      // Prevents FOUC (Flash of Unstyled Content) for dark mode
       (function() {
         try {
           const theme = localStorage.getItem('amandigitalcare-theme');
-          // Only apply dark mode if it's explicitly stored. Default to light.
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.remove('dark');
           }
-        } catch (e) {
-          console.warn('Could not access localStorage to set theme.');
-        }
+        } catch (e) {}
       })();
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "MedicalOrganization",
-      "name": "Aman Digital Care",
-      "alternateName": "AMAN AI Foundation",
-      "url": "https://amandigitalcare.com/",
-      "logo": "https://amandigitalcare.com/assets/icons/icon-512x512.png",
-      "description": "Aman Digital Care is a non-profit initiative providing free, confidential, AI-powered support for addiction recovery and mental well-being. We offer personalized programs, a 24/7 AI companion, and wellness tools.",
-      "slogan": "Your confidential companion for addiction and mental health support.",
-      "foundingDate": "2024",
-      "founder": {
-        "@type": "Person",
-        "name": "Aman Gupta"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Worldwide"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "officialamanfoundation@gmail.com",
-        "telephone": "+91-8800685335",
-        "contactType": "Customer Support"
-      },
-      "isAcceptingDonations": "True",
-      "nonprofitStatus": "https://schema.org/NGO"
-    }
     </script>
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
-            fontFamily: {
-                sans: ['Inter', 'sans-serif'],
-            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
             colors: {
               primary: {
                 50: 'rgb(var(--color-primary-50) / <alpha-value>)',
@@ -196,43 +122,7 @@
                 800: 'rgb(var(--color-primary-800) / <alpha-value>)',
                 900: 'rgb(var(--color-primary-900) / <alpha-value>)',
               },
-              secondary: { 
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                200: '#bae6fd',
-                300: '#7dd3fc',
-                400: '#38bdf8',
-                500: 'rgb(var(--color-secondary-500) / <alpha-value>)',
-                600: '#0284c7',
-                700: '#0369a1',
-                800: '#075985',
-                900: '#0c4a6e',
-              },
-              accent: { // Emerald
-                50: '#ecfdf5',
-                100: '#d1fae5',
-                200: '#a7f3d0',
-                300: '#6ee7b7',
-                400: '#34d399',
-                500: '#10b981',
-                600: '#059669',
-                700: '#047857',
-                800: '#065f46',
-                900: '#064e3b',
-              },
-              warning: { // Red
-                50: '#fef2f2',
-                100: '#fee2e2',
-                200: '#fecaca',
-                300: '#fca5a5',
-                400: '#f87171',
-                500: '#ef4444',
-                600: '#dc2626',
-                700: '#b91c1c',
-                800: '#991b1b',
-                900: '#7f1d1d',
-              },
-              base: { // Slate
+              base: {
                   50: '#f8fafc',
                   100: '#f1f5f9',
                   200: '#e2e8f0',
@@ -242,17 +132,9 @@
                   600: '#475569',
                   700: '#334155',
                   800: '#1e293b',
-                  900: '#0f172a',
+                  900: '#020617', // Pure dark midnight
+                  950: '#000000',
               },
-            },
-            boxShadow: {
-              soft: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
-              'soft-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
-            },
-            borderRadius: {
-              'xl': '0.75rem',
-              '2xl': '1rem',
-              '3xl': '1.5rem',
             }
           },
         },
@@ -261,71 +143,35 @@
   <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
-    "tailwindcss/": "https://aistudiocdn.com/tailwindcss@^4.1.16/",
-    "@capacitor/cli": "https://aistudiocdn.com/@capacitor/cli@^7.4.4",
-    "@capacitor/core": "https://aistudiocdn.com/@capacitor/core@^7.4.4",
-    "@capacitor/push-notifications": "https://aistudiocdn.com/@capacitor/push-notifications@^7.0.3",
-    "path": "https://aistudiocdn.com/path@^0.12.7",
-    "vite": "https://aistudiocdn.com/vite@^7.1.12",
-    "url": "https://aistudiocdn.com/url@^0.11.4",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.0",
-    "recharts": "https://aistudiocdn.com/recharts@^2.12.7",
-    "react-is": "https://aistudiocdn.com/react-is@^18.3.1",
-    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
-    "@vitejs/plugin-legacy": "https://aistudiocdn.com/@vitejs/plugin-legacy@^7.2.1"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "@capacitor/cli": "https://esm.sh/@capacitor/cli@^8.0.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "url": "https://esm.sh/url@^0.11.4",
+    "path": "https://esm.sh/path@^0.12.7",
+    "@capacitor/core": "https://esm.sh/@capacitor/core@^8.0.0",
+    "@capacitor/push-notifications": "https://esm.sh/@capacitor/push-notifications@^8.0.0",
+    "@vitejs/plugin-legacy": "https://esm.sh/@vitejs/plugin-legacy@^7.2.1"
   }
 }
 </script>
 </head>
   <body class="font-sans">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-      <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        #root-loader {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          background-color: #f8fafc; /* base-50 */
-        }
-        html.dark #root-loader {
-          background-color: #0f172a; /* base-900 */
-        }
-        #root-loader svg {
-          width: 128px; /* w-32 */
-          height: auto;
-          animation: pulse-logo 2s infinite ease-in-out;
-          color: #f59e0b; /* primary-500 (Amber) */
-        }
-        html.dark #root-loader svg {
-          color: #34d399; /* primary-400 (Emerald) */
-        }
-
-        @keyframes pulse-logo {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.8;
-          }
-          50% {
-            transform: scale(1.05);
-            opacity: 1;
-          }
-        }
-      </style>
-      <div id="root-loader">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-label="Aman Digital Care Logo">
+      <div id="root-loader" style="display:flex;align-items:center;justify-content:center;height:100vh;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:128px; animation: pulse 2s infinite ease-in-out;">
           <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z M12 7 L 8 11 L 10 16 L 12 14 L 14 16 L 16 11 Z" />
         </svg>
       </div>
     </div>
     <script type="module" src="/index.tsx"></script>
+    <style>
+      @keyframes pulse { 0%, 100% { opacity: 0.8; scale: 1; } 50% { opacity: 1; scale: 1.05; } }
+    </style>
   </body>
 </html>

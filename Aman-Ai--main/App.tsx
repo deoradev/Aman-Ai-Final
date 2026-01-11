@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider, useLocalization } from './hooks/useLocalization';
@@ -12,7 +11,6 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 import { ToastContext, Toast, ToastType } from './hooks/useToast';
 import { ToastContainer } from './components/ToastContainer';
-
 
 // Lazy load all page components
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -62,7 +60,6 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     );
 };
 
-
 const PageLoader: React.FC = () => (
   <div className="flex-grow flex items-center justify-center min-h-[calc(100vh-8rem)]">
     <div className="relative">
@@ -84,36 +81,10 @@ const CrisisButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     </button>
 );
 
-const AppUpdateToast: React.FC<{ show: boolean; onClose: () => void }> = ({ show, onClose }) => {
-    const { t } = useLocalization();
-    if (!show) return null;
-    return (
-        <div className="fixed bottom-24 right-6 bg-base-800/95 backdrop-blur-md text-white p-5 rounded-2xl shadow-2xl z-[100] max-w-sm animate-fade-in-up border border-white/10">
-            <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 bg-primary-500/20 p-2 rounded-lg">
-                    <svg className="h-6 w-6 text-primary-400 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0114.13-4.13M20 15a9 9 0 01-14.13 4.13" /></svg>
-                </div>
-                <div className="flex-1">
-                    <p className="text-sm font-bold tracking-wide">{t('app_update.title')}</p>
-                    <p className="mt-1 text-xs text-base-400 leading-relaxed">{t('app_update.message')}</p>
-                    <button onClick={() => window.location.reload()} className="mt-3 w-full bg-primary-500 text-white text-xs font-bold py-2 rounded-lg hover:bg-primary-600 transition-colors">
-                        {t('app_update.reload')}
-                    </button>
-                </div>
-                <button onClick={onClose} className="text-base-500 hover:text-white transition-colors">
-                    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
-                </button>
-            </div>
-        </div>
-    );
-};
-
-
 const AppContent: React.FC = () => {
   const { setLanguage, isLoaded } = useLocalization();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showCrisisModal, setShowCrisisModal] = useState(false);
-  const [showUpdateToast, setShowUpdateToast] = useState(false);
   
   useSponsorNotifications();
 
@@ -124,20 +95,6 @@ const AppContent: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const handleServiceWorkerMessage = (event: MessageEvent) => {
-        if (event.data && event.data.type === 'APP_UPDATED') {
-          setShowUpdateToast(true);
-        }
-      };
-      navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
-      return () => {
-        navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
-      };
-    }
-  }, []);
-
   const handleLanguageSelect = (lang: string) => {
     setLanguage(lang);
     setShowLanguageModal(false);
@@ -145,14 +102,14 @@ const AppContent: React.FC = () => {
   
   if (!isLoaded) {
     return (
-      <div className="flex flex-col min-h-screen bg-base-50 dark:bg-base-900 justify-center items-center">
+      <div className="flex flex-col min-h-screen bg-base-50 dark:bg-black justify-center items-center">
         <PageLoader />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-50 dark:bg-base-900 text-base-800 dark:text-base-200 selection:bg-primary-500/30">
+    <div className="flex flex-col min-h-screen bg-base-50 dark:bg-black text-base-800 dark:text-base-200 selection:bg-primary-500/30">
       <div className="animated-gradient-bg"></div>
       <Suspense fallback={null}>
         {showLanguageModal && <LanguageModal onSelectLanguage={handleLanguageSelect} />}
@@ -175,7 +132,7 @@ const AppContent: React.FC = () => {
             <Route path="/toolkit" element={<PageWrapper><ToolkitPage /></PageWrapper>} />
             <Route path="/conversation-practice" element={<PageWrapper><ConversationPracticePage /></PageWrapper>} />
             <Route path="/prevention-plan" element={<PageWrapper><PreventionPlanPage /></PageWrapper>} />
-            <Route path="/sober-circle" element={<PageWrapper><SoberCirclePage /></PageWrapper>} />
+            <Route path="/sober-circle" element={<Route element={<SoberCirclePage />} />} />
             <Route path="/about" element={<PageWrapper><AboutPage /></PageWrapper>} />
             <Route path="/our-approach" element={<PageWrapper><ApproachPage /></PageWrapper>} />
             <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />
@@ -193,22 +150,7 @@ const AppContent: React.FC = () => {
         <Footer />
       </Suspense>
       <CrisisButton onClick={() => setShowCrisisModal(true)} />
-      <AppUpdateToast show={showUpdateToast} onClose={() => setShowUpdateToast(false)} />
       <style>{`
-        @keyframes fade-in-up {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.5s ease-out forwards;
-        }
-        .animate-spin-slow {
-            animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
         .animated-gradient-bg {
           position: fixed;
           top: 0;
@@ -218,16 +160,13 @@ const AppContent: React.FC = () => {
           z-index: 0;
           background: radial-gradient(circle at 10% 20%, theme(colors.primary.100 / 0.5), transparent 40%),
                       radial-gradient(circle at 80% 90%, theme(colors.secondary.100 / 0.4), transparent 50%),
-                      radial-gradient(circle at 50% 50%, theme(colors.base.50), theme(colors.base.100) 100%);
-          background-color: theme(colors.base.50);
+                      theme(colors.base.50);
           background-size: 200% 200%;
-          background-position: 0% 50%;
         }
         html.dark .animated-gradient-bg {
-          background: radial-gradient(circle at 10% 20%, theme(colors.primary.900 / 0.4), transparent 40%),
-                      radial-gradient(circle at 80% 90%, theme(colors.secondary.900 / 0.3), transparent 50%),
-                      radial-gradient(circle at 50% 50%, theme(colors.base.950), theme(colors.base.900) 100%);
-          background-color: #020617;
+          background: radial-gradient(circle at 10% 20%, theme(colors.primary.900 / 0.3), transparent 40%),
+                      radial-gradient(circle at 80% 90%, theme(colors.secondary.900 / 0.2), transparent 50%),
+                      #000000;
         }
         @media (prefers-reduced-motion: no-preference) {
           .animated-gradient-bg {
@@ -239,16 +178,11 @@ const AppContent: React.FC = () => {
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
-        /* Premium Typography Enhancements */
         body {
             line-height: 1.6;
             letter-spacing: -0.011em;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
-        }
-        h1, h2, h3 {
-            letter-spacing: -0.025em;
         }
       `}</style>
     </div>
