@@ -12,12 +12,13 @@ interface State {
  * ErrorBoundary component to catch JavaScript errors anywhere in their child component tree,
  * log those errors, and display a fallback UI instead of the component tree that crashed.
  */
-// Fix: Added explicit generic types <ErrorBoundaryProps, State> to Component to ensure 'this.props' is accessible
+// FIX: Explicitly pass ErrorBoundaryProps and State to Component<ErrorBoundaryProps, State> 
+// so that this.props and this.state are correctly typed and accessible.
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
-  // Fix: Initialized state correctly for a class extending React.Component
-  public state: State = {
-    hasError: false
-  };
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
   public static getDerivedStateFromError(_: Error): State {
     // Update state so the next render will show the fallback UI.
@@ -30,6 +31,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 
   public render() {
+    // FIX: this.state is now correctly typed
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -53,8 +55,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Returning children if no error occurred.
-    // Fix: this.props is now accessible because the class extends Component<ErrorBoundaryProps, State>
+    // FIX: this.props.children is now accessible due to proper generic typing above.
     return this.props.children; 
   }
 }

@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, GenerateContentResponse, Modality } from "@google/genai";
-import { MoodEntry, Resource, AIInsight, JournalEntry, ChatMessage, ToolkitType } from '../types';
+import { MoodEntry, Resource, AIInsight, JournalEntry, ChatMessage, ToolkitType, DoctorReport } from '../types';
 import { getUserContext } from "../utils";
 
 export const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -44,7 +44,7 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Upgraded for deeper analytical reasoning
+            model: 'gemini-3-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -68,8 +68,64 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
         return JSON.parse(jsonText);
 
     } catch (error) {
-        console.error("Error getting analytics insights:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error getting analytics insights:", error);
         throw new Error("Failed to generate insights from AI.");
+    }
+};
+
+export const getClinicalDoctorReport = async (
+    moods: MoodEntry[],
+    journals: JournalEntry[],
+    programName: string,
+    language: string
+): Promise<DoctorReport> => {
+    const journalText = journals.map(j => j.text).join("\n");
+    const prompt = `
+    Analyze the following recovery data for a medical professional. 
+    Program: ${programName}
+    Mood Logs: ${JSON.stringify(moods.slice(-30))}
+    Journal Context: ${journalText.substring(0, 2000)}
+
+    Generate a Clinical Summary for a physician or psychiatrist.
+    Use professional medical terminology but remain observational.
+    Focus on:
+    1. Overall emotional stability.
+    2. Recurring triggers mentioned in journals.
+    3. Behavioral adherence (journaling frequency).
+    
+    RESPONSE FORMAT (JSON):
+    {
+        "summary": "High-level summary of patient state",
+        "topTriggers": ["trigger 1", "trigger 2"],
+        "moodTrend": "Narrative of mood changes",
+        "concerns": ["Potential warning signs"],
+        "positives": ["Strengths demonstrated"]
+    }
+    Respond ONLY in: ${language}.
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-pro-preview',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        summary: { type: Type.STRING },
+                        topTriggers: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        moodTrend: { type: Type.STRING },
+                        concerns: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        positives: { type: Type.ARRAY, items: { type: Type.STRING } }
+                    }
+                }
+            }
+        });
+        return JSON.parse(response.text.trim());
+    } catch (error) {
+        console.error("Error generating doctor report:", error);
+        throw error;
     }
 };
 
@@ -90,15 +146,14 @@ export const getJournalReflection = async (journalText: string, language: string
     - Respond ONLY with the text of the reflection, no extra formatting.
     `;
     try {
-        // Upgraded to Gemini 3 for higher EQ and better empathy
         const response = await ai.models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error("Error generating journal reflection:", error, { name: (error as Error).name, message: (error as Error).message });
-        return ""; // Return empty string on failure to avoid showing an error
+        console.error("Error generating journal reflection:", error);
+        return "";
     }
 };
 
@@ -143,12 +198,12 @@ export const generateToolkitExercise = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for high-quality creative writing and therapeutic structuring
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error(`Error generating toolkit exercise (${toolkitType}):`, error, { name: (error as Error).name, message: (error as Error).message });
+        console.error(`Error generating toolkit exercise (${toolkitType}):`, error);
         throw new Error("Failed to generate exercise from AI.");
     }
 };
@@ -173,7 +228,7 @@ export const generateSpeech = async (text: string, voiceName: string): Promise<s
         }
         return base64Audio;
     } catch (error) {
-        console.error("Error generating speech:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error generating speech:", error);
         throw new Error("Failed to generate speech from AI.");
     }
 };
@@ -211,12 +266,12 @@ export const getConversationFeedback = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for nuanced psychological feedback
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error("Error getting conversation feedback:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error getting conversation feedback:", error);
         throw new Error("Failed to generate feedback from AI.");
     }
 };
@@ -262,30 +317,11 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
     - Recent Journal Summary: "${journalSummary}"
     - Language to respond in: ${data.language}
     ---
-
-    EXAMPLE (Garden Insight):
-    {
-        "type": "garden",
-        "title": "Your Garden is Growing",
-        "text": "Hey ${data.userName}, I noticed a new flower just bloomed in your garden! It's a beautiful reflection of your 7-day journal streak. Your consistency is creating something wonderful."
-    }
-    EXAMPLE (Journal Continuity):
-    {
-        "type": "reflection",
-        "title": "Thinking of You",
-        "text": "Hey ${data.userName}, I was just thinking about your journal entry from yesterday where you mentioned you were nervous about that family dinner. I hope it went okay. Remember to be kind to yourself regardless of the outcome."
-    }
-    EXAMPLE (Sad Mood):
-    {
-        "type": "suggestion",
-        "title": "A Gentle Check-in",
-        "text": "I notice things might be feeling a bit heavy lately. Remember that feelings are like clouds passing by. The Guided Breathing exercise in the AI Toolkit is always here if you need a moment of calm."
-    }
     `;
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3. This is critical for the "Sponsor" persona to feel authentic and deep.
+            model: 'gemini-3-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -302,7 +338,7 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
         });
         return JSON.parse(response.text.trim());
     } catch (error) {
-        console.error("Error getting sponsor insight:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error getting sponsor insight:", error);
         return {
             type: 'encouragement',
             title: 'A Gentle Reminder',
@@ -320,14 +356,13 @@ export const generateNotificationMessage = async (type: 'morning' | 'journal_nud
     - Do not include any titles or labels.
     `;
     try {
-        // Upgraded to Gemini 3 for better tone control in short messages
         const response = await ai.models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error("Error generating notification message:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error generating notification message:", error);
         return "";
     }
 };
@@ -349,19 +384,11 @@ export const getSuggestedResource = async (journalText: string, programName: str
     ---
     ${resourcesString}
     ---
-    
-    RULES:
-    - Analyze the journal entry for core themes (e.g., anxiety, cravings, relationship issues, stress).
-    - Select the SINGLE most relevant resource from the list.
-    - Respond ONLY with the JSON for your choice.
-    - Your response must be in the user's specified language: ${language}.
-    
-    Example response format: { "id": 5 }
     `;
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash', // Flash is sufficient and fast for selection tasks
+            model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -379,7 +406,7 @@ export const getSuggestedResource = async (journalText: string, programName: str
         }
         return null;
     } catch (error) {
-        console.error("Error getting suggested resource:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error getting suggested resource:", error);
         return null;
     }
 };
@@ -398,28 +425,11 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
     
     YOUR TASK:
     Respond with a JSON object containing two keys: "moderatorResponse" and "simulatedPeerResponses".
-    
-    1.  **moderatorResponse**: Your direct reply to the user as the moderator. It should be empathetic, validating, and encouraging. You can gently guide the conversation forward based on the topic.
-    2.  **simulatedPeerResponses**: An array of 1 or 2 realistic, supportive, and anonymous-sounding peer responses related to the user's message and the session topic.
-    
-    RULES:
-    - All text MUST be in the user's specified language: ${language}.
-    - Peer responses should be short, empathetic, and relatable.
-    - The entire output MUST be a valid JSON object.
-    
-    EXAMPLE JSON OUTPUT:
-    {
-      "moderatorResponse": "Thank you for sharing that. It's powerful how focusing on something small can shift our perspective.",
-      "simulatedPeerResponses": [
-        { "author": "Anonymous User", "text": "I can relate to that. Finding gratitude in my morning coffee has been a game-changer for me lately." },
-        { "author": "Anonymous User", "text": "That's a great reminder, thank you." }
-      ]
-    }
     `;
 
      try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Upgraded to Gemini 3 for realistic, multi-character simulation
+            model: 'gemini-3-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -444,9 +454,9 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
 
         return JSON.parse(response.text.trim());
     } catch (error) {
-        console.error("Error in group session response generation:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error in group session response generation:", error);
         return {
-            moderatorResponse: "I'm sorry, I'm having a little trouble at the moment. But thank you for sharing, that's a very thoughtful point.",
+            moderatorResponse: "I'm sorry, I'm having a little trouble at the moment.",
             simulatedPeerResponses: []
         };
     }
@@ -461,7 +471,7 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", // Flash is robust for tools
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 tools: [{ googleMaps: {} }],
@@ -477,7 +487,7 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
         });
         return response;
     } catch (error) {
-        console.error("Error finding sober-friendly places:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error finding sober-friendly places:", error);
         throw new Error("Failed to find places using AI.");
     }
 };
@@ -490,22 +500,7 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
 
     const prompt = `
     You are an expert psychological analyst creating a concise "memory" summary for a companion AI named Aman.
-    Analyze the following recent journal entries from a user in recovery. Your goal is to extract deep, meaningful insights that will help the AI have more empathetic and context-aware conversations. Your analysis must be thorough and cover all the specified dimensions.
-
-    **Analysis Dimensions:**
-    1.  **Emotional Landscape**: What is the dominant emotional tone? Are there recurring feelings (e.g., anxiety, pride, frustration, hope)? Note any significant emotional shifts.
-    2.  **Key Themes & Stressors**: What are the main topics the user is writing about? Identify specific challenges, stressors, or events (e.g., work pressure, family conflict, cravings, financial worries).
-    3.  **Mentioned Individuals**: Note any names of people mentioned and their apparent role or relationship (e.g., "friend Sarah," "boss Mr. Chen," "supportive partner"). This is crucial for personalization.
-    4.  **Coping Mechanisms & Successes**: Did the user mention any strategies they used to cope with difficulties (e.g., "went for a walk," "practiced breathing," "called a friend")? Identify any successes or moments of pride they expressed.
-    5.  **Recovery Progress**: Is there any mention of their recovery journey, sobriety, or program progress?
-
-    **Output Format:**
-    Synthesize your analysis into a dense, third-person summary of about 80-100 words.
-    Structure your summary to be easily parsable by an AI. Start with the overall emotional state, then detail key events, people involved, and coping strategies used. Be specific.
-
-    EXAMPLE SUMMARY:
-    "The user's recent emotional state has been mixed, with feelings of anxiety about work but also pride in maintaining their sobriety. A key stressor is a conflict with their boss, Mr. Chen. However, they've been using coping strategies like going for a walk and a talking with their supportive friend, Sarah. They feel positive about their progress in the program."
-
+    Analyze the following recent journal entries from a user in recovery.
     Respond ONLY with the summary text, in the user's specified language: ${language}.
 
     RECENT JOURNAL ENTRIES:
@@ -515,14 +510,13 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
     `;
 
     try {
-        // Summary is key for context, use Gemini 3 for high fidelity understanding
         const response = await ai.models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error("Error summarizing journals:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error summarizing journals:", error);
         return "Could not retrieve user data summary.";
     }
 };
@@ -531,22 +525,11 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
     if (messages.length === 0) {
         return "No recent conversation history.";
     }
-    // Take the last 20 messages for summary to keep the prompt small
     const transcript = messages.slice(-20).map(m => `${m.role}: ${m.text}`).join('\n');
 
     const prompt = `
     You are an expert psychological analyst creating a concise "memory" summary for a companion AI named Aman.
-    Analyze the following conversation transcript. Your goal is to extract the most important information for the AI to remember for the next conversation to provide context and continuity.
-
-    **Analysis Dimensions:**
-    1.  **User's State**: What were the user's primary feelings, struggles, or goals mentioned in this conversation?
-    2.  **Key Topics**: What were the main subjects discussed (e.g., a specific event, a person, a craving)?
-    3.  **AI's Role**: What advice, tools, or key supportive statements did the AI provide?
-    4.  **Open Loops**: Are there any unresolved topics or things the AI should follow up on next time (e.g., "User was nervous about a meeting tomorrow")?
-
-    **Output Format:**
     Synthesize your analysis into a dense, third-person summary of about 60-80 words.
-    
     Respond ONLY with the summary text, in the user's specified language: ${language}.
 
     CONVERSATION TRANSCRIPT:
@@ -557,12 +540,12 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Gemini 3 for high fidelity summary
+            model: 'gemini-3-pro-preview',
             contents: prompt,
         });
         return response.text;
     } catch (error) {
-        console.error("Error summarizing chat history:", error, { name: (error as Error).name, message: (error as Error).message });
+        console.error("Error summarizing chat history:", error);
         return "Could not summarize chat history.";
     }
 };

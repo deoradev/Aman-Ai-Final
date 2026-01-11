@@ -74,6 +74,14 @@ export interface AIInsight {
     cta?: string;
 }
 
+export interface DoctorReport {
+    summary: string;
+    topTriggers: string[];
+    moodTrend: string;
+    concerns: string[];
+    positives: string[];
+}
+
 export interface JournalEntry {
     date: string; // YYYY-MM-DD
     text: string;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Program, DailyChallenge, MoodEntry, JournalEntry, Goal, Resource, Milestone, WellnessEntry, PreventionPlan } from '../types';
@@ -12,6 +11,7 @@ import { calculateJournalStreak, getUserName, calculateMilestones } from '../uti
 import GrowthGarden from '../components/GrowthGarden';
 import SponsorInsightCard from '../components/AIInsightCard';
 import TodayFocus from '../components/TodayFocus';
+import ClinicalSyncCard from '../components/ClinicalSyncCard';
 import PullToRefresh from '../components/PullToRefresh';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -21,8 +21,6 @@ const getGreeting = (t: (key: string) => string) => {
   if (hour < 18) return t('dashboard.greeting.afternoon');
   return t('dashboard.greeting.evening');
 };
-
-const NEW_FEATURES_FLAG = 'amandigitalcare-new-features-seen-v2';
 
 const ProgressRing: React.FC<{ percentage: number; day: number }> = ({ percentage, day }) => (
     <div className="relative flex items-center justify-center w-32 h-32 group transition-transform duration-500 hover:scale-105">
@@ -203,6 +201,10 @@ const DashboardPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <SponsorInsightCard moods={moodHistory} journalEntries={journalEntries} journalStreak={journalStreak} userName={userDisplayName} currentDay={currentDay} completedChallenges={completedChallengesCount} />
+                    <ClinicalSyncCard moods={moodHistory} journals={journalEntries} programName={program.name} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-10">
                     <section className="bg-white/30 dark:bg-base-800/30 backdrop-blur-3xl p-8 rounded-[2rem] shadow-soft border border-white/20 dark:border-base-700/30">
                         <h2 className="text-xs font-black text-base-400 uppercase tracking-[0.3em] mb-6">Garden Evolution</h2>
                         <GrowthGarden day={currentDay} journalStreak={journalStreak} completedChallenges={completedChallengesCount} />
@@ -240,7 +242,7 @@ const DashboardPage: React.FC = () => {
       <style>{`
         @keyframes fade-in-up {
           from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
+          to { transform: translateY(0); opacity: 1; }
         }
         .animate-fade-in-up { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-enter { animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
