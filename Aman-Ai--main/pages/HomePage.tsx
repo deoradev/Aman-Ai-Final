@@ -6,26 +6,34 @@ import Onboarding from '../components/Onboarding';
 import SEOMeta from '../components/SEOMeta';
 
 const GlobalPulse: React.FC = () => {
-    const [moments, setMoments] = useState(142080);
-    const [activeNow, setActiveNow] = useState(1240);
+    // Starting with your father's real legacy number
+    const legacyImpact = 82400; 
+    const [aiMoments, setAiMoments] = useState(142080);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setMoments(prev => prev + Math.floor(Math.random() * 3));
-            setActiveNow(prev => prev + (Math.random() > 0.5 ? 1 : -1));
-        }, 3000);
+            setAiMoments(prev => prev + Math.floor(Math.random() * 2));
+        }, 5000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="flex flex-wrap justify-center gap-4 mt-10 animate-fade-in-delayed">
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-300">Moments of Strength</p>
-                <p className="text-2xl font-black text-white tabular-nums">{moments.toLocaleString()}</p>
+        <div className="flex flex-col items-center gap-6 mt-10 animate-fade-in-delayed">
+            <div className="flex flex-wrap justify-center gap-4">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl group hover:bg-white/20 transition-all">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-300">Foundational Impact</p>
+                    <p className="text-2xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+ Lives</p>
+                    <p className="text-[8px] font-bold text-white/50 uppercase mt-1">Restored since 2001</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl group hover:bg-white/20 transition-all">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-300">Daily Strength</p>
+                    <p className="text-2xl font-black text-white tabular-nums">{aiMoments.toLocaleString()}</p>
+                    <p className="text-[8px] font-bold text-white/50 uppercase mt-1">AI Support Moments Today</p>
+                </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-300">Healing Now</p>
-                <p className="text-2xl font-black text-white tabular-nums">{activeNow.toLocaleString()}</p>
+            <div className="flex items-center gap-2 px-4 py-1 bg-white/5 rounded-full border border-white/10">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span className="text-[9px] font-black text-white/60 uppercase tracking-widest text-center">Rooted in 20+ Years of Verified NGO Care</span>
             </div>
         </div>
     );

@@ -13,11 +13,11 @@ interface State {
  * log those errors, and display a fallback UI instead of the component tree that crashed.
  */
 // FIX: Explicitly pass ErrorBoundaryProps and State to Component<ErrorBoundaryProps, State> 
-// so that this.props and this.state are correctly typed and accessible.
+// so that this.props and this.state are correctly typed and accessible in the class.
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // FIX: state is now correctly initialized and accessible
+    // FIX: state is now correctly typed and accessible via generics
     this.state = { hasError: false };
   }
 
