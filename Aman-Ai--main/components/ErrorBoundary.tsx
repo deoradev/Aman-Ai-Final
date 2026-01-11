@@ -1,3 +1,4 @@
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
@@ -8,10 +9,13 @@ interface State {
   hasError: boolean;
 }
 
-// FIX: Ensure class component properly inherits from Component<ErrorBoundaryProps, State>
-// to allow access to this.props.children within the render method.
+/**
+ * ErrorBoundary component to catch JavaScript errors anywhere in their child component tree,
+ * log those errors, and display a fallback UI instead of the component tree that crashed.
+ */
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
-  public state: State = {
+  // Explicitly initialize state
+  public override state: State = {
     hasError: false
   };
 
@@ -20,12 +24,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can also log the error to an error reporting service
     console.error("Uncaught error:", error, errorInfo);
   }
 
-  public render() {
+  public override render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -49,7 +53,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Standard access to children in a React class component
+    // Returning children if no error occurred.
     return this.props.children; 
   }
 }

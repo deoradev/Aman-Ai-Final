@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
@@ -85,6 +84,14 @@ const Header: React.FC = () => {
         setStreak(calculateJournalStreak(journals));
     }
   }, [currentUser, getScopedKey]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
   
   const targetLanguageName = useMemo(() => {
     return ALL_LANGUAGES.find(l => l.code === language)?.name || language;
@@ -120,6 +127,7 @@ const Header: React.FC = () => {
   ];
 
   return (
+    <>
     <header className="bg-white/70 dark:bg-base-900/70 backdrop-blur-3xl shadow-soft sticky top-0 z-40 border-b border-white/10 dark:border-base-800/40 h-20">
       {isTranslating && (
         <div className="absolute top-full left-0 w-full bg-primary-500 text-white text-[9px] font-black py-1 px-4 text-center z-30 uppercase tracking-[0.4em] shadow-lg animate-pulse">
@@ -182,46 +190,91 @@ const Header: React.FC = () => {
              <button onClick={toggleTheme} className="p-2 rounded-xl bg-base-100 dark:bg-base-800 text-base-600 dark:text-base-400">
                 {theme === 'light' ? <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg> : <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464A1 1 0 106.465 13.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm-1.414-2.12a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" /></svg>}
              </button>
-             <button onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-base-800 dark:text-white">
-               {isMobileMenuOpen ? <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg> : <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>}
+             <button onClick={() => setMobileMenuOpen(true)} className="p-2 text-base-800 dark:text-white">
+               <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
              </button>
           </div>
         </div>
       </div>
+    </header>
 
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-20 bg-white/95 dark:bg-base-950/95 backdrop-blur-3xl z-50 overflow-y-auto animate-enter">
-          <div className="p-8 space-y-10">
-            <div className="flex flex-col gap-6">
+    {/* Mobile Sidebar Overlay */}
+    {isMobileMenuOpen && (
+      <div className="fixed inset-0 z-[999] lg:hidden">
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-base-950/40 backdrop-blur-sm transition-opacity"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        
+        {/* Menu Content */}
+        <div className="absolute inset-x-0 top-0 bg-white dark:bg-base-950 shadow-2xl rounded-b-[3rem] overflow-hidden animate-slide-down border-b border-primary-500/20">
+          <div className="relative pt-6 px-4 pb-12 max-h-[90vh] overflow-y-auto text-center">
+            <div className="flex justify-between items-center mb-8 px-2">
+              <Logo />
+              <button 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="p-3 rounded-full bg-base-100 dark:bg-base-800 text-base-800 dark:text-white active:scale-90 transition-transform"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-2">
                 {navLinks.flatMap(link =>
                     link.children ? [
-                        <p key={link.text} className="text-[9px] font-black uppercase tracking-[0.5em] text-primary-500 mb-2 mt-4 opacity-70">{link.text}</p>,
+                        <p key={link.text} className="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500 mb-2 mt-6 px-4 opacity-70">{link.text}</p>,
                         ...link.children.map(child => (
-                            <NavLink key={child.to} to={child.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `text-3xl font-black tracking-tighter transition-colors ${isActive ? 'text-primary-500' : 'text-base-900 dark:text-base-100'}`}>{child.text}</NavLink>
+                            <NavLink 
+                                key={child.to} 
+                                to={child.to!} 
+                                onClick={() => setMobileMenuOpen(false)} 
+                                className={({isActive}) => `px-4 py-3 text-2xl font-black tracking-tighter transition-all rounded-2xl ${isActive ? 'text-primary-600 dark:text-base-950 bg-primary-500/10 dark:bg-primary-400' : 'text-base-900 dark:text-base-100 hover:bg-base-50 dark:hover:bg-base-900'}`}
+                            >
+                                {child.text}
+                            </NavLink>
                         ))
                     ] : [
-                        <NavLink key={link.to} to={link.to!} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => `text-3xl font-black tracking-tighter transition-colors ${isActive ? 'text-primary-500' : 'text-base-900 dark:text-base-100'}`}>{link.text}</NavLink>
+                        <NavLink 
+                            key={link.to} 
+                            to={link.to!} 
+                            onClick={() => setMobileMenuOpen(false)} 
+                            className={({isActive}) => `px-4 py-3 text-2xl font-black tracking-tighter transition-all rounded-2xl ${isActive ? 'text-primary-600 dark:text-base-950 bg-primary-500/10 dark:bg-primary-400' : 'text-base-900 dark:text-base-100 hover:bg-base-50 dark:hover:bg-base-900'}`}
+                        >
+                            {link.text}
+                        </NavLink>
                     ]
                 )}
-            </div>
+            </nav>
             
-            <div className="pt-10 border-t border-base-200 dark:border-base-800">
-                <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between p-6 bg-primary-500 rounded-[2rem] text-white shadow-2xl shadow-primary-500/20">
-                    <div>
-                        <p className="text-[10px] uppercase font-black tracking-widest opacity-80">Connected as</p>
-                        <p className="text-xl font-black mt-1">{currentUser ? getUserName(currentUser) : t('nav.login')}</p>
+            <div className="mt-10 pt-8 border-t border-base-100 dark:border-base-800">
+                <NavLink 
+                    to="/profile" 
+                    onClick={() => setMobileMenuOpen(false)} 
+                    className="flex items-center justify-between p-6 bg-primary-500 rounded-3xl text-white shadow-xl shadow-primary-500/20 active:scale-95 transition-transform"
+                >
+                    <div className="text-left">
+                        <p className="text-[10px] uppercase font-black tracking-widest opacity-80">Account</p>
+                        <p className="text-xl font-black mt-1 truncate max-w-[200px]">{currentUser ? getUserName(currentUser) : t('nav.login')}</p>
                     </div>
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                 </NavLink>
             </div>
           </div>
         </div>
-      )}
-      <style>{`
-        .animate-enter { animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fade-in-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-      `}</style>
-    </header>
+      </div>
+    )}
+
+    <style>{`
+      @keyframes slide-down {
+        from { transform: translateY(-100%); }
+        to { transform: translateY(0); }
+      }
+      .animate-slide-down {
+        animation: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+    `}</style>
+    </>
   );
 };
 

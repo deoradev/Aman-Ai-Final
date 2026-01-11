@@ -24,88 +24,73 @@ const TodayFocus: React.FC<TodayFocusProps> = ({
   const { t } = useLocalization();
 
   return (
-    <section className="bg-white/40 dark:bg-base-800/40 backdrop-blur-3xl p-10 rounded-[3rem] shadow-soft-lg border border-white/20 dark:border-base-700/30 overflow-hidden relative group">
-      {/* Background Polish */}
-      <div className="absolute top-0 right-0 -mr-32 -mt-32 w-80 h-80 bg-primary-500/5 rounded-full blur-[100px]"></div>
-      
-      <div className="relative z-10">
-        <div className="flex justify-between items-start mb-12">
-            <div>
-                <h2 className="text-[10px] font-black tracking-[0.5em] text-primary-500 uppercase mb-3">Therapeutic Action</h2>
-                <h3 className="text-4xl font-black text-base-900 dark:text-white tracking-tighter">Your Daily Vitals</h3>
-            </div>
-            <NavLink to="/analytics" className="text-[9px] font-black uppercase tracking-widest px-6 py-3 bg-white dark:bg-base-700 text-base-800 dark:text-white rounded-2xl hover:bg-primary-500 hover:text-white transition-all shadow-xl border border-black/5">
-                Full Report
+    <section className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-soft border border-base-200 dark:border-base-700">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400">{t('dashboard.today_focus.title')}</h2>
+            <NavLink to="/analytics" className="text-sm font-semibold text-primary-500 hover:underline">
+                {t('dashboard.today_focus.view_analytics_link')} &rarr;
             </NavLink>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Stage 1: Assessment */}
-            <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-1.5 h-6 bg-primary-500 rounded-full"></div>
-                    <h4 className="font-black text-base-900 dark:text-base-100 text-[11px] uppercase tracking-widest">Assessment</h4>
-                </div>
-                <div className="flex flex-col gap-3">
-                    {(['happy', 'neutral', 'sad'] as const).map(mood => (
-                        <button
-                            key={mood}
-                            onClick={() => onMoodSelect(mood)}
-                            className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border-2 transition-all flex items-center justify-center gap-4 ${
-                                selectedMood === mood 
-                                ? 'bg-primary-500 border-primary-500 text-white shadow-2xl shadow-primary-500/30 scale-105' 
-                                : 'bg-white/50 dark:bg-base-900/30 border-transparent text-base-600 dark:text-base-400 hover:border-primary-500/30'
-                            }`}
-                        >
-                            <span className="text-xl">{mood === 'happy' ? '😊' : mood === 'neutral' ? '😐' : '😔'}</span>
-                            {t(`dashboard.mood.${mood}`)}
-                        </button>
-                    ))}
-                </div>
-            </div>
 
-            {/* Stage 2: Engagement */}
-            <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-1.5 h-6 bg-primary-500 rounded-full"></div>
-                    <h4 className="font-black text-base-900 dark:text-base-100 text-[11px] uppercase tracking-widest">Protocol</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left Column: Mood & Challenge */}
+            <div className="space-y-6">
+                <div>
+                    <h3 className="text-sm font-bold uppercase text-base-500 dark:text-base-400 mb-3 tracking-wider">{t('dashboard.mood.title')}</h3>
+                    <div className="flex gap-2">
+                        {(['happy', 'neutral', 'sad'] as const).map(mood => (
+                            <button
+                                key={mood}
+                                onClick={() => onMoodSelect(mood)}
+                                className={`flex-1 py-3 px-2 rounded-xl border-2 transition-all flex flex-col items-center gap-1 ${
+                                    selectedMood === mood 
+                                    ? 'bg-primary-500 border-primary-500 text-white shadow-md scale-105' 
+                                    : 'bg-white dark:bg-base-700 border-base-200 dark:border-base-600 text-base-600 dark:text-base-300 hover:border-primary-300'
+                                }`}
+                            >
+                                <span className="text-2xl">{mood === 'happy' ? '😊' : mood === 'neutral' ? '😐' : '😔'}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest">{t(`dashboard.mood.${mood}`)}</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
+
                 {dailyChallenge && (
-                    <div className="bg-white/30 dark:bg-base-900/20 p-6 rounded-3xl border border-white/20 h-full flex flex-col">
-                        <p className="text-[11px] font-black text-primary-500 mb-3 uppercase tracking-widest">{dailyChallenge.title}</p>
-                        <p className="text-sm text-base-700 dark:text-base-300 leading-relaxed mb-8 font-medium italic">"{dailyChallenge.task}"</p>
+                    <div className="p-5 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
+                        <h3 className="text-xs font-black uppercase text-primary-600 dark:text-primary-400 mb-2 tracking-widest">{t('dashboard.today_focus.challenge_title')}</h3>
+                        <p className="font-bold text-base-900 dark:text-base-100 mb-1">{dailyChallenge.title}</p>
+                        <p className="text-sm text-base-600 dark:text-base-400 italic mb-4">"{dailyChallenge.task}"</p>
                         <button 
                             onClick={onCompleteChallenge}
                             disabled={isChallengeCompleted}
-                            className={`mt-auto w-full py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all shadow-xl ${
+                            className={`w-full py-3 rounded-lg font-bold text-sm transition-colors ${
                                 isChallengeCompleted 
                                 ? 'bg-accent-500 text-white cursor-default' 
-                                : 'bg-base-900 text-white dark:bg-white dark:text-base-900 hover:bg-primary-500 hover:text-white'
+                                : 'bg-primary-500 text-white hover:bg-primary-600 shadow-md'
                             }`}
                         >
-                            {isChallengeCompleted ? 'Completed ✓' : 'Execute Task'}
+                            {isChallengeCompleted ? t('dashboard.challenge_button.completed') : t('dashboard.challenge_button.complete')}
                         </button>
                     </div>
                 )}
             </div>
 
-            {/* Stage 3: Reflection */}
-            <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-1.5 h-6 bg-primary-500 rounded-full"></div>
-                    <h4 className="font-black text-base-900 dark:text-base-100 text-[11px] uppercase tracking-widest">Integration</h4>
-                </div>
-                <div className="bg-white/30 dark:bg-base-900/20 p-6 rounded-3xl border border-white/20 h-full flex flex-col justify-between">
-                    <p className="text-sm text-base-500 dark:text-base-400 leading-relaxed italic">
-                        Cognitive integration through journaling increases long-term neuroplasticity and sobriety success rates.
-                    </p>
-                    <button onClick={onStartJournal} className="w-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] border-2 border-primary-500/20 hover:bg-primary-500 hover:text-white transition-all shadow-lg">
-                        Open Journal
+            {/* Right Column: Journal Prompt */}
+            <div className="flex flex-col justify-center p-6 bg-base-50 dark:bg-base-900/30 rounded-xl border border-base-100 dark:border-base-700">
+                <div className="text-center">
+                    <div className="w-12 h-12 bg-white dark:bg-base-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </div>
+                    <h3 className="text-lg font-bold text-base-800 dark:text-base-100 mb-2">{t('dashboard.today_focus.journal_title')}</h3>
+                    <p className="text-sm text-base-600 dark:text-base-400 mb-6">{t('dashboard.today_focus.journal_prompt')}</p>
+                    <button onClick={onStartJournal} className="inline-block px-8 py-3 bg-base-800 text-white dark:bg-base-200 dark:text-base-900 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">
+                        {t('dashboard.today_focus.journal_button')}
                     </button>
                 </div>
             </div>
         </div>
-      </div>
     </section>
   );
 };

@@ -81,9 +81,7 @@
       }
       /* Transitions are applied only after the initial render to avoid flashes of color. */
       /* A class is added to the body via JS to enable them. */
-      .enable-transitions *, 
-      .enable-transitions *::before, 
-      .enable-transitions *::after {
+      .enable-transitions * {
         transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-duration: 350ms;
@@ -109,9 +107,11 @@
         --color-primary-700: 180 83 9;
         --color-primary-800: 146 64 14;
         --color-primary-900: 120 53 15;
+
+        --color-secondary-500: 14 165 233; /* Sky 500 */
       }
       html.dark {
-        /* Primary: Emerald (Green) */
+        /* Enhanced Emerald Green Theme for Dark Mode */
         --color-primary-50: 236 253 245;
         --color-primary-100: 209 250 229;
         --color-primary-200: 167 243 208;
@@ -122,6 +122,9 @@
         --color-primary-700: 4 120 87;
         --color-primary-800: 6 95 70;
         --color-primary-900: 6 78 59;
+
+        /* Brightened Secondary Color (Sky Blue) for High Visibility in Dark Theme */
+        --color-secondary-500: 56 189 248; /* Sky 400 - more vibrant on dark */
       }
       button, a {
         @apply active:scale-95;
@@ -193,13 +196,13 @@
                 800: 'rgb(var(--color-primary-800) / <alpha-value>)',
                 900: 'rgb(var(--color-primary-900) / <alpha-value>)',
               },
-              secondary: { // Sky
+              secondary: { 
                 50: '#f0f9ff',
                 100: '#e0f2fe',
                 200: '#bae6fd',
                 300: '#7dd3fc',
                 400: '#38bdf8',
-                500: '#0ea5e9',
+                500: 'rgb(var(--color-secondary-500) / <alpha-value>)',
                 600: '#0284c7',
                 700: '#0369a1',
                 800: '#075985',

@@ -1,26 +1,31 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
-import { MoodEntry, JournalEntry, Program, Milestone, WellnessEntry } from '../types';
-import { calculateJournalStreak, calculateMilestones, getUserName } from '../utils';
+import { MoodEntry, JournalEntry, Program, Goal, Milestone, WellnessEntry } from '../types';
+import { calculateJournalStreak, calculateMilestones, formatTimeAgo } from '../utils';
 import MoodTrendChart from '../components/MoodTrendChart';
+import { getAnalyticsInsights } from '../services/geminiService';
 import SEOMeta from '../components/SEOMeta';
 import WellnessTrendChart from '../components/WellnessTrendChart';
-import { useToast } from '../hooks/useToast';
 
 const AnalyticsPage: React.FC = () => {
   const { t, language } = useLocalization();
-  const { getScopedKey, currentUser } = useAuth();
-  const { showToast } = useToast();
+  const { getScopedKey } = useAuth();
+  const navigate = useNavigate();
+
   const [program, setProgram] = useState<Program | null>(null);
   const [currentDay, setCurrentDay] = useState<number>(0);
-  const [journalStreak, setJournalStreak] = useState(0);
-  const [completedChallenges, setCompletedChallenges] = useState(0);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
   const [wellnessHistory, setWellnessHistory] = useState<WellnessEntry[]>([]);
+  const [completedChallenges, setCompletedChallenges] = useState<number[]>([]);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
+  
+  const [insights, setInsights] = useState<{ type: string; title: string; text: string; action?: string; cta?: string }[]>([]);
+  const [isInsightsLoading, setIsInsightsLoading] = useState(false);
+  const [insightsError, setInsightsError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -37,135 +42,230 @@ const AnalyticsPage: React.FC = () => {
         const wellness: WellnessEntry[] = JSON.parse(localStorage.getItem(getScopedKey('wellness-log')) || '[]');
         const completed: number[] = JSON.parse(localStorage.getItem(getScopedKey('completedChallenges')) || '[]');
         
+        setJournalEntries(journal);
         setMoodHistory(moods);
         setWellnessHistory(wellness);
-        setCompletedChallenges(completed.length);
-        const streak = calculateJournalStreak(journal);
-        setJournalStreak(streak);
-        setMilestones(calculateMilestones({ currentDay: day, journalStreak: streak, completedChallenges: completed.length }));
+        setCompletedChallenges(completed);
+        setMilestones(calculateMilestones({ currentDay: day, journalStreak: calculateJournalStreak(journal), completedChallenges: completed.length }));
       }
     } catch (e) { console.error(e); }
-  }, [getScopedKey, language]);
+  }, [getScopedKey]);
 
-  const shareRecoveryCard = async () => {
-    const name = currentUser ? getUserName(currentUser) : "Champion";
-    const text = `🚀 My Recovery Stats on Aman AI:
-🔥 Streak: ${journalStreak} Days
-✅ Challenges: ${completedChallenges}
-🌱 Program: ${program?.name}
+  useEffect(() => {
+    if (!program) return;
 
-Aman AI is the digital therapeutic helping me heal in total privacy. #AmanAI #ForbesUnder30 #RecoveryRevolution`;
-    
-    if (navigator.share) {
+    const fetchInsights = async () => {
+        setIsInsightsLoading(true);
+        setInsightsError(null);
         try {
-            await navigator.share({ title: 'My Aman AI Progress', text, url: 'https://amandigitalcare.com' });
-        } catch (err) {}
-    } else {
-        navigator.clipboard.writeText(text);
-        showToast("Stats copied! Share them to inspire others.", "success");
-    }
+            const last30DaysMoods = moodHistory.slice(-30);
+            const happyCount = last30DaysMoods.filter(m => m.mood === 'happy').length;
+            const neutralCount = last30DaysMoods.filter(m => m.mood === 'neutral').length;
+            const sadCount = last30DaysMoods.filter(m => m.mood === 'sad').length;
+            
+            const last30DaysChallenges = completedChallenges.filter(day => day > currentDay - 30);
+            const challengeAndHappyDays = last30DaysMoods.filter(m => {
+                const dayOfMood = Math.floor(Math.abs(new Date(m.date).getTime() - new Date(localStorage.getItem(getScopedKey('enrollmentDate'))!).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                return m.mood === 'happy' && last30DaysChallenges.includes(dayOfMood);
+            }).length;
+
+            const analyticsData = {
+                programName: program.name,
+                journalCount: journalEntries.filter(j => new Date(j.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length,
+                challengeCount: last30DaysChallenges.length,
+                moods: { happy: happyCount, neutral: neutralCount, sad: sadCount },
+                challengeAndHappyDays,
+                language
+            };
+
+            const fetchedInsights = await getAnalyticsInsights(analyticsData);
+            setInsights(fetchedInsights);
+        } catch (error) {
+            console.error(error);
+            setInsightsError(t('analytics.insights.error'));
+        } finally {
+            setIsInsightsLoading(false);
+        }
+    };
+
+    fetchInsights();
+  }, [program, language, getScopedKey]);
+
+  const moodDistribution = useMemo(() => {
+    const total = moodHistory.length;
+    if (total === 0) return { happy: 0, neutral: 0, sad: 0 };
+    return {
+      happy: Math.round((moodHistory.filter(m => m.mood === 'happy').length / total) * 100),
+      neutral: Math.round((moodHistory.filter(m => m.mood === 'neutral').length / total) * 100),
+      sad: Math.round((moodHistory.filter(m => m.mood === 'sad').length / total) * 100),
+    };
+  }, [moodHistory]);
+
+  const handleActionClick = (action: string) => {
+      switch(action) {
+          case 'NAVIGATE_TOOLKIT': navigate('/toolkit'); break;
+          case 'NAVIGATE_GOALS': navigate('/dashboard'); break;
+          case 'NAVIGATE_RESOURCES': navigate('/resources'); break;
+          default: break;
+      }
   };
 
-  if (!program) return (
-    <div className="flex items-center justify-center h-[70vh] text-center p-6 animate-fade-in">
-        <div className="max-w-sm">
-            <h1 className="text-4xl font-black text-base-900 dark:text-white mb-6 tracking-tighter uppercase">Mission Data Missing</h1>
-            <NavLink to="/programs" className="bg-primary-500 text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary-500/20">Initialize Program</NavLink>
-        </div>
-    </div>
-  );
+  if (!program) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        <h1 className="text-3xl font-bold text-base-800 dark:text-base-200 mb-4">{t('analytics.no_program')}</h1>
+        <NavLink to="/programs" className="text-primary-600 dark:text-primary-400 font-bold text-lg hover:underline">
+          {t('analytics.select_program_link')}
+        </NavLink>
+      </div>
+    );
+  }
 
   return (
     <>
-    <SEOMeta title="Clinical Analytics | Aman AI" description="Advanced recovery tracking and impact metrics." noIndex={true} />
-    <div className="py-12 container mx-auto px-4 lg:px-8 max-w-7xl animate-fade-in">
-        <header className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div>
-                <h1 className="text-6xl font-black text-base-900 dark:text-white uppercase tracking-tighter leading-none">
-                    Impact <span className="text-primary-500">Report</span>
-                </h1>
-                <p className="text-base-500 font-bold mt-4 uppercase tracking-[0.3em] text-xs">Personal Health Data Terminal v4.0</p>
-            </div>
-            <button 
-                onClick={shareRecoveryCard}
-                className="bg-base-900 text-white dark:bg-white dark:text-base-900 px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center gap-3 hover:scale-105 transition-all shadow-2xl"
-            >
-                <span>Export Impact Card</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
-            </button>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <StatCard title="Recovery Velocity" value={`${journalStreak * 1.5}%`} trend="up" subtitle="Positive Neural Reinforcement" />
-            <StatCard title="Engagement Ratio" value={`${Math.round((completedChallenges/currentDay)*100)}%`} trend="stable" subtitle="Active Therapeutic Participation" />
-            <StatCard title="Estimated Savings" value={`$${completedChallenges * 45}`} trend="up" subtitle="Calculated Healthcare Value" />
+    <SEOMeta
+        title={t('seo.analytics.title')}
+        description={t('seo.analytics.description')}
+        noIndex={true}
+    />
+    <div className="py-12 bg-base-100/50 dark:bg-base-900/50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('analytics.title')}</h1>
+          <p className="mt-4 text-lg text-base-600 dark:text-base-300 max-w-3xl mx-auto">{t('analytics.subtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 space-y-8">
-            <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-3xl p-10 rounded-[2.5rem] shadow-soft-lg border border-white/20 dark:border-base-700/30">
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-black text-base-900 dark:text-white uppercase tracking-tighter">Mood Trajectory</h2>
-                    <div className="flex gap-2">
-                        <span className="w-3 h-3 rounded-full bg-primary-500"></span>
-                        <span className="text-[10px] font-bold text-base-500 uppercase">30-Day Period</span>
-                    </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <StatCard title={t('analytics.program_progress.title')} value={currentDay} subtitle={t('analytics.stat.progress_subtitle')} total={90} color="primary" />
+            <StatCard title={t('dashboard.progress_title')} value={completedChallenges.length} subtitle={t('analytics.stat.challenges_subtitle')} total={90} color="accent" />
+            <StatCard title={t('analytics.streak.title')} value={calculateJournalStreak(journalEntries)} subtitle={t('analytics.streak.days')} color="secondary" />
+            <StatCard title={t('analytics.milestones.title')} value={milestones.length} subtitle="achieved" color="warning" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.mood.title')}</h2>
                 <MoodTrendChart data={moodHistory} />
             </div>
 
-            <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-3xl p-10 rounded-[2.5rem] shadow-soft-lg border border-white/20 dark:border-base-700/30">
-                <h2 className="text-xl font-black text-base-900 dark:text-white uppercase tracking-tighter mb-8">Wellness Correlation</h2>
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.wellness.title')}</h2>
                 <WellnessTrendChart data={wellnessHistory} />
             </div>
+
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.recent_entries.title')}</h2>
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                    {journalEntries.length > 0 ? journalEntries.slice().reverse().map((entry, i) => (
+                        <div key={i} className="p-4 bg-base-100/50 dark:bg-base-700/50 rounded-xl border border-base-200 dark:border-base-600">
+                            <p className="text-xs font-semibold text-primary-600 dark:text-primary-400 mb-1">{new Date(entry.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            <p className="text-base-700 dark:text-base-200 italic line-clamp-3">"{entry.text}"</p>
+                        </div>
+                    )) : <p className="text-base-500 dark:text-base-400 italic text-center py-4">{t('analytics.no_journal_entries')}</p>}
+                </div>
+            </div>
           </div>
-          
-          <div className="lg:col-span-4 space-y-8">
-             <section className="bg-gradient-to-br from-primary-500 to-primary-700 p-10 rounded-[2.5rem] shadow-2xl text-white relative overflow-hidden group">
-                <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                <h2 className="text-xl font-black uppercase tracking-widest mb-8">Elite Milestones</h2>
+
+          <div className="space-y-8">
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.insights.title')}</h2>
+                {isInsightsLoading ? (
+                    <div className="flex justify-center py-8">
+                        <div className="w-8 h-8 border-4 border-primary-100 border-t-primary-500 rounded-full animate-spin"></div>
+                    </div>
+                ) : insightsError ? (
+                    <p className="text-warning-500 text-sm italic">{insightsError}</p>
+                ) : (
+                    <div className="space-y-4">
+                        {insights.map((insight, i) => (
+                            <div key={i} className="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border-l-4 border-primary-500">
+                                <p className="font-bold text-primary-700 dark:text-primary-300 text-sm mb-1">{insight.title}</p>
+                                <p className="text-sm text-base-700 dark:text-base-300">{insight.text}</p>
+                                {insight.action && insight.cta && (
+                                    <button onClick={() => handleActionClick(insight.action!)} className="mt-3 text-xs font-bold text-primary-600 dark:text-primary-400 hover:underline uppercase tracking-wider">
+                                        {insight.cta} &rarr;
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.mood_distribution.title')}</h2>
                 <div className="space-y-4">
-                    {milestones.length > 0 ? milestones.slice(-5).reverse().map(m => (
-                        <div key={m.id} className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center gap-4 hover:bg-white/20 transition-all cursor-default">
-                            <span className="text-3xl filter drop-shadow-md">{m.icon}</span>
+                    <div className="relative pt-1">
+                        <div className="flex mb-2 items-center justify-between">
+                            <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-accent-600 bg-accent-100">{t('analytics.mood_dist.happy')}</div>
+                            <div className="text-right text-xs font-semibold inline-block text-accent-600">{moodDistribution.happy}%</div>
+                        </div>
+                        <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-accent-100">
+                            <div style={{ width: `${moodDistribution.happy}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-accent-500"></div>
+                        </div>
+                    </div>
+                    <div className="relative pt-1">
+                        <div className="flex mb-2 items-center justify-between">
+                            <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-secondary-600 bg-secondary-100">{t('analytics.mood_dist.neutral')}</div>
+                            <div className="text-right text-xs font-semibold inline-block text-secondary-600">{moodDistribution.neutral}%</div>
+                        </div>
+                        <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-secondary-100">
+                            <div style={{ width: `${moodDistribution.neutral}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-secondary-500"></div>
+                        </div>
+                    </div>
+                    <div className="relative pt-1">
+                        <div className="flex mb-2 items-center justify-between">
+                            <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-warning-600 bg-warning-100">{t('analytics.mood_dist.sad')}</div>
+                            <div className="text-right text-xs font-semibold inline-block text-warning-600">{moodDistribution.sad}%</div>
+                        </div>
+                        <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-warning-100">
+                            <div style={{ width: `${moodDistribution.sad}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-warning-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft">
+                <h2 className="text-xl font-bold text-base-800 dark:text-base-200 mb-6">{t('analytics.milestones.title')}</h2>
+                <div className="space-y-3">
+                    {milestones.length > 0 ? milestones.slice().reverse().map(m => (
+                        <div key={m.id} className="flex items-center gap-3 p-3 bg-base-100/50 dark:bg-base-700/50 rounded-xl border border-base-200 dark:border-base-600">
+                            <span className="text-2xl">{m.icon}</span>
                             <div>
-                                <p className="font-black text-sm leading-tight uppercase">{m.title}</p>
-                                <p className="text-[10px] opacity-70 mt-0.5">{m.description}</p>
+                                <p className="font-bold text-sm text-base-800 dark:text-base-100">{m.title}</p>
+                                <p className="text-[10px] text-base-500 dark:text-base-400 leading-tight uppercase tracking-wider">{m.description}</p>
                             </div>
                         </div>
-                    )) : <p className="text-center py-10 font-bold opacity-60">Begin mission to unlock stats.</p>}
+                    )) : <p className="text-sm text-base-500 dark:text-base-400 italic">{t('analytics.milestones.empty')}</p>}
                 </div>
-                <NavLink to="/toolkit" className="mt-8 block text-center py-4 bg-white text-primary-600 font-black rounded-2xl text-xs uppercase tracking-widest hover:bg-base-50 transition-all">Strengthen Foundation</NavLink>
-            </section>
-
-            <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 dark:border-base-700/30">
-                <h3 className="text-xs font-black text-base-400 uppercase tracking-widest mb-4">Clinical Context</h3>
-                <p className="text-sm text-base-600 dark:text-base-400 leading-relaxed italic">
-                    "Recovery velocity is calculated based on consistent journaling and challenge completion, representing the strengthening of prefrontal cortex regulation."
-                </p>
             </div>
           </div>
         </div>
+      </div>
     </div>
-    <style>{`
-        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    `}</style>
     </>
   );
 };
 
-const StatCard = ({ title, value, subtitle, trend }: any) => (
-    <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/20 dark:border-base-700/30 shadow-soft-lg group hover:-translate-y-1 transition-all">
-        <div className="flex justify-between items-start mb-2">
-            <p className="text-[10px] font-black text-base-400 uppercase tracking-[0.2em]">{title}</p>
-            <span className={`text-xs font-black ${trend === 'up' ? 'text-accent-500' : 'text-primary-500'}`}>
-                {trend === 'up' ? '▲' : '●'}
-            </span>
+const StatCard = ({ title, value, subtitle, total, color }: { title: string; value: number | string; subtitle: string; total?: number; color: 'primary' | 'accent' | 'secondary' | 'warning' }) => {
+    const colorClasses = {
+        primary: 'text-primary-600 bg-primary-100 dark:bg-primary-900/30',
+        accent: 'text-accent-600 bg-accent-100 dark:bg-accent-900/30',
+        secondary: 'text-secondary-600 bg-secondary-100 dark:bg-secondary-900/30',
+        warning: 'text-warning-600 bg-warning-100 dark:bg-warning-900/30',
+    };
+    
+    return (
+        <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md p-6 rounded-2xl shadow-soft flex flex-col items-center text-center">
+            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 ${colorClasses[color]}`}>{title}</span>
+            <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-black text-base-900 dark:text-white tracking-tighter">{value}</span>
+                {total && <span className="text-base-400 font-bold">/{total}</span>}
+            </div>
+            <span className="text-xs font-bold text-base-500 mt-1 uppercase tracking-widest">{subtitle}</span>
         </div>
-        <p className="text-5xl font-black text-base-900 dark:text-white tracking-tighter mb-1">{value}</p>
-        <p className="text-[10px] font-bold text-base-500 uppercase tracking-widest opacity-80">{subtitle}</p>
-    </div>
-);
+    );
+};
 
 export default AnalyticsPage;
