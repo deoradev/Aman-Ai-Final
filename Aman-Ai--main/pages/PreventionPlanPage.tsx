@@ -2,14 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-// Fix: Removed 'LiveSession' as it's not an exported member from the module.
 import { LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
 import { buildPreventionPlanSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
 import { PreventionPlan } from '../types';
 import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
-import audioProcessorUrl from '../audioProcessor.js?url';
 
 type Status = 'idle' | 'connecting' | 'active' | 'saving' | 'ended' | 'error';
 type Transcription = { author: string, text: string };
@@ -74,7 +72,7 @@ const PreventionPlanPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
 
-    // Fix: Changed 'LiveSession' to 'any' since it's not exported.
+    // FIXED: Removed non-existent LiveSession type
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -133,7 +131,7 @@ const PreventionPlanPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
-            await inputAudioContextRef.current.audioWorklet.addModule(audioProcessorUrl);
+            await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
             audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
             audioWorkletNodeRef.current.port.onmessage = (event) => {
@@ -174,7 +172,6 @@ const PreventionPlanPage: React.FC = () => {
                     if (message.toolCall) {
                         for (const fc of message.toolCall.functionCalls) {
                             if (fc.name === 'updatePlan') {
-                                // Fix: Add type assertions to handle 'unknown' type from fc.args
                                 setPlan(prev => ({
                                     myWhy: (fc.args.myWhy as string) || prev.myWhy,
                                     triggers: [...new Set([...prev.triggers, ...((fc.args.triggers as string[]) || [])])],
@@ -182,7 +179,7 @@ const PreventionPlanPage: React.FC = () => {
                                     supportNetwork: [...prev.supportNetwork, ...((fc.args.supportNetwork as { name: string; contactInfo: string }[]) || [])]
                                 }));
                                 sessionPromiseRef.current?.then(session => session.sendToolResponse({
-                                    functionResponses: { id: fc.id, name: fc.name, response: { result: "ok" } }
+                                    functionResponses: [{ id: fc.id, name: fc.name, response: { result: "ok" } }]
                                 }));
                             }
                         }
@@ -211,7 +208,7 @@ const PreventionPlanPage: React.FC = () => {
             };
 
             sessionPromiseRef.current = ai.live.connect({
-                model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+                model: 'gemini-2.5-flash-native-audio-preview-12-2025',
                 callbacks,
                 config: {
                     responseModalities: [Modality.AUDIO],

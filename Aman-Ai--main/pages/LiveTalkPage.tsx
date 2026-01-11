@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalization } from '../hooks/useLocalization';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { useAuth } from '../hooks/useAuth';
-// Fix: Removed 'LiveSession' as it's not an exported member from the module.
 import { LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
 import { MoodEntry } from '../types';
@@ -10,7 +9,6 @@ import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } f
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
-import audioProcessorUrl from '../audioProcessor.js?url';
 
 type Status = 'idle' | 'connecting' | 'connected' | 'ended' | 'error';
 type Transcription = { author: string, text: string };
@@ -80,7 +78,7 @@ const LiveTalkPage: React.FC = () => {
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(128));
   const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Fenrir'>('Zephyr');
 
-  // Fix: Changed 'LiveSession' to 'any' since it's not exported.
+  // FIXED: Removed incorrect LiveSession type reference
   const sessionPromiseRef = useRef<Promise<any> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -155,7 +153,8 @@ const LiveTalkPage: React.FC = () => {
         throw new Error("AudioWorklet not supported in this browser.");
       }
       
-      await inputAudioContextRef.current.audioWorklet.addModule(audioProcessorUrl);
+      // Load from correct local path
+      await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
       audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
       audioWorkletNodeRef.current.port.onmessage = (event) => {
@@ -212,13 +211,13 @@ const LiveTalkPage: React.FC = () => {
                         localStorage.setItem(key, JSON.stringify(newMoods));
 
                         sessionPromiseRef.current?.then(session => session.sendToolResponse({
-                            functionResponses: { id: fc.id, name: fc.name, response: { result: "ok" } }
+                            functionResponses: [{ id: fc.id, name: fc.name, response: { result: "ok" } }]
                         }));
                     }
                 }
             }
 
-            const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
+            const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
             if (audio && outputAudioContextRef.current) {
                 setIsAISpeaking(true);
                 const outCtx = outputAudioContextRef.current;
@@ -249,7 +248,7 @@ const LiveTalkPage: React.FC = () => {
       };
 
       sessionPromiseRef.current = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+        model: 'gemini-2.5-flash-native-audio-preview-12-2025',
         callbacks,
         config: {
           responseModalities: [Modality.AUDIO],
