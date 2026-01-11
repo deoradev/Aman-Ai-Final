@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 
 interface SEOMetaProps {
@@ -20,7 +19,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
   schema, 
   noIndex,
   type = 'website',
-  image = 'https://amandigitalcare.com/assets/icons/icon-512x512.png'
+  image = 'https://amandigitalcare.com/assets/icons/og-image.png'
 }) => {
   useEffect(() => {
     // Set Page Title
@@ -40,15 +39,17 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     setMetaTag('name', 'description', description);
     if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Open Graph (Social Loops)
+    // Open Graph (Social Loops - Vital for Viral Growth)
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', type);
     setMetaTag('property', 'og:image', image);
+    setMetaTag('property', 'og:url', canonicalUrl || window.location.href);
     setMetaTag('property', 'og:site_name', 'Aman Digital Care');
     
-    // Twitter Card
+    // Twitter Card (Optimized for X sharing)
     setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:site', '@AmanDigitalCare');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', image);
@@ -62,7 +63,6 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
             document.head.appendChild(linkCanonical);
         }
         linkCanonical.setAttribute('href', canonicalUrl);
-        setMetaTag('property', 'og:url', canonicalUrl);
     }
 
     // Indexing control
@@ -82,21 +82,21 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     const scriptId = 'json-ld-schema';
     let scriptTag = document.getElementById(scriptId);
     
-    // Default organization schema if none provided
     const defaultSchema = {
       "@context": "https://schema.org",
-      "@type": "MedicalOrganization",
+      "@type": "SoftwareApplication",
       "name": "Aman Digital Care",
-      "url": "https://amandigitalcare.com",
-      "logo": "https://amandigitalcare.com/assets/icons/icon-512x512.png",
-      "foundingDate": "2024",
-      "founder": {
-        "@type": "Person",
-        "name": "Aman Gupta",
-        "jobTitle": "Founder & Innovator"
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web, Android, iOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      "description": "Evidence-informed AI companion for confidential addiction recovery and mental wellness support.",
-      "nonprofitStatus": "https://schema.org/NGO"
+      "author": {
+        "@type": "MedicalOrganization",
+        "name": "AMAN AI Foundation"
+      }
     };
 
     const finalSchema = schema || defaultSchema;

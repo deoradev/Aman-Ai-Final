@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { MoodEntry, JournalEntry, Program, Goal, Milestone, WellnessEntry } from '../types';
 import { calculateJournalStreak, calculateMilestones, formatTimeAgo } from '../utils';
 import MoodTrendChart from '../components/MoodTrendChart';
@@ -13,6 +13,7 @@ import WellnessTrendChart from '../components/WellnessTrendChart';
 const AnalyticsPage: React.FC = () => {
   const { t, language } = useLocalization();
   const { getScopedKey } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [program, setProgram] = useState<Program | null>(null);
@@ -101,6 +102,25 @@ const AnalyticsPage: React.FC = () => {
     };
   }, [moodHistory]);
 
+  const handleShare = async () => {
+    const shareData = {
+        title: 'My Healing Journey',
+        text: `I've reached Day ${currentDay} on my path to wellness with Aman AI. Healing is a journey, and I'm proud of my progress! #AmanAI #Wellness`,
+        url: 'https://amandigitalcare.com'
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+            showToast('Progress copied to clipboard! Share it on your socials.', 'success');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+  };
+
   const handleActionClick = (action: string) => {
       switch(action) {
           case 'NAVIGATE_TOOLKIT': navigate('/toolkit'); break;
@@ -130,9 +150,20 @@ const AnalyticsPage: React.FC = () => {
     />
     <div className="py-12 bg-base-100/50 dark:bg-base-900/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('analytics.title')}</h1>
-          <p className="mt-4 text-lg text-base-600 dark:text-base-300 max-w-3xl mx-auto">{t('analytics.subtitle')}</p>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('analytics.title')}</h1>
+            <p className="mt-2 text-lg text-base-600 dark:text-base-300 max-w-2xl">{t('analytics.subtitle')}</p>
+          </div>
+          <button 
+            onClick={handleShare}
+            className="bg-primary-500 hover:bg-primary-600 text-white font-black py-4 px-8 rounded-2xl shadow-lg shadow-primary-500/20 flex items-center gap-3 transition-all active:scale-95"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+            </svg>
+            Share My Story
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

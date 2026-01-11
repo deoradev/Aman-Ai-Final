@@ -17,6 +17,7 @@ interface State {
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    // FIX: state is now correctly initialized and accessible
     this.state = { hasError: false };
   }
 
@@ -31,7 +32,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 
   public render() {
-    // FIX: this.state is now correctly typed
+    // FIX: this.state is now correctly typed and accessible via generics
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
