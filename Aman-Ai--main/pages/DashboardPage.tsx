@@ -57,7 +57,9 @@ const DashboardPage: React.FC = () => {
   const [journalText, setJournalText] = useState('');
   const [isJournalSaved, setIsJournalSaved] = useState(false);
   const [newMilestones, setNewMilestones] = useState<Milestone[]>([]);
-  const [selectedPersona] = useState<string>('therapist');
+  const [selectedPersona, setSelectedPersona] = useState<string>(() => {
+    return localStorage.getItem(getScopedKey('persona')) || 'therapist';
+  });
 
   const journalSectionRef = useRef<HTMLDivElement>(null);
 
@@ -127,6 +129,11 @@ const DashboardPage: React.FC = () => {
     setTimeout(() => setIsJournalSaved(false), 3000);
   };
 
+  const handlePersonaChange = (personaId: string) => {
+    setSelectedPersona(personaId);
+    localStorage.setItem(getScopedKey('persona'), personaId);
+  };
+
   const userDisplayName = currentUser ? getUserName(currentUser) : t('utils.user_name.guest');
 
   if (!program) return null;
@@ -181,6 +188,23 @@ const DashboardPage: React.FC = () => {
                         </div>
                     </div>
                 ))}
+
+                {/* Persona Switcher Section */}
+                <section className="bg-white/40 dark:bg-base-900/40 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-soft border border-white/20 dark:border-base-700/30">
+                    <h2 className="text-xs font-black text-primary-500 uppercase tracking-[0.3em] mb-6">{t('dashboard.persona.title')}</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {PERSONAS.map(p => (
+                            <button 
+                                key={p.id}
+                                onClick={() => handlePersonaChange(p.id)}
+                                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${selectedPersona === p.id ? 'bg-primary-500 border-primary-500 text-white shadow-xl shadow-primary-500/30 scale-105' : 'bg-white/50 dark:bg-base-800/50 border-transparent hover:border-primary-300 text-base-600 dark:text-base-400'}`}
+                            >
+                                <div className="text-2xl" dangerouslySetInnerHTML={{ __html: p.icon }} />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-center leading-tight">{p.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </section>
 
                 <TodayFocus
                     dailyChallenge={dailyChallenge}

@@ -531,17 +531,27 @@ export const playAndReturnAudio = async (
     onEnded: () => void
 ): Promise<AudioBufferSourceNode> => {
     const audioContext = getPlaybackAudioContext();
-    const pcmData = decode(base64Audio);
     
+    // Explicitly resume context (vital for browser autoplay policies)
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
+    const pcmData = decode(base64Audio);
     const audioBuffer = await decodeAudioData(pcmData, audioContext, 24000, 1);
     
     const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
     source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
+    
+    // Connect to gain then to destination to ensure volume is audible
+    gainNode.gain.value = 1.0;
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
     
     source.onended = onEnded;
-    
-    source.start();
+    source.start(0);
     
     return source;
 };
