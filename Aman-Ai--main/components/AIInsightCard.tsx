@@ -52,6 +52,7 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     }, [moods, journalEntries, journalStreak, userName, language, t, currentDay, completedChallenges]);
 
     const playEcho = async () => {
+        // User interaction detected here - safe to unlock AudioContext
         if (isPlayingEcho) {
             currentAudioRef.current?.stop();
             setIsPlayingEcho(false);
@@ -68,7 +69,8 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
             });
             setIsPlayingEcho(true);
         } catch (err) {
-            showToast("Audio playback failed. Please check volume.", 'error');
+            console.error("Echo playback failed:", err);
+            showToast("Audio playback failed. Please check your volume.", 'error');
         } finally {
             setIsEchoLoading(false);
         }

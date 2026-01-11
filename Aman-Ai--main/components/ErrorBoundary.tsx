@@ -13,11 +13,11 @@ interface State {
  * ErrorBoundary component to catch JavaScript errors anywhere in their child component tree,
  * log those errors, and display a fallback UI instead of the component tree that crashed.
  */
-// Fix: Added generics <ErrorBoundaryProps, State> to ensure 'this.props' and 'this.state' are correctly typed.
+/* Fix: Added generics <ErrorBoundaryProps, State> to ensure 'this.props' and 'this.state' are correctly typed in the class body. */
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Fix: State is now correctly recognized due to the class definition generics.
+    /* Fix: State is now correctly recognized due to the class definition generics. */
     this.state = { hasError: false };
   }
 
@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 
   public render() {
-    // Fix: 'this.state' is now correctly typed and accessible via generics.
+    /* Fix: 'this.state' is now correctly typed and accessible via generics. */
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Fix: 'this.props.children' is now accessible due to proper generic typing above.
+    /* Fix: 'this.props.children' is now accessible due to proper generic typing above. */
     return this.props.children; 
   }
 }

@@ -170,7 +170,7 @@ export const calculateMilestones = (data: { currentDay: number; journalStreak: n
     return achieved;
 };
 
-// --- AUDIO ENGINE: CORE PCM ASSEMBLY ---
+// --- ROBUST AUDIO ENGINE ---
 
 export function encode(bytes: Uint8Array) {
   let binary = '';
@@ -186,8 +186,8 @@ export function decode(base64: string): Uint8Array {
 }
 
 /**
- * DECODING LOGIC FOR RAW PCM 16-BIT DATA
- * This bypasses browser "file format" detection and works directly with audio memory.
+ * Manually decodes raw 16-bit PCM bytes into a Web Audio Buffer.
+ * Bypasses the standard decodeAudioData which requires headers.
  */
 export async function decodeAudioData(
   data: Uint8Array,
@@ -195,18 +195,14 @@ export async function decodeAudioData(
   sampleRate: number,
   numChannels: number,
 ): Promise<AudioBuffer> {
-  // Convert 8-bit bytes into 16-bit integers (Int16)
   const dataInt16 = new Int16Array(data.buffer);
   const frameCount = dataInt16.length / numChannels;
-  
-  // Create an empty AudioBuffer in the browser's audio memory
   const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
 
   for (let channel = 0; channel < numChannels; channel++) {
     const channelData = buffer.getChannelData(channel);
     for (let i = 0; i < frameCount; i++) {
-      // Scale Int16 (-32768 to 32767) to Float32 (-1.0 to 1.0)
-      // This is the critical step for Gemini's raw audio output
+      // Manual PCM conversion: Normalize Int16 (-32768..32767) to Float32 (-1.0..1.0)
       channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
     }
   }
@@ -219,22 +215,24 @@ export function createBlob(data: Float32Array): GenAIBlob {
   for (let i = 0; i < l; i++) {
     int16[i] = Math.max(-1, Math.min(1, data[i])) * 32767;
   }
-  return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
+  return {
+    data: encode(new Uint8Array(int16.buffer)),
+    mimeType: 'audio/pcm;rate=16000',
+  };
 }
 
 let playbackAudioContext: AudioContext | null = null;
 const getPlaybackAudioContext = (): AudioContext => {
     if (!playbackAudioContext || playbackAudioContext.state === 'closed') {
         playbackAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ 
-            sampleRate: 24000 // MUST match Gemini TTS native sample rate
+          sampleRate: 24000 // Native Gemini TTS rate
         });
     }
     return playbackAudioContext;
 };
 
 /**
- * HIGH-PRIORITY AUDIO PLAYBACK
- * Ensures the audio context is resumed and gain is applied.
+ * Ensures sound plays by force-resuming context and using manual PCM mapping.
  */
 export const playAndReturnAudio = async (
     base64Audio: string, 
@@ -242,20 +240,19 @@ export const playAndReturnAudio = async (
 ): Promise<AudioBufferSourceNode> => {
     const audioContext = getPlaybackAudioContext();
     
-    // Explicitly resume (Mobile browsers block sound otherwise)
+    // Explicitly resume to avoid browser "autoplay" blocks
     if (audioContext.state === 'suspended') {
       await audioContext.resume();
     }
 
-    const pcmData = decode(base64Audio);
-    // 24000Hz is required for Gemini-2.5-TTS
-    const audioBuffer = await decodeAudioData(pcmData, audioContext, 24000, 1);
+    const pcmBytes = decode(base64Audio);
+    const audioBuffer = await decodeAudioData(pcmBytes, audioContext, 24000, 1);
     
     const source = audioContext.createBufferSource();
     const gainNode = audioContext.createGain();
     
     source.buffer = audioBuffer;
-    gainNode.gain.value = 1.2; // Slight boost to ensure clarity
+    gainNode.gain.value = 1.0; // Full volume
     
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
