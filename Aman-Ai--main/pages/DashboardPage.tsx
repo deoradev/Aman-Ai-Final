@@ -257,7 +257,7 @@ const DashboardPage: React.FC = () => {
               </div>
 
               <div className="lg:col-span-4 h-[85vh] lg:sticky top-28">
-                  <Chatbot key={selectedPersona} />
+                  <Chatbot key={selectedPersona} personaId={selectedPersona} />
               </div>
             </div>
           </div>
