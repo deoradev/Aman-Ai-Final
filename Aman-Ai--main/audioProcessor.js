@@ -1,14 +1,11 @@
 class AudioProcessor extends AudioWorkletProcessor {
-  constructor() { super(); }
   process(inputs) {
-    // We only expect one input, with one channel.
-    const channel = inputs[0]?.[0];
-    if (channel) {
-      // Post a copy of the Float32Array to the main thread.
-      // The '.slice()' is important to create a copy, as the underlying ArrayBuffer is reused.
-      this.port.postMessage(channel.slice());
+    const input = inputs[0];
+    if (input && input[0]) {
+      const inputData = input[0];
+      // Post the raw Float32Array to the main thread for conversion
+      this.port.postMessage(inputData);
     }
-    // Return true to keep the processor alive.
     return true;
   }
 }

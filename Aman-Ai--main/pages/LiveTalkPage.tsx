@@ -78,7 +78,6 @@ const LiveTalkPage: React.FC = () => {
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(128));
   const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Fenrir'>('Zephyr');
 
-  // FIXED: Removed incorrect LiveSession type reference
   const sessionPromiseRef = useRef<Promise<any> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -153,14 +152,33 @@ const LiveTalkPage: React.FC = () => {
         throw new Error("AudioWorklet not supported in this browser.");
       }
       
-      // Load from correct local path
-      await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+      // Load AudioWorklet via Blob URL to avoid file path resolution issues
+      const blob = new Blob([`
+        class AudioProcessor extends AudioWorkletProcessor {
+          process(inputs) {
+            const input = inputs[0];
+            if (input && input[0]) {
+              this.port.postMessage(input[0]);
+            }
+            return true;
+          }
+        }
+        registerProcessor('audio-processor', AudioProcessor);
+      `], { type: 'application/javascript' });
+      const workletUrl = URL.createObjectURL(blob);
+      await inputAudioContextRef.current.audioWorklet.addModule(workletUrl);
+
       audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
       audioWorkletNodeRef.current.port.onmessage = (event) => {
-        const inputData = event.data;
+        const inputData = event.data; // Float32Array
         const pcmBlob = createBlob(inputData);
-        sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: pcmBlob }));
+        // CRITICAL: Ensure session is ready before sending
+        if (sessionPromiseRef.current) {
+          sessionPromiseRef.current.then(session => {
+            session.sendRealtimeInput({ media: pcmBlob });
+          });
+        }
       };
       
       const source = inputAudioContextRef.current.createMediaStreamSource(stream);
@@ -183,31 +201,30 @@ const LiveTalkPage: React.FC = () => {
                 setTranscriptions(prev => {
                     const last = prev[prev.length - 1];
                     if (last?.author === t('live_talk.model')) {
-                        last.text += message.serverContent.outputTranscription.text;
-                        return [...prev.slice(0, -1), last];
+                        return [...prev.slice(0, -1), { ...last, text: last.text + message.serverContent!.outputTranscription!.text }];
                     }
-                    return [...prev, { author: t('live_talk.model'), text: message.serverContent.outputTranscription.text }];
+                    return [...prev, { author: t('live_talk.model'), text: message.serverContent!.outputTranscription!.text }];
                 });
             }
             if (message.serverContent?.inputTranscription) {
                  setTranscriptions(prev => {
                     const last = prev[prev.length - 1];
                     if (last?.author === t('live_talk.user')) {
-                        last.text += message.serverContent.inputTranscription.text;
-                        return [...prev.slice(0, -1), last];
+                        return [...prev.slice(0, -1), { ...last, text: last.text + message.serverContent!.inputTranscription!.text }];
                     }
-                    return [...prev, { author: t('live_talk.user'), text: message.serverContent.inputTranscription.text }];
+                    return [...prev, { author: t('live_talk.user'), text: message.serverContent!.inputTranscription!.text }];
                 });
             }
 
             if (message.toolCall) {
                 for (const fc of message.toolCall.functionCalls) {
-                    if (fc.name === 'logMood' && (fc.args.mood === 'happy' || fc.args.mood === 'neutral' || fc.args.mood === 'sad')) {
+                    if (fc.name === 'logMood') {
+                        const moodArg = fc.args.mood as string;
                         const todayStr = new Date().toISOString().split('T')[0];
                         const key = getScopedKey('mood-history');
                         const moods: MoodEntry[] = JSON.parse(localStorage.getItem(key) || '[]') as MoodEntry[];
                         const newMoods = moods.filter(m => m.date !== todayStr);
-                        newMoods.push({ date: todayStr, mood: fc.args.mood as 'happy' | 'neutral' | 'sad' });
+                        newMoods.push({ date: todayStr, mood: moodArg as any });
                         localStorage.setItem(key, JSON.stringify(newMoods));
 
                         sessionPromiseRef.current?.then(session => session.sendToolResponse({
@@ -237,9 +254,16 @@ const LiveTalkPage: React.FC = () => {
                 nextStartTimeRef.current += audioBuffer.duration;
                 sourcesRef.current.add(sourceNode);
             }
+            
+            if (message.serverContent?.interrupted) {
+                sourcesRef.current.forEach(s => s.stop());
+                sourcesRef.current.clear();
+                setIsAISpeaking(false);
+            }
         },
-        onerror: (e: ErrorEvent) => {
-            setError(e.message || "An unknown error occurred.");
+        onerror: (e: any) => {
+            console.error("Live API Error:", e);
+            setError("Connection failed. Please check your microphone and network.");
             cleanup();
         },
         onclose: () => {
@@ -302,7 +326,7 @@ const LiveTalkPage: React.FC = () => {
                                     disabled={isSessionActive}
                                     className="sr-only peer"
                                 />
-                                <label htmlFor="female-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
+                                <label htmlFor="female-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50 transition-all">
                                     {t('live_talk.voice_selection.female')}
                                 </label>
                             </div>
@@ -317,7 +341,7 @@ const LiveTalkPage: React.FC = () => {
                                     disabled={isSessionActive}
                                     className="sr-only peer"
                                 />
-                                <label htmlFor="male-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50">
+                                <label htmlFor="male-voice" className="px-4 py-2 border-2 rounded-lg cursor-pointer peer-checked:border-primary-500 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 peer-disabled:opacity-50 transition-all">
                                     {t('live_talk.voice_selection.male')}
                                 </label>
                             </div>
@@ -335,7 +359,7 @@ const LiveTalkPage: React.FC = () => {
                         </button>
                     )}
                 </div>
-                {error && <p className="text-warning-500 mt-4">{error}</p>}
+                {error && <p className="text-warning-500 mt-4 font-semibold">{error}</p>}
                 {!isOnline && !isSessionActive && <p className="text-warning-500 mt-4">{t('offline.feature_unavailable')}</p>}
             </div>
             {transcriptions.length > 0 && (

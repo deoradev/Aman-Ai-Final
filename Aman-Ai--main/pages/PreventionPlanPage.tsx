@@ -72,7 +72,6 @@ const PreventionPlanPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [transcriptions, setTranscriptions] = useState<Transcription[]>([]);
 
-    // FIXED: Removed non-existent LiveSession type
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -131,12 +130,30 @@ const PreventionPlanPage: React.FC = () => {
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             
-            await inputAudioContextRef.current.audioWorklet.addModule('/Aman-Ai--main/audioProcessor.js');
+            // Reliable AudioWorklet loading
+            const blob = new Blob([`
+              class AudioProcessor extends AudioWorkletProcessor {
+                process(inputs) {
+                  const input = inputs[0];
+                  if (input && input[0]) {
+                    this.port.postMessage(input[0]);
+                  }
+                  return true;
+                }
+              }
+              registerProcessor('audio-processor', AudioProcessor);
+            `], { type: 'application/javascript' });
+            const workletUrl = URL.createObjectURL(blob);
+            await inputAudioContextRef.current.audioWorklet.addModule(workletUrl);
+
             audioWorkletNodeRef.current = new AudioWorkletNode(inputAudioContextRef.current, 'audio-processor');
 
             audioWorkletNodeRef.current.port.onmessage = (event) => {
                 const inputData = event.data;
-                sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: createBlob(inputData) }));
+                const pcmBlob = createBlob(inputData);
+                if (sessionPromiseRef.current) {
+                  sessionPromiseRef.current.then(session => session.sendRealtimeInput({ media: pcmBlob }));
+                }
             };
 
             const source = inputAudioContextRef.current.createMediaStreamSource(stream);
@@ -152,20 +169,18 @@ const PreventionPlanPage: React.FC = () => {
                         setTranscriptions(prev => {
                             const last = prev[prev.length - 1];
                             if (last?.author === t('live_talk.model')) {
-                                last.text += message.serverContent.outputTranscription.text;
-                                return [...prev.slice(0, -1), last];
+                                return [...prev.slice(0, -1), { ...last, text: last.text + message.serverContent!.outputTranscription!.text }];
                             }
-                            return [...prev, { author: t('live_talk.model'), text: message.serverContent.outputTranscription.text }];
+                            return [...prev, { author: t('live_talk.model'), text: message.serverContent!.outputTranscription!.text }];
                         });
                     }
                     if (message.serverContent?.inputTranscription) {
                          setTranscriptions(prev => {
                             const last = prev[prev.length - 1];
                             if (last?.author === t('live_talk.user')) {
-                                last.text += message.serverContent.inputTranscription.text;
-                                return [...prev.slice(0, -1), last];
+                                return [...prev.slice(0, -1), { ...last, text: last.text + message.serverContent!.inputTranscription!.text }];
                             }
-                            return [...prev, { author: t('live_talk.user'), text: message.serverContent.inputTranscription.text }];
+                            return [...prev, { author: t('live_talk.user'), text: message.serverContent!.inputTranscription!.text }];
                         });
                     }
 
@@ -202,8 +217,17 @@ const PreventionPlanPage: React.FC = () => {
                         nextStartTimeRef.current += audioBuffer.duration;
                         sourcesRef.current.add(sourceNode);
                     }
+                    
+                    if (message.serverContent?.interrupted) {
+                      sourcesRef.current.forEach(s => s.stop());
+                      sourcesRef.current.clear();
+                    }
                 },
-                onerror: (e: ErrorEvent) => { setError(e.message); cleanup(); },
+                onerror: (e: any) => { 
+                    console.error("Live API Error:", e);
+                    setError("Connection lost. Please try again."); 
+                    cleanup(); 
+                },
                 onclose: () => cleanup(),
             };
 
@@ -219,7 +243,7 @@ const PreventionPlanPage: React.FC = () => {
                 }
             });
         } catch (err) {
-            setError(err instanceof Error ? err.message : t('live_talk.error_mic'));
+            setError("Could not access microphone.");
             setStatus('error');
         }
     };
@@ -294,16 +318,16 @@ const PreventionPlanPage: React.FC = () => {
                         <StatusIndicator status={status} t={t} />
 
                         {status === 'idle' || status === 'ended' || status === 'error' ? (
-                            <button onClick={handleStartSession} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600">
+                            <button onClick={handleStartSession} className="bg-primary-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-primary-600 transition-all">
                                 {plan.myWhy ? "Continue Building Plan" : "Start Building Plan"}
                             </button>
                         ) : status === 'connecting' || status === 'active' ? (
-                            <button onClick={cleanup} className="bg-warning-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-warning-600">
+                            <button onClick={cleanup} className="bg-warning-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-warning-600 transition-all">
                                 {status === 'connecting' ? t('live_talk.connecting_button') : "End Session"}
                             </button>
                         ) : null}
 
-                        {error && <p className="text-warning-500 mt-4">{error}</p>}
+                        {error && <p className="text-warning-500 mt-4 font-semibold">{error}</p>}
                         
                         <div>
                             <button onClick={handleSavePlan} disabled={status === 'saving' || status === 'active' || status === 'connecting'} className="text-sm font-semibold bg-base-800 text-white dark:bg-base-200 dark:text-base-900 py-2 px-6 rounded-lg hover:bg-base-700 dark:hover:bg-base-300 transition-colors disabled:opacity-50">
