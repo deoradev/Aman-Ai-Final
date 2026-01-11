@@ -1,3 +1,4 @@
+
 import { JournalEntry, Program, Persona, Milestone, MoodEntry, Goal, ChatMessage } from './types';
 import { type Blob as GenAIBlob } from '@google/genai';
 import { PERSONAS } from './constants';
@@ -187,7 +188,7 @@ export function decode(base64: string): Uint8Array {
 
 /**
  * Manually decodes raw 16-bit PCM bytes into a Web Audio Buffer.
- * Bypasses the standard decodeAudioData which requires headers.
+ * Corrected to handle buffer alignment and Float32 scaling.
  */
 export async function decodeAudioData(
   data: Uint8Array,
@@ -195,15 +196,22 @@ export async function decodeAudioData(
   sampleRate: number,
   numChannels: number,
 ): Promise<AudioBuffer> {
-  const dataInt16 = new Int16Array(data.buffer);
-  const frameCount = dataInt16.length / numChannels;
-  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-
+  // CRITICAL: Int16Array requires a buffer with length multiple of 2.
+  // The DataView approach is safer if the data length is odd (though PCM shouldn't be).
+  const buffer = ctx.createBuffer(numChannels, data.length / 2 / numChannels, sampleRate);
+  
   for (let channel = 0; channel < numChannels; channel++) {
     const channelData = buffer.getChannelData(channel);
-    for (let i = 0; i < frameCount; i++) {
-      // Manual PCM conversion: Normalize Int16 (-32768..32767) to Float32 (-1.0..1.0)
-      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
+    for (let i = 0; i < channelData.length; i++) {
+      // Offset: i * channels + channel, then * 2 because each sample is 2 bytes
+      const byteOffset = (i * numChannels + channel) * 2;
+      
+      // Read 16-bit little-endian signed integer
+      let val = data[byteOffset] | (data[byteOffset + 1] << 8);
+      if (val & 0x8000) val |= ~0xFFFF; // Sign extend
+      
+      // Convert to -1.0 to 1.0 range
+      channelData[i] = val / 32768.0;
     }
   }
   return buffer;
@@ -225,14 +233,14 @@ let playbackAudioContext: AudioContext | null = null;
 const getPlaybackAudioContext = (): AudioContext => {
     if (!playbackAudioContext || playbackAudioContext.state === 'closed') {
         playbackAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ 
-          sampleRate: 24000 // Native Gemini TTS rate
+          sampleRate: 24000 
         });
     }
     return playbackAudioContext;
 };
 
 /**
- * Ensures sound plays by force-resuming context and using manual PCM mapping.
+ * Robustly plays audio and ensures context is unlocked.
  */
 export const playAndReturnAudio = async (
     base64Audio: string, 
@@ -240,22 +248,18 @@ export const playAndReturnAudio = async (
 ): Promise<AudioBufferSourceNode> => {
     const audioContext = getPlaybackAudioContext();
     
-    // Explicitly resume to avoid browser "autoplay" blocks
+    // CRITICAL: Force resume on every play attempt to catch browser blocking
     if (audioContext.state === 'suspended') {
       await audioContext.resume();
     }
 
     const pcmBytes = decode(base64Audio);
+    // Gemini 2.5 Flash TTS typically returns 24kHz Mono 16-bit PCM
     const audioBuffer = await decodeAudioData(pcmBytes, audioContext, 24000, 1);
     
     const source = audioContext.createBufferSource();
-    const gainNode = audioContext.createGain();
-    
     source.buffer = audioBuffer;
-    gainNode.gain.value = 1.0; // Full volume
-    
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    source.connect(audioContext.destination);
     
     source.onended = () => {
         onEnded();

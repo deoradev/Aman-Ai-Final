@@ -222,9 +222,14 @@ export const generateSpeech = async (text: string, voiceName: string): Promise<s
                 },
             },
         });
-        const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+        
+        // CRITICAL FIX: Do not use response.text. 
+        // Iterate candidates to find the inlineData part containing base64 PCM.
+        const audioPart = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+        const base64Audio = audioPart?.inlineData?.data;
+        
         if (!base64Audio) {
-            throw new Error("No audio data returned from API.");
+            throw new Error("No audio data returned from API candidates.");
         }
         return base64Audio;
     } catch (error) {
