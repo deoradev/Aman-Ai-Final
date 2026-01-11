@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
-import { getSponsorInsight } from '../services/geminiService';
-import { MoodEntry, AIInsight, JournalEntry, EchoAffirmation } from '../types';
+import { getSponsorInsight, generateSpeech } from '../services/geminiService';
+import { MoodEntry, AIInsight, JournalEntry } from '../types';
 import { playAndReturnAudio } from '../utils';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -25,6 +24,7 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     const [insight, setInsight] = useState<AIInsight | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     
+    const [isEchoLoading, setIsEchoLoading] = useState(false);
     const [isPlayingEcho, setIsPlayingEcho] = useState(false);
     const currentAudioRef = useRef<AudioBufferSourceNode | null>(null);
 
@@ -50,6 +50,29 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
         };
         fetchInsight();
     }, [moods, journalEntries, journalStreak, userName, language, t, currentDay, completedChallenges]);
+
+    const playEcho = async () => {
+        if (isPlayingEcho) {
+            currentAudioRef.current?.stop();
+            setIsPlayingEcho(false);
+            return;
+        }
+
+        if (!insight) return;
+        
+        setIsEchoLoading(true);
+        try {
+            const audioData = await generateSpeech(insight.text, 'Zephyr');
+            currentAudioRef.current = await playAndReturnAudio(audioData, () => {
+                setIsPlayingEcho(false);
+            });
+            setIsPlayingEcho(true);
+        } catch (err) {
+            showToast("Audio playback failed. Please check volume.", 'error');
+        } finally {
+            setIsEchoLoading(false);
+        }
+    };
 
     const getIcon = (type: AIInsight['type']) => {
         switch (type) {
@@ -82,10 +105,17 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
                     </div>
                      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button 
-                            onClick={() => navigate('/toolkit')}
-                            className="bg-base-900 text-white dark:bg-base-100 dark:text-base-900 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-widest hover:scale-105 transition-all"
+                            onClick={playEcho}
+                            disabled={isEchoLoading}
+                            className={`${isPlayingEcho ? 'bg-warning-500' : 'bg-base-900'} text-white dark:bg-base-100 dark:text-base-900 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-widest hover:scale-105 transition-all flex items-center justify-center gap-2`}
                         >
-                            Open Toolkit
+                            {isEchoLoading ? (
+                                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : isPlayingEcho ? (
+                                'Stop Echo'
+                            ) : (
+                                'Listen to Echo'
+                            )}
                         </button>
                         <button 
                             onClick={() => navigate('/live-talk')}

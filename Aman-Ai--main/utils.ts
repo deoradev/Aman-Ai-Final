@@ -8,23 +8,18 @@ export const safeLocalStorage = {
     try {
       return window.localStorage.getItem(key);
     } catch (e) {
-      console.warn(`LocalStorage is not available. Could not read item "${key}"`);
       return null;
     }
   },
   setItem: (key: string, value: string): void => {
     try {
       window.localStorage.setItem(key, value);
-    } catch (e) {
-      console.warn(`LocalStorage is not available. Could not set item "${key}"`);
-    }
+    } catch (e) {}
   },
   removeItem: (key: string): void => {
     try {
       window.localStorage.removeItem(key);
-    } catch (e) {
-      console.warn(`LocalStorage is not available. Could not remove item "${key}"`);
-    }
+    } catch (e) {}
   },
   key: (index: number): string | null => {
       try {
@@ -175,6 +170,104 @@ export const calculateMilestones = (data: { currentDay: number; journalStreak: n
     return achieved;
 };
 
+// --- AUDIO ENGINE: CORE PCM ASSEMBLY ---
+
+export function encode(bytes: Uint8Array) {
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+export function decode(base64: string): Uint8Array {
+  const binaryString = window.atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+  return bytes;
+}
+
+/**
+ * DECODING LOGIC FOR RAW PCM 16-BIT DATA
+ * This bypasses browser "file format" detection and works directly with audio memory.
+ */
+export async function decodeAudioData(
+  data: Uint8Array,
+  ctx: AudioContext,
+  sampleRate: number,
+  numChannels: number,
+): Promise<AudioBuffer> {
+  // Convert 8-bit bytes into 16-bit integers (Int16)
+  const dataInt16 = new Int16Array(data.buffer);
+  const frameCount = dataInt16.length / numChannels;
+  
+  // Create an empty AudioBuffer in the browser's audio memory
+  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
+
+  for (let channel = 0; channel < numChannels; channel++) {
+    const channelData = buffer.getChannelData(channel);
+    for (let i = 0; i < frameCount; i++) {
+      // Scale Int16 (-32768 to 32767) to Float32 (-1.0 to 1.0)
+      // This is the critical step for Gemini's raw audio output
+      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
+    }
+  }
+  return buffer;
+}
+
+export function createBlob(data: Float32Array): GenAIBlob {
+  const l = data.length;
+  const int16 = new Int16Array(l);
+  for (let i = 0; i < l; i++) {
+    int16[i] = Math.max(-1, Math.min(1, data[i])) * 32767;
+  }
+  return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
+}
+
+let playbackAudioContext: AudioContext | null = null;
+const getPlaybackAudioContext = (): AudioContext => {
+    if (!playbackAudioContext || playbackAudioContext.state === 'closed') {
+        playbackAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ 
+            sampleRate: 24000 // MUST match Gemini TTS native sample rate
+        });
+    }
+    return playbackAudioContext;
+};
+
+/**
+ * HIGH-PRIORITY AUDIO PLAYBACK
+ * Ensures the audio context is resumed and gain is applied.
+ */
+export const playAndReturnAudio = async (
+    base64Audio: string, 
+    onEnded: () => void
+): Promise<AudioBufferSourceNode> => {
+    const audioContext = getPlaybackAudioContext();
+    
+    // Explicitly resume (Mobile browsers block sound otherwise)
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
+    const pcmData = decode(base64Audio);
+    // 24000Hz is required for Gemini-2.5-TTS
+    const audioBuffer = await decodeAudioData(pcmData, audioContext, 24000, 1);
+    
+    const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
+    source.buffer = audioBuffer;
+    gainNode.gain.value = 1.2; // Slight boost to ensure clarity
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    source.onended = () => {
+        onEnded();
+    };
+    
+    source.start(0);
+    return source;
+};
+
 export const getAllUserData = (): { [key: string]: any } => {
     const data: { [key: string]: any } = {};
     const prefix = getScopedKey('').slice(0, -1);
@@ -197,82 +290,4 @@ export const deleteAllUserData = (): void => {
         if (key && key.startsWith(prefix)) keysToDelete.push(key);
     }
     keysToDelete.forEach(key => safeLocalStorage.removeItem(key));
-};
-
-// --- ROBUST AUDIO ENGINE ---
-export function encode(bytes: Uint8Array) {
-  let binary = '';
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
-}
-
-export function decode(base64: string): Uint8Array {
-  const binaryString = window.atob(base64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-  return bytes;
-}
-
-/**
- * Manually decodes raw 16-bit PCM bytes into a Web Audio Buffer.
- * This ensures the audio is audible across all browsers.
- */
-export async function decodeAudioData(
-  data: Uint8Array,
-  ctx: AudioContext,
-  sampleRate: number,
-  numChannels: number,
-): Promise<AudioBuffer> {
-  const dataInt16 = new Int16Array(data.buffer);
-  const frameCount = dataInt16.length / numChannels;
-  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-  for (let channel = 0; channel < numChannels; channel++) {
-    const channelData = buffer.getChannelData(channel);
-    for (let i = 0; i < frameCount; i++) {
-      // Manual PCM-to-Float conversion: Divide by 32768 to normalize between -1 and 1
-      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
-    }
-  }
-  return buffer;
-}
-
-export function createBlob(data: Float32Array): GenAIBlob {
-  const l = data.length;
-  const int16 = new Int16Array(l);
-  for (let i = 0; i < l; i++) int16[i] = data[i] * 32768;
-  return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
-}
-
-let playbackAudioContext: AudioContext | null = null;
-const getPlaybackAudioContext = (): AudioContext => {
-    if (!playbackAudioContext || playbackAudioContext.state === 'closed') {
-        playbackAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-    }
-    return playbackAudioContext;
-};
-
-export const playAndReturnAudio = async (
-    base64Audio: string, 
-    onEnded: () => void
-): Promise<AudioBufferSourceNode> => {
-    const audioContext = getPlaybackAudioContext();
-    
-    // CRITICAL: Browsers block sound until an interaction. Resuming here is mandatory.
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume();
-    }
-
-    const pcmData = decode(base64Audio);
-    const audioBuffer = await decodeAudioData(pcmData, audioContext, 24000, 1);
-    const source = audioContext.createBufferSource();
-    const gainNode = audioContext.createGain();
-    
-    source.buffer = audioBuffer;
-    gainNode.gain.value = 1.0; // Ensure full volume
-    
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    source.onended = onEnded;
-    source.start(0);
-    return source;
 };
