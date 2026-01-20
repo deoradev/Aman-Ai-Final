@@ -7,34 +7,34 @@ import Onboarding from '../components/Onboarding';
 import SEOMeta from '../components/SEOMeta';
 
 const GlobalPulse: React.FC = () => {
-    // Verified NGO legacy numbers
+    // Verified legacy impact numbers
     const legacyImpact = 200000; 
-    const [aiSessions, setAiSessions] = useState(154320);
+    const [aiSessions, setAiSessions] = useState(158420);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setAiSessions(prev => prev + Math.floor(Math.random() * 3));
-        }, 4000);
+            setAiSessions(prev => prev + Math.floor(Math.random() * 5));
+        }, 3000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="flex flex-col items-center gap-8 mt-16 animate-fade-in-delayed">
-            <div className="flex flex-wrap justify-center gap-6">
-                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-[2rem] group hover:bg-white/10 transition-all shadow-xl">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-400 mb-1">Global NGO Legacy</p>
-                    <p className="text-3xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+</p>
-                    <p className="text-[9px] font-bold text-white/40 uppercase mt-1">Lives Directly Restored Since 2001</p>
+        <div className="flex flex-col items-center gap-10 mt-20 animate-fade-in-delayed">
+            <div className="flex flex-wrap justify-center gap-8">
+                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-10 py-6 rounded-[2.5rem] group hover:bg-white/10 transition-all shadow-2xl">
+                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-primary-400 mb-2">Global NGO Legacy</p>
+                    <p className="text-4xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+</p>
+                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">Lives Directly Impacted Since 2001</p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-[2rem] group hover:bg-white/10 transition-all shadow-xl">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-accent-400 mb-1">Digital Reach</p>
-                    <p className="text-3xl font-black text-white tabular-nums">{aiSessions.toLocaleString()}</p>
-                    <p className="text-[9px] font-bold text-white/40 uppercase mt-1">AI-Powered Support Sessions</p>
+                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-10 py-6 rounded-[2.5rem] group hover:bg-white/10 transition-all shadow-2xl">
+                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-accent-400 mb-2">Real-Time Reach</p>
+                    <p className="text-4xl font-black text-white tabular-nums">{aiSessions.toLocaleString()}</p>
+                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">AI-Powered Support Sessions</p>
                 </div>
             </div>
-            <div className="flex items-center gap-3 px-6 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] text-center">Encrypted & Secure HIPAA-Compliant Data Architecture</span>
+            <div className="flex items-center gap-4 px-8 py-3 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span className="text-[11px] font-black text-emerald-400 uppercase tracking-[0.25em] text-center">Encrypted & HIPAA-Compliant Architecture</span>
             </div>
         </div>
     );
@@ -43,24 +43,24 @@ const GlobalPulse: React.FC = () => {
 const HeroSection: React.FC = () => {
     const { t } = useLocalization();
     return (
-        <section className="relative text-center py-24 md:py-40 overflow-hidden min-h-screen flex flex-col justify-center">
-             <div className="absolute inset-0 bg-primary-600/5 dark:bg-black/80"></div>
+        <section className="relative text-center py-28 md:py-48 overflow-hidden min-h-screen flex flex-col justify-center">
+             <div className="absolute inset-0 bg-primary-600/5 dark:bg-black/90"></div>
              <div className="absolute inset-0 animated-gradient-bg" style={{ zIndex: -1, animationDuration: '40s' }}></div>
             <div className="relative container mx-auto px-4 z-10">
-                <div className="inline-block px-6 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-8 animate-fade-in">
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary-600 dark:text-primary-400">The Gold Standard in Digital Recovery</span>
+                <div className="inline-block px-8 py-3 bg-primary-500/10 border border-primary-500/20 rounded-full mb-10 animate-fade-in">
+                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary-600 dark:text-primary-400">The New Standard in Digital Mental Health</span>
                 </div>
-                <h1 className="text-6xl md:text-9xl font-black text-base-900 dark:text-white leading-[0.9] tracking-tighter mb-8">
+                <h1 className="text-6xl md:text-9xl font-black text-base-900 dark:text-white leading-[0.85] tracking-tighter mb-10">
                     {t('home.hero.title')}
                 </h1>
-                <p className="mt-4 text-xl md:text-3xl max-w-4xl mx-auto text-base-700 dark:text-slate-200 leading-relaxed font-medium">
+                <p className="mt-6 text-xl md:text-3xl max-w-4xl mx-auto text-base-700 dark:text-slate-200 leading-relaxed font-medium">
                     {t('home.hero.subtitle')}
                 </p>
-                <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
-                    <NavLink to="/dashboard" className="w-full sm:w-auto bg-primary-500 text-white font-black py-6 px-16 rounded-[2.5rem] text-xl hover:scale-105 hover:bg-primary-600 transition-all shadow-2xl shadow-primary-500/30 uppercase tracking-widest">
+                <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8">
+                    <NavLink to="/dashboard" className="w-full sm:w-auto bg-primary-500 text-white font-black py-7 px-20 rounded-[3rem] text-2xl hover:scale-105 hover:bg-primary-600 transition-all shadow-2xl shadow-primary-500/40 uppercase tracking-widest">
                         {t('home.hero.button')}
                     </NavLink>
-                    <NavLink to="/our-approach" className="w-full sm:w-auto bg-white/40 dark:bg-white/5 backdrop-blur-xl text-base-900 dark:text-white border border-base-200 dark:border-white/10 font-black py-6 px-16 rounded-[2.5rem] text-xl hover:bg-white dark:hover:bg-white/10 transition-all uppercase tracking-widest">
+                    <NavLink to="/our-approach" className="w-full sm:w-auto bg-white/40 dark:bg-white/5 backdrop-blur-2xl text-base-900 dark:text-white border border-base-200 dark:border-white/10 font-black py-7 px-20 rounded-[3rem] text-2xl hover:bg-white dark:hover:bg-white/10 transition-all uppercase tracking-widest">
                         Clinical Science
                     </NavLink>
                 </div>
@@ -73,13 +73,13 @@ const HeroSection: React.FC = () => {
 const MissionSection: React.FC = () => {
     const { t } = useLocalization();
     return (
-        <section className="py-32 bg-white dark:bg-base-900 relative overflow-hidden border-y border-base-100 dark:border-base-800">
-            <div className="absolute -left-20 top-0 w-96 h-96 bg-primary-500/5 rounded-full blur-[120px]"></div>
-            <div className="absolute -right-20 bottom-0 w-96 h-96 bg-accent-500/5 rounded-full blur-[120px]"></div>
+        <section className="py-40 bg-white dark:bg-base-900 relative overflow-hidden border-y border-base-100 dark:border-base-800">
+            <div className="absolute -left-20 top-0 w-[500px] h-[500px] bg-primary-500/5 rounded-full blur-[150px]"></div>
+            <div className="absolute -right-20 bottom-0 w-[500px] h-[500px] bg-accent-500/5 rounded-full blur-[150px]"></div>
             <div className="container mx-auto px-4 text-center max-w-5xl relative z-10">
-                <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-10 tracking-tighter">{t('home.mission.title')}</h2>
-                <p className="text-2xl text-primary-600 dark:text-primary-400 font-black mb-12 uppercase tracking-[0.2em]">{t('home.mission.subtitle')}</p>
-                <div className="space-y-8 text-xl md:text-2xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">
+                <h2 className="text-6xl md:text-8xl font-black text-base-900 dark:text-white mb-12 tracking-tighter">{t('home.mission.title')}</h2>
+                <p className="text-3xl text-primary-600 dark:text-primary-400 font-black mb-16 uppercase tracking-[0.25em]">{t('home.mission.subtitle')}</p>
+                <div className="space-y-10 text-2xl md:text-3xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">
                     <p>{t('home.mission.p1')}</p>
                     <p>{t('home.mission.p2')}</p>
                 </div>
@@ -91,26 +91,26 @@ const MissionSection: React.FC = () => {
 const HowItWorksSection: React.FC = () => {
     const { t } = useLocalization();
     const steps = [
-        { title: t('home.how_it_works.step1_title'), description: t('home.how_it_works.step1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> },
-        { title: t('home.how_it_works.step2_title'), description: t('home.how_it_works.step2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
-        { title: t('home.how_it_works.step3_title'), description: t('home.how_it_works.step3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> },
-        { title: t('home.how_it_works.step4_title'), description: t('home.how_it_works.step4_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> }
+        { title: t('home.how_it_works.step1_title'), description: t('home.how_it_works.step1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> },
+        { title: t('home.how_it_works.step2_title'), description: t('home.how_it_works.step2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
+        { title: t('home.how_it_works.step3_title'), description: t('home.how_it_works.step3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> },
+        { title: t('home.how_it_works.step4_title'), description: t('home.how_it_works.step4_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> }
     ];
     return (
-        <section className="py-32 bg-base-50 dark:bg-black">
+        <section className="py-40 bg-base-50 dark:bg-black">
             <div className="container mx-auto px-4">
-                <div className="text-center max-w-4xl mx-auto mb-20">
-                    <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-6 tracking-tighter">{t('home.how_it_works.title')}</h2>
-                    <p className="text-xl text-base-500 dark:text-slate-400 font-medium">{t('home.how_it_works.subtitle')}</p>
+                <div className="text-center max-w-4xl mx-auto mb-24">
+                    <h2 className="text-6xl md:text-8xl font-black text-base-900 dark:text-white mb-8 tracking-tighter">{t('home.how_it_works.title')}</h2>
+                    <p className="text-2xl text-base-500 dark:text-slate-400 font-medium">{t('home.how_it_works.subtitle')}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {steps.map((step, index) => (
-                        <div key={index} className="relative p-10 bg-white dark:bg-base-900/50 rounded-[3rem] shadow-soft hover:shadow-2xl transition-all group border border-base-100 dark:border-white/5">
-                            <div className="absolute -top-8 left-10 flex items-center justify-center h-20 w-20 rounded-3xl bg-primary-500 text-white shadow-xl group-hover:scale-110 transition-transform">
+                        <div key={index} className="relative p-12 bg-white dark:bg-base-900/50 rounded-[3.5rem] shadow-soft hover:shadow-2xl transition-all group border border-base-100 dark:border-white/5">
+                            <div className="absolute -top-10 left-12 flex items-center justify-center h-24 w-24 rounded-[2rem] bg-primary-500 text-white shadow-2xl group-hover:scale-110 transition-transform">
                                 {step.icon}
                             </div>
-                            <h3 className="text-2xl font-black text-base-900 dark:text-white mt-10 mb-4 tracking-tight">{step.title}</h3>
-                            <p className="text-lg text-base-500 dark:text-slate-400 leading-relaxed font-medium">{step.description}</p>
+                            <h3 className="text-3xl font-black text-base-900 dark:text-white mt-12 mb-6 tracking-tight">{step.title}</h3>
+                            <p className="text-xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{step.description}</p>
                         </div>
                     ))}
                 </div>
@@ -122,25 +122,25 @@ const HowItWorksSection: React.FC = () => {
 const SafeSpaceSection: React.FC = () => {
     const { t } = useLocalization();
     const items = [
-        { title: t('home.safe_space.item1_title'), description: t('home.safe_space.item1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
-        { title: t('home.safe_space.item2_title'), description: t('home.safe_space.item2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> },
-        { title: t('home.safe_space.item3_title'), description: t('home.safe_space.item3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> }
+        { title: t('home.safe_space.item1_title'), description: t('home.safe_space.item1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+        { title: t('home.safe_space.item2_title'), description: t('home.safe_space.item2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> },
+        { title: t('home.safe_space.item3_title'), description: t('home.safe_space.item3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> }
     ];
     return (
-        <section className="py-32 bg-white dark:bg-black relative">
+        <section className="py-40 bg-white dark:bg-black relative">
             <div className="container mx-auto px-4">
-                <div className="text-center max-w-4xl mx-auto mb-20">
-                    <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-6 tracking-tighter">{t('home.safe_space.title')}</h2>
-                    <p className="text-xl text-base-500 dark:text-slate-400 font-medium">{t('home.safe_space.subtitle')}</p>
+                <div className="text-center max-w-4xl mx-auto mb-24">
+                    <h2 className="text-6xl md:text-8xl font-black text-base-900 dark:text-white mb-8 tracking-tighter">{t('home.safe_space.title')}</h2>
+                    <p className="text-2xl text-base-500 dark:text-slate-400 font-medium">{t('home.safe_space.subtitle')}</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-7xl mx-auto">
                     {items.map((item, index) => (
-                        <div key={index} className="p-12 bg-base-50 dark:bg-base-900/40 rounded-[4rem] text-center border border-base-100 dark:border-white/5 transition-all hover:-translate-y-4 hover:shadow-2xl">
-                            <div className="flex items-center justify-center h-24 w-24 rounded-[2rem] bg-primary-100 dark:bg-primary-500/10 text-primary-500 mx-auto mb-8">
+                        <div key={index} className="p-16 bg-base-50 dark:bg-base-900/40 rounded-[5rem] text-center border border-base-100 dark:border-white/5 transition-all hover:-translate-y-6 hover:shadow-2xl">
+                            <div className="flex items-center justify-center h-28 w-28 rounded-[2.5rem] bg-primary-100 dark:bg-primary-500/10 text-primary-500 mx-auto mb-10">
                                 {item.icon}
                             </div>
-                            <h3 className="text-3xl font-black text-base-900 dark:text-white mb-6 tracking-tight">{item.title}</h3>
-                            <p className="text-xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{item.description}</p>
+                            <h3 className="text-4xl font-black text-base-900 dark:text-white mb-8 tracking-tight">{item.title}</h3>
+                            <p className="text-2xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{item.description}</p>
                         </div>
                     ))}
                 </div>
@@ -184,12 +184,12 @@ const HomePage: React.FC = () => {
     </div>
     <style>{`
         @keyframes fade-in-delayed {
-            0% { opacity: 0; transform: translateY(40px); }
+            0% { opacity: 0; transform: translateY(50px); }
             40% { opacity: 0; }
             100% { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-delayed {
-            animation: fade-in-delayed 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fade-in-delayed 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     `}</style>
     </>

@@ -13,12 +13,11 @@ interface State {
  * ErrorBoundary component to catch JavaScript errors anywhere in their child component tree,
  * log those errors, and display a fallback UI instead of the component tree that crashed.
  */
-// Fix: Added explicit generic type parameters <ErrorBoundaryProps, State> to Component.
-// This ensures that 'this.state' and 'this.props' are correctly recognized by the TypeScript compiler.
+// Fix: Explicitly define generic type parameters for Component to resolve 'state' and 'props' errors.
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Fix: initialize state correctly with type safety
+    // Fix: Initialize state correctly with type safety
     this.state = { hasError: false };
   }
 
@@ -33,7 +32,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 
   public render() {
-    // Fix: 'this.state' is now properly defined due to the generic parameters above.
+    // Fix: 'this.state' is now properly defined due to generic parameters.
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -57,7 +56,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Fix: 'this.props' is now properly defined due to the generic parameters above.
+    // Fix: 'this.props' is now properly defined due to generic parameters.
     return this.props.children; 
   }
 }

@@ -40,7 +40,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     setMetaTag('name', 'description', description);
     if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Open Graph (Social Loops - Vital for Viral Growth)
+    // Open Graph (Social Loops - Vital for Visibility)
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', type);
@@ -48,14 +48,14 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     setMetaTag('property', 'og:url', canonicalUrl || window.location.href);
     setMetaTag('property', 'og:site_name', 'Aman Digital Care');
     
-    // Twitter Card (Optimized for X sharing)
+    // Twitter Card
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:site', '@AmanDigitalCare');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', image);
 
-    // Canonical link management
+    // Canonical link management for search rankings
     if (canonicalUrl) {
         let linkCanonical = document.querySelector('link[rel="canonical"]');
         if(!linkCanonical) {
@@ -75,7 +75,12 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
             document.head.appendChild(metaRobots);
         }
         metaRobots.setAttribute('content', 'noindex, nofollow');
-    } else if (metaRobots) {
+    } else {
+        if (!metaRobots) {
+            metaRobots = document.createElement('meta');
+            metaRobots.setAttribute('name', 'robots');
+            document.head.appendChild(metaRobots);
+        }
         metaRobots.setAttribute('content', 'index, follow');
     }
 
@@ -99,6 +104,8 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
         "name": "AMAN AI Foundation",
         "url": "https://amandigitalcare.com",
         "logo": "https://amandigitalcare.com/assets/logo.svg",
+        "foundingDate": "2001",
+        "description": "Global mental health and addiction recovery companion leveraging artificial intelligence.",
         "sameAs": [
           "https://twitter.com/AmanDigitalCare",
           "https://www.linkedin.com/company/aman-ai-foundation"
