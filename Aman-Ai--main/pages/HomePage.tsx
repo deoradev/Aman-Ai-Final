@@ -7,7 +7,6 @@ import Onboarding from '../components/Onboarding';
 import SEOMeta from '../components/SEOMeta';
 
 const GlobalPulse: React.FC = () => {
-    // Verified legacy impact numbers
     const legacyImpact = 200000; 
     const [aiSessions, setAiSessions] = useState(158420);
 
@@ -24,12 +23,12 @@ const GlobalPulse: React.FC = () => {
                 <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-10 py-6 rounded-[2.5rem] group hover:bg-white/10 transition-all shadow-2xl">
                     <p className="text-[11px] font-black uppercase tracking-[0.4em] text-primary-400 mb-2">Global NGO Legacy</p>
                     <p className="text-4xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+</p>
-                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">Lives Directly Impacted Since 2001</p>
+                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">Lives Restored Since 2001</p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-10 py-6 rounded-[2.5rem] group hover:bg-white/10 transition-all shadow-2xl">
-                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-accent-400 mb-2">Real-Time Reach</p>
-                    <p className="text-4xl font-black text-white tabular-nums">{aiSessions.toLocaleString()}</p>
-                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">AI-Powered Support Sessions</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-accent-400 mb-2">A Son's Mission</p>
+                    <p className="text-4xl font-black text-white tracking-tighter">Kindness</p>
+                    <p className="text-[10px] font-bold text-white/40 uppercase mt-2">The Foundation of Aman AI</p>
                 </div>
             </div>
             <div className="flex items-center gap-4 px-8 py-3 bg-emerald-500/10 rounded-full border border-emerald-500/20">
@@ -48,7 +47,7 @@ const HeroSection: React.FC = () => {
              <div className="absolute inset-0 animated-gradient-bg" style={{ zIndex: -1, animationDuration: '40s' }}></div>
             <div className="relative container mx-auto px-4 z-10">
                 <div className="inline-block px-8 py-3 bg-primary-500/10 border border-primary-500/20 rounded-full mb-10 animate-fade-in">
-                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary-600 dark:text-primary-400">The New Standard in Digital Mental Health</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary-600 dark:text-primary-400">The Gold Standard in Digital Recovery Support</span>
                 </div>
                 <h1 className="text-6xl md:text-9xl font-black text-base-900 dark:text-white leading-[0.85] tracking-tighter mb-10">
                     {t('home.hero.title')}
@@ -70,6 +69,22 @@ const HeroSection: React.FC = () => {
     );
 };
 
+const VisionarySection: React.FC = () => {
+    return (
+        <section className="py-32 bg-primary-600 text-white relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+             <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
+                 <p className="text-[12px] font-black uppercase tracking-[0.6em] mb-8 text-primary-200">The Spark Behind The Mission</p>
+                 <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-10">
+                     "This thought started from a son who believes in the power of kindness."
+                 </h2>
+                 <p className="text-2xl font-bold italic text-primary-100 mb-4">— Devanshu Deora</p>
+                 <p className="text-lg font-medium opacity-80 uppercase tracking-widest">Founder, AMAN AI Foundation</p>
+             </div>
+        </section>
+    );
+}
+
 const MissionSection: React.FC = () => {
     const { t } = useLocalization();
     return (
@@ -82,67 +97,6 @@ const MissionSection: React.FC = () => {
                 <div className="space-y-10 text-2xl md:text-3xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">
                     <p>{t('home.mission.p1')}</p>
                     <p>{t('home.mission.p2')}</p>
-                </div>
-            </div>
-        </section>
-    );
-};
-
-const HowItWorksSection: React.FC = () => {
-    const { t } = useLocalization();
-    const steps = [
-        { title: t('home.how_it_works.step1_title'), description: t('home.how_it_works.step1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> },
-        { title: t('home.how_it_works.step2_title'), description: t('home.how_it_works.step2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
-        { title: t('home.how_it_works.step3_title'), description: t('home.how_it_works.step3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> },
-        { title: t('home.how_it_works.step4_title'), description: t('home.how_it_works.step4_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> }
-    ];
-    return (
-        <section className="py-40 bg-base-50 dark:bg-black">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-4xl mx-auto mb-24">
-                    <h2 className="text-6xl md:text-8xl font-black text-base-900 dark:text-white mb-8 tracking-tighter">{t('home.how_it_works.title')}</h2>
-                    <p className="text-2xl text-base-500 dark:text-slate-400 font-medium">{t('home.how_it_works.subtitle')}</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                    {steps.map((step, index) => (
-                        <div key={index} className="relative p-12 bg-white dark:bg-base-900/50 rounded-[3.5rem] shadow-soft hover:shadow-2xl transition-all group border border-base-100 dark:border-white/5">
-                            <div className="absolute -top-10 left-12 flex items-center justify-center h-24 w-24 rounded-[2rem] bg-primary-500 text-white shadow-2xl group-hover:scale-110 transition-transform">
-                                {step.icon}
-                            </div>
-                            <h3 className="text-3xl font-black text-base-900 dark:text-white mt-12 mb-6 tracking-tight">{step.title}</h3>
-                            <p className="text-xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{step.description}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-};
-
-const SafeSpaceSection: React.FC = () => {
-    const { t } = useLocalization();
-    const items = [
-        { title: t('home.safe_space.item1_title'), description: t('home.safe_space.item1_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
-        { title: t('home.safe_space.item2_title'), description: t('home.safe_space.item2_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> },
-        { title: t('home.safe_space.item3_title'), description: t('home.safe_space.item3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> }
-    ];
-    return (
-        <section className="py-40 bg-white dark:bg-black relative">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-4xl mx-auto mb-24">
-                    <h2 className="text-6xl md:text-8xl font-black text-base-900 dark:text-white mb-8 tracking-tighter">{t('home.safe_space.title')}</h2>
-                    <p className="text-2xl text-base-500 dark:text-slate-400 font-medium">{t('home.safe_space.subtitle')}</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-7xl mx-auto">
-                    {items.map((item, index) => (
-                        <div key={index} className="p-16 bg-base-50 dark:bg-base-900/40 rounded-[5rem] text-center border border-base-100 dark:border-white/5 transition-all hover:-translate-y-6 hover:shadow-2xl">
-                            <div className="flex items-center justify-center h-28 w-28 rounded-[2.5rem] bg-primary-100 dark:bg-primary-500/10 text-primary-500 mx-auto mb-10">
-                                {item.icon}
-                            </div>
-                            <h3 className="text-4xl font-black text-base-900 dark:text-white mb-8 tracking-tight">{item.title}</h3>
-                            <p className="text-2xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{item.description}</p>
-                        </div>
-                    ))}
                 </div>
             </div>
         </section>
@@ -178,9 +132,8 @@ const HomePage: React.FC = () => {
     />
     <div className="bg-base-100/50 dark:bg-black overflow-hidden">
         <HeroSection />
+        <VisionarySection />
         <MissionSection />
-        <HowItWorksSection />
-        <SafeSpaceSection />
     </div>
     <style>{`
         @keyframes fade-in-delayed {

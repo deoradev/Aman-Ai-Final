@@ -40,7 +40,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     setMetaTag('name', 'description', description);
     if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Open Graph (Social Loops - Vital for Visibility)
+    // Open Graph (Social Loops)
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', type);
@@ -50,12 +50,11 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     
     // Twitter Card
     setMetaTag('name', 'twitter:card', 'summary_large_image');
-    setMetaTag('name', 'twitter:site', '@AmanDigitalCare');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', image);
 
-    // Canonical link management for search rankings
+    // Canonical link management
     if (canonicalUrl) {
         let linkCanonical = document.querySelector('link[rel="canonical"]');
         if(!linkCanonical) {
@@ -66,25 +65,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
         linkCanonical.setAttribute('href', canonicalUrl);
     }
 
-    // Indexing control
-    let metaRobots = document.querySelector('meta[name="robots"]');
-    if (noIndex) {
-        if (!metaRobots) {
-            metaRobots = document.createElement('meta');
-            metaRobots.setAttribute('name', 'robots');
-            document.head.appendChild(metaRobots);
-        }
-        metaRobots.setAttribute('content', 'noindex, nofollow');
-    } else {
-        if (!metaRobots) {
-            metaRobots = document.createElement('meta');
-            metaRobots.setAttribute('name', 'robots');
-            document.head.appendChild(metaRobots);
-        }
-        metaRobots.setAttribute('content', 'index, follow');
-    }
-
-    // High-Authority JSON-LD Injection
+    // High-Authority JSON-LD Injection (Knowledge Graph building)
     const scriptId = 'json-ld-schema';
     let scriptTag = document.getElementById(scriptId);
     
@@ -94,22 +75,16 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
       "name": "Aman Digital Care",
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web, Android, iOS",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
       "author": {
         "@type": "MedicalOrganization",
         "name": "AMAN AI Foundation",
         "url": "https://amandigitalcare.com",
-        "logo": "https://amandigitalcare.com/assets/logo.svg",
-        "foundingDate": "2001",
-        "description": "Global mental health and addiction recovery companion leveraging artificial intelligence.",
-        "sameAs": [
-          "https://twitter.com/AmanDigitalCare",
-          "https://www.linkedin.com/company/aman-ai-foundation"
-        ]
+        "founder": {
+          "@type": "Person",
+          "name": "Devanshu Deora",
+          "jobTitle": "Visionary Founder",
+          "description": "A leader dedicated to leveraging AI for global kindness and mental health restoration."
+        }
       }
     };
 
