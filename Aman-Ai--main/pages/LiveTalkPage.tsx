@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { ai } from '../services/geminiService';
 import { MoodEntry } from '../types';
-import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData } from '../utils';
+import { buildLiveTalkSystemInstruction, createBlob, decode, decodeAudioData, getPlaybackAudioContext } from '../utils';
 import VoiceVisualizer from '../components/VoiceVisualizer';
 import SEOMeta from '../components/SEOMeta';
 import TranscriptionBubble from '../components/TranscriptionBubble';
@@ -134,6 +134,13 @@ const LiveTalkPage: React.FC = () => {
 
   const handleStart = async () => {
     if (status !== 'idle' && status !== 'ended' && status !== 'error') return;
+    
+    // CRITICAL: Direct activation of AudioContext within click handler to bypass browser blocking.
+    const playbackCtx = getPlaybackAudioContext(24000);
+    if (playbackCtx.state === 'suspended') {
+        await playbackCtx.resume();
+    }
+    
     setStatus('connecting');
     setError(null);
     setTranscriptions([]);
@@ -146,13 +153,13 @@ const LiveTalkPage: React.FC = () => {
       streamRef.current = stream;
 
       inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-      outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      outputAudioContextRef.current = playbackCtx; // Reuse the already resumed playback context
       
       if (!inputAudioContextRef.current.audioWorklet) {
         throw new Error("AudioWorklet not supported in this browser.");
       }
       
-      // Load AudioWorklet via Blob URL to avoid file path resolution issues
+      // Load AudioWorklet via Blob URL for maximum reliability
       const blob = new Blob([`
         class AudioProcessor extends AudioWorkletProcessor {
           process(inputs) {
@@ -173,7 +180,6 @@ const LiveTalkPage: React.FC = () => {
       audioWorkletNodeRef.current.port.onmessage = (event) => {
         const inputData = event.data; // Float32Array
         const pcmBlob = createBlob(inputData);
-        // CRITICAL: Ensure session is ready before sending
         if (sessionPromiseRef.current) {
           sessionPromiseRef.current.then(session => {
             session.sendRealtimeInput({ media: pcmBlob });

@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 
 interface SEOMetaProps {
@@ -95,7 +96,13 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
       },
       "author": {
         "@type": "MedicalOrganization",
-        "name": "AMAN AI Foundation"
+        "name": "AMAN AI Foundation",
+        "url": "https://amandigitalcare.com",
+        "logo": "https://amandigitalcare.com/assets/logo.svg",
+        "sameAs": [
+          "https://twitter.com/AmanDigitalCare",
+          "https://www.linkedin.com/company/aman-ai-foundation"
+        ]
       }
     };
 

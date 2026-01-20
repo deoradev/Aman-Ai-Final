@@ -1,4 +1,14 @@
-# Allow all crawlers to access all content
+
+# Allow all major search engines to crawl Aman Digital Care
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /analytics
+Disallow: /live-talk
+Disallow: /toolkit
+Disallow: /conversation-practice
+
+# SEO best practices
 Sitemap: https://amandigitalcare.com/sitemap.xml
+Host: https://amandigitalcare.com

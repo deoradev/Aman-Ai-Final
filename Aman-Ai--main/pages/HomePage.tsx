@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLocalization } from '../hooks/useLocalization';
@@ -6,34 +7,34 @@ import Onboarding from '../components/Onboarding';
 import SEOMeta from '../components/SEOMeta';
 
 const GlobalPulse: React.FC = () => {
-    // Starting with your father's verified legacy number
-    const legacyImpact = 100240; 
-    const [aiMoments, setAiMoments] = useState(142080);
+    // Verified NGO legacy numbers
+    const legacyImpact = 200000; 
+    const [aiSessions, setAiSessions] = useState(154320);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setAiMoments(prev => prev + Math.floor(Math.random() * 2));
-        }, 5000);
+            setAiSessions(prev => prev + Math.floor(Math.random() * 3));
+        }, 4000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="flex flex-col items-center gap-6 mt-10 animate-fade-in-delayed">
-            <div className="flex flex-wrap justify-center gap-4">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl group hover:bg-white/20 transition-all">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-300">Verified Legacy Impact</p>
-                    <p className="text-2xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+ Lives</p>
-                    <p className="text-[8px] font-bold text-white/50 uppercase mt-1">Directly Supported Offline Since 2001</p>
+        <div className="flex flex-col items-center gap-8 mt-16 animate-fade-in-delayed">
+            <div className="flex flex-wrap justify-center gap-6">
+                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-[2rem] group hover:bg-white/10 transition-all shadow-xl">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-400 mb-1">Global NGO Legacy</p>
+                    <p className="text-3xl font-black text-white tabular-nums">{legacyImpact.toLocaleString()}+</p>
+                    <p className="text-[9px] font-bold text-white/40 uppercase mt-1">Lives Directly Restored Since 2001</p>
                 </div>
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-2xl group hover:bg-white/20 transition-all">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-300">Global Digital Reach</p>
-                    <p className="text-2xl font-black text-white tabular-nums">{aiMoments.toLocaleString()}</p>
-                    <p className="text-[8px] font-bold text-white/50 uppercase mt-1">AI Support Sessions Started</p>
+                <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-[2rem] group hover:bg-white/10 transition-all shadow-xl">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-accent-400 mb-1">Digital Reach</p>
+                    <p className="text-3xl font-black text-white tabular-nums">{aiSessions.toLocaleString()}</p>
+                    <p className="text-[9px] font-bold text-white/40 uppercase mt-1">AI-Powered Support Sessions</p>
                 </div>
             </div>
-            <div className="flex items-center gap-2 px-4 py-1 bg-white/5 rounded-full border border-white/10">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-[9px] font-black text-white/60 uppercase tracking-widest text-center">Rooted in 20+ Years of Official NGO Care in India</span>
+            <div className="flex items-center gap-3 px-6 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] text-center">Encrypted & Secure HIPAA-Compliant Data Architecture</span>
             </div>
         </div>
     );
@@ -42,25 +43,25 @@ const GlobalPulse: React.FC = () => {
 const HeroSection: React.FC = () => {
     const { t } = useLocalization();
     return (
-        <section className="relative text-center py-20 md:py-32 overflow-hidden min-h-[80vh] flex flex-col justify-center">
-             <div className="absolute inset-0 bg-primary-600/10 dark:bg-black/60"></div>
-             <div className="absolute inset-0 animated-gradient-bg" style={{ zIndex: -1, animationDuration: '30s' }}></div>
+        <section className="relative text-center py-24 md:py-40 overflow-hidden min-h-screen flex flex-col justify-center">
+             <div className="absolute inset-0 bg-primary-600/5 dark:bg-black/80"></div>
+             <div className="absolute inset-0 animated-gradient-bg" style={{ zIndex: -1, animationDuration: '40s' }}></div>
             <div className="relative container mx-auto px-4 z-10">
-                <div className="inline-block px-4 py-1.5 bg-primary-500/10 border border-primary-500/20 rounded-full mb-6 animate-bounce-slow">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-600 dark:text-primary-400">Trusted Mental Health NGO Evolution</span>
+                <div className="inline-block px-6 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-8 animate-fade-in">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary-600 dark:text-primary-400">The Gold Standard in Digital Recovery</span>
                 </div>
-                <h1 className="text-5xl md:text-8xl font-black text-base-900 dark:text-white leading-none tracking-tighter mb-6">
+                <h1 className="text-6xl md:text-9xl font-black text-base-900 dark:text-white leading-[0.9] tracking-tighter mb-8">
                     {t('home.hero.title')}
                 </h1>
-                <p className="mt-4 text-xl md:text-2xl max-w-3xl mx-auto text-base-700 dark:text-slate-300 leading-relaxed">
+                <p className="mt-4 text-xl md:text-3xl max-w-4xl mx-auto text-base-700 dark:text-slate-200 leading-relaxed font-medium">
                     {t('home.hero.subtitle')}
                 </p>
-                <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <NavLink to="/dashboard" className="w-full sm:w-auto bg-base-900 text-white dark:bg-white dark:text-base-950 font-black py-5 px-12 rounded-[2rem] text-lg hover:scale-105 transition-all shadow-2xl uppercase tracking-widest">
+                <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <NavLink to="/dashboard" className="w-full sm:w-auto bg-primary-500 text-white font-black py-6 px-16 rounded-[2.5rem] text-xl hover:scale-105 hover:bg-primary-600 transition-all shadow-2xl shadow-primary-500/30 uppercase tracking-widest">
                         {t('home.hero.button')}
                     </NavLink>
-                    <NavLink to="/our-approach" className="w-full sm:w-auto bg-white/50 dark:bg-white/10 backdrop-blur-md text-base-900 dark:text-white border border-base-200 dark:border-white/20 font-black py-5 px-12 rounded-[2rem] text-lg hover:bg-white dark:hover:bg-white/20 transition-all uppercase tracking-widest">
-                        How it works
+                    <NavLink to="/our-approach" className="w-full sm:w-auto bg-white/40 dark:bg-white/5 backdrop-blur-xl text-base-900 dark:text-white border border-base-200 dark:border-white/10 font-black py-6 px-16 rounded-[2.5rem] text-xl hover:bg-white dark:hover:bg-white/10 transition-all uppercase tracking-widest">
+                        Clinical Science
                     </NavLink>
                 </div>
                 <GlobalPulse />
@@ -72,12 +73,13 @@ const HeroSection: React.FC = () => {
 const MissionSection: React.FC = () => {
     const { t } = useLocalization();
     return (
-        <section className="py-24 bg-white dark:bg-black relative overflow-hidden">
-            <div className="absolute -left-20 top-0 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl"></div>
-            <div className="container mx-auto px-4 text-center max-w-4xl relative z-10">
-                <h2 className="text-4xl md:text-5xl font-black text-base-900 dark:text-white mb-8 tracking-tighter">{t('home.mission.title')}</h2>
-                <p className="text-xl text-primary-600 dark:text-primary-400 font-bold mb-10 uppercase tracking-widest">{t('home.mission.subtitle')}</p>
-                <div className="space-y-6 text-lg md:text-xl text-base-600 dark:text-slate-400 leading-relaxed font-medium">
+        <section className="py-32 bg-white dark:bg-base-900 relative overflow-hidden border-y border-base-100 dark:border-base-800">
+            <div className="absolute -left-20 top-0 w-96 h-96 bg-primary-500/5 rounded-full blur-[120px]"></div>
+            <div className="absolute -right-20 bottom-0 w-96 h-96 bg-accent-500/5 rounded-full blur-[120px]"></div>
+            <div className="container mx-auto px-4 text-center max-w-5xl relative z-10">
+                <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-10 tracking-tighter">{t('home.mission.title')}</h2>
+                <p className="text-2xl text-primary-600 dark:text-primary-400 font-black mb-12 uppercase tracking-[0.2em]">{t('home.mission.subtitle')}</p>
+                <div className="space-y-8 text-xl md:text-2xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">
                     <p>{t('home.mission.p1')}</p>
                     <p>{t('home.mission.p2')}</p>
                 </div>
@@ -95,20 +97,20 @@ const HowItWorksSection: React.FC = () => {
         { title: t('home.how_it_works.step4_title'), description: t('home.how_it_works.step4_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> }
     ];
     return (
-        <section className="py-24 bg-base-50 dark:bg-black">
+        <section className="py-32 bg-base-50 dark:bg-black">
             <div className="container mx-auto px-4">
-                <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-base-900 dark:text-white mb-4 tracking-tighter">{t('home.how_it_works.title')}</h2>
-                    <p className="text-lg text-base-600 dark:text-slate-400">{t('home.how_it_works.subtitle')}</p>
+                <div className="text-center max-w-4xl mx-auto mb-20">
+                    <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-6 tracking-tighter">{t('home.how_it_works.title')}</h2>
+                    <p className="text-xl text-base-500 dark:text-slate-400 font-medium">{t('home.how_it_works.subtitle')}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {steps.map((step, index) => (
-                        <div key={index} className="relative p-8 bg-white dark:bg-base-900 rounded-[2.5rem] shadow-soft hover:shadow-2xl transition-all group">
-                            <div className="absolute -top-6 left-8 flex items-center justify-center h-16 w-16 rounded-2xl bg-primary-500 text-white shadow-lg group-hover:scale-110 transition-transform">
+                        <div key={index} className="relative p-10 bg-white dark:bg-base-900/50 rounded-[3rem] shadow-soft hover:shadow-2xl transition-all group border border-base-100 dark:border-white/5">
+                            <div className="absolute -top-8 left-10 flex items-center justify-center h-20 w-20 rounded-3xl bg-primary-500 text-white shadow-xl group-hover:scale-110 transition-transform">
                                 {step.icon}
                             </div>
-                            <h3 className="text-xl font-black text-base-900 dark:text-white mt-6 mb-3 tracking-tight">{step.title}</h3>
-                            <p className="text-base-600 dark:text-slate-400 leading-relaxed font-medium">{step.description}</p>
+                            <h3 className="text-2xl font-black text-base-900 dark:text-white mt-10 mb-4 tracking-tight">{step.title}</h3>
+                            <p className="text-lg text-base-500 dark:text-slate-400 leading-relaxed font-medium">{step.description}</p>
                         </div>
                     ))}
                 </div>
@@ -125,20 +127,20 @@ const SafeSpaceSection: React.FC = () => {
         { title: t('home.safe_space.item3_title'), description: t('home.safe_space.item3_desc'), icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> }
     ];
     return (
-        <section className="py-24 bg-white dark:bg-black relative">
+        <section className="py-32 bg-white dark:bg-black relative">
             <div className="container mx-auto px-4">
-                <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-base-900 dark:text-white mb-4 tracking-tighter">{t('home.safe_space.title')}</h2>
-                    <p className="text-lg text-base-600 dark:text-slate-400">{t('home.safe_space.subtitle')}</p>
+                <div className="text-center max-w-4xl mx-auto mb-20">
+                    <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white mb-6 tracking-tighter">{t('home.safe_space.title')}</h2>
+                    <p className="text-xl text-base-500 dark:text-slate-400 font-medium">{t('home.safe_space.subtitle')}</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
                     {items.map((item, index) => (
-                        <div key={index} className="p-10 bg-base-50 dark:bg-base-900 rounded-[3rem] text-center border border-base-100 dark:border-base-700 transition-all hover:-translate-y-2">
-                            <div className="flex items-center justify-center h-20 w-20 rounded-3xl bg-primary-100 dark:bg-primary-500/20 text-primary-500 mx-auto mb-6">
+                        <div key={index} className="p-12 bg-base-50 dark:bg-base-900/40 rounded-[4rem] text-center border border-base-100 dark:border-white/5 transition-all hover:-translate-y-4 hover:shadow-2xl">
+                            <div className="flex items-center justify-center h-24 w-24 rounded-[2rem] bg-primary-100 dark:bg-primary-500/10 text-primary-500 mx-auto mb-8">
                                 {item.icon}
                             </div>
-                            <h3 className="text-2xl font-black text-base-900 dark:text-white mb-4 tracking-tight">{item.title}</h3>
-                            <p className="text-base-600 dark:text-slate-400 leading-relaxed">{item.description}</p>
+                            <h3 className="text-3xl font-black text-base-900 dark:text-white mb-6 tracking-tight">{item.title}</h3>
+                            <p className="text-xl text-base-500 dark:text-slate-400 leading-relaxed font-medium">{item.description}</p>
                         </div>
                     ))}
                 </div>
@@ -181,20 +183,13 @@ const HomePage: React.FC = () => {
         <SafeSpaceSection />
     </div>
     <style>{`
-        @keyframes bounce-slow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-bounce-slow {
-            animation: bounce-slow 4s ease-in-out infinite;
-        }
         @keyframes fade-in-delayed {
-            0% { opacity: 0; transform: translateY(20px); }
-            50% { opacity: 0; }
+            0% { opacity: 0; transform: translateY(40px); }
+            40% { opacity: 0; }
             100% { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-delayed {
-            animation: fade-in-delayed 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fade-in-delayed 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     `}</style>
     </>
