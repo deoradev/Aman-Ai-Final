@@ -38,15 +38,17 @@ export const translateAll = async (source: object, targetLanguage: string): Prom
     `;
 
     try {
+        // Fix: Updated model name to gemini-3-flash-preview as per guidelines
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
             }
         });
         
-        const jsonText = response.text.trim();
+        // Fix: Safely access .text property and ensure it's not treated as a method
+        const jsonText = response.text?.trim() || "{}";
         const translatedJson = JSON.parse(jsonText);
         
         try {

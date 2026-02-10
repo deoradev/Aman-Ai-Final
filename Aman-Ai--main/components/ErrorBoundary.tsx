@@ -1,11 +1,10 @@
-
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children?: ReactNode;
 }
 
-interface State {
+interface ErrorBoundaryState {
   hasError: boolean;
 }
 
@@ -13,15 +12,19 @@ interface State {
  * ErrorBoundary component to catch JavaScript errors anywhere in their child component tree,
  * log those errors, and display a fallback UI instead of the component tree that crashed.
  */
-// FIX: Added generic type parameters <ErrorBoundaryProps, State> to resolve 'state' and 'props' access errors.
-class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
+/* Fix: Explicitly extend Component with defined Props and State interfaces to ensure state and props are recognized by TypeScript */
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  // Fix: Explicitly declare the props property to satisfy environment-specific strict type checking (resolves line 60 error)
+  public props: ErrorBoundaryProps;
+  // Fix: Explicitly declare the state property to satisfy environment-specific strict type checking
+  public state: ErrorBoundaryState = { hasError: false };
+
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Fix: Initialize state correctly with type safety
-    this.state = { hasError: false };
+    this.props = props;
   }
 
-  public static getDerivedStateFromError(_: Error): State {
+  public static getDerivedStateFromError(_: Error): ErrorBoundaryState {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
@@ -32,7 +35,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 
   public render() {
-    // Fix: 'this.state' is now properly defined due to generic parameters.
+    /* Fix: Accessing this.state which is now explicitly declared and inherited from Component */
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -56,7 +59,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
       );
     }
 
-    // Fix: 'this.props' is now properly defined due to generic parameters.
+    /* Fix: Accessing this.props which is now explicitly declared and inherited from the generic Component class */
     return this.props.children; 
   }
 }

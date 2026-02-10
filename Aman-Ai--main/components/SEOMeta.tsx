@@ -40,7 +40,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     setMetaTag('name', 'description', description);
     if (keywords) setMetaTag('name', 'keywords', keywords);
     
-    // Open Graph (Social Loops)
+    // Open Graph (Social Visibility)
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', type);
@@ -50,6 +50,7 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     
     // Twitter Card
     setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:site', '@AmanDigitalCare');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', image);
@@ -71,21 +72,21 @@ const SEOMeta: React.FC<SEOMetaProps> = ({
     
     const defaultSchema = {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@type": "MedicalOrganization",
       "name": "Aman Digital Care",
+      "alternateName": "AMAN AI Foundation",
+      "url": "https://amandigitalcare.com",
+      "logo": "https://amandigitalcare.com/assets/logo.svg",
+      "foundingDate": "2001",
+      "founder": {
+        "@type": "Person",
+        "name": "Devanshu Deora",
+        "jobTitle": "Visionary Founder",
+        "description": "A leader dedicated to leveraging AI for global kindness and mental health restoration, carrying forward a 20-year legacy."
+      },
+      "description": "Global mental health and addiction recovery companion leveraging artificial intelligence.",
       "applicationCategory": "HealthApplication",
-      "operatingSystem": "Web, Android, iOS",
-      "author": {
-        "@type": "MedicalOrganization",
-        "name": "AMAN AI Foundation",
-        "url": "https://amandigitalcare.com",
-        "founder": {
-          "@type": "Person",
-          "name": "Devanshu Deora",
-          "jobTitle": "Visionary Founder",
-          "description": "A leader dedicated to leveraging AI for global kindness and mental health restoration."
-        }
-      }
+      "operatingSystem": "Web, Android, iOS"
     };
 
     const finalSchema = schema || defaultSchema;

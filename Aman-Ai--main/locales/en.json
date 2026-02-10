@@ -30,6 +30,36 @@
     "copyright": "© {year} Aman Digital Care. A non-profit initiative by AMAN AI Foundation. All rights reserved.",
     "policies": "Policies & Legal"
   },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Aman",
+      "text": "Your confidential companion for the journey ahead. We are here to support you every step of the way."
+    },
+    "programs": {
+      "title": "Structured Programs",
+      "text": "Enroll in 90-day structured paths built on clinical evidence to help you reach your goals."
+    },
+    "ai": {
+      "title": "AI Support 24/7",
+      "text": "Compassionate, non-judgmental support whenever you need it, stored safely on your device."
+    },
+    "tracking": {
+      "title": "Track Your Growth",
+      "text": "Visualize your progress, log your moods, and celebrate every milestone in your recovery."
+    },
+    "cta": {
+      "title": "Ready to Start?",
+      "text": "Join over 200,000 lives impacted by our legacy of care. Your privacy is our priority."
+    },
+    "button": {
+      "explore": "Explore Programs",
+      "signup": "Create Profile",
+      "back": "Back",
+      "next": "Next",
+      "finish": "Finish",
+      "skip": "Skip Onboarding"
+    }
+  },
   "offline": {
     "indicator": "Offline",
     "chat_message": "You are currently offline. Chat is unavailable.",
@@ -42,12 +72,6 @@
   },
   "loading_screen": {
     "message": "Preparing your path to recovery..."
-  },
-  "app_update": {
-    "title": "Update Available",
-    "message": "A new version of Aman Digital Care is ready. Reload to get the latest features.",
-    "reload": "Reload",
-    "dismiss": "Dismiss"
   },
   "crisis": {
     "close": "Close",
@@ -63,841 +87,468 @@
     "chat_ai": "Start a Crisis Chat with AMAN AI",
     "chat_description": "Our AI is trained to provide immediate, calming support. A high-priority alert will be triggered."
   },
-  "onboarding": {
-    "welcome": {
-      "title": "Welcome to Aman Digital Care",
-      "text": "Your personal, confidential companion for addiction recovery and mental wellness."
-    },
-    "programs": {
-      "title": "Structured Recovery Programs",
-      "text": "Choose from 90-day, evidence-based programs designed to guide you step-by-step on your journey."
-    },
-    "ai": {
-      "title": "24/7 AI Companion",
-      "text": "Chat with Aman, your AI partner, anytime you need support, guidance, or just someone to listen."
-    },
-    "tracking": {
-      "title": "Track Your Progress",
-      "text": "Log your mood, journal your thoughts, and see your growth over time with our analytics tools."
-    },
-     "cta": {
-      "title": "Your Path Starts Here",
-      "text": "Ready to take the first step? Explore our programs and start your journey today."
-    },
-    "button": {
-        "next": "Next",
-        "back": "Back",
-        "skip": "Skip for now",
-        "finish": "Finish",
-        "explore": "Explore Programs",
-        "signup": "Sign Up"
-    }
-  },
   "home": {
     "hero": {
       "title": "Your Safe Space for Healing & Growth",
-      "subtitle": "Aman Digital Care is a free, confidential AI companion designed to support you on your journey through addiction and mental health challenges. You are not alone.",
+      "subtitle": "Aman Digital Care is a free, confidential AI companion designed to support you on your journey through addiction and mental health challenges.",
       "button": "Start Your Journey"
     },
     "mission": {
-      "title": "Why We're Here",
-      "subtitle": "Rooted in a legacy of compassion, dedicated to accessible support for all.",
-      "p1": "Our mission is simple: to provide a safe, non-judgmental space for healing. Born from over two decades of real-world addiction and mental health support, Aman Digital Care is a non-profit initiative dedicated to making recovery accessible to everyone, anytime.",
-      "p2": "We believe in empowering you with the tools you need, right on your own device, with complete privacy."
+      "title": "Our Mission",
+      "subtitle": "Rooted in Kindness",
+      "p1": "Our mission is to provide a safe, non-judgmental space for healing for everyone, everywhere.",
+      "p2": "We believe in empowering you with tools that stay private on your device."
     },
-    "how_it_works": {
-      "title": "Your Path to Wellness",
-      "subtitle": "A clear, supportive journey designed around you.",
-      "step1_title": "1. Choose Your Program",
-      "step1_desc": "Start with an evidence-informed, 90-day program tailored to your needs, like Mindfulness or CBT.",
-      "step2_title": "2. Get Daily Guidance",
-      "step2_desc": "Receive daily challenges, log your moods, and journal your thoughts to build healthy habits.",
-      "step3_title": "3. Talk Anytime, 24/7",
-      "step3_desc": "Chat with Aman, your AI companion, for support, to practice conversations, or to use a wellness tool when you need it most.",
-      "step4_title": "4. See Your Growth",
-      "step4_desc": "Visualize your progress through personal analytics, celebrate milestones, and watch your 'Growth Garden' flourish."
+    "comparison": {
+      "title": "A Better Path",
+      "feature_col": "Feature",
+      "aman_col": "Aman AI",
+      "traditional_col": "Traditional",
+      "apps_col": "Others",
+      "f1": "Cost",
+      "f1_v": "Free",
+      "f2": "Availability",
+      "f2_v": "24/7",
+      "f3": "Privacy",
+      "f3_v": "Local-Only"
     },
-    "safe_space": {
-      "title": "A Safe & Confidential Space",
-      "subtitle": "Your privacy and peace of mind are our highest priorities.",
-      "item1_title": "Completely Anonymous",
-      "item1_desc": "You don't need to use your real name. Your journey is your own.",
-      "item2_title": "Data Stays On Your Device",
-      "item2_desc": "Your journal entries and personal data are stored locally on your device, not on our servers.",
-      "item3_title": "Zero Judgment",
-      "item3_desc": "Aman AI is trained to be an empathetic, supportive listener, available 24/7 without judgment."
-    },
-    "journey_preview": {
-      "title": "A Glimpse of the Journey",
-      "subtitle": "See what your first 90 days could look like.",
-      "day1_tab": "Day 1",
-      "day30_tab": "Day 30",
-      "day90_tab": "Day 90",
-      "sample_challenge_title": "Sample Challenge",
-      "day1_title": "The First Step: Building Your Foundation",
-      "day1_desc": "Your journey begins by establishing a new routine. On Day 1, you'll choose your program, get your first daily challenge, and take a moment to log your mood and thoughts. It's about taking one manageable step forward.",
-      "day1_challenge_task": "Write down one core reason why you're starting this journey. This will be your 'why'—your anchor in challenging moments.",
-      "day30_title": "One Month In: Seeing Progress",
-      "day30_desc": "After 30 days of consistent effort, you'll start to see real changes. Your 'Growth Garden' begins to flourish, you'll have a streak of journal entries to look back on, and you'll have developed new coping strategies.",
-      "day30_challenge_task": "Use the AI Toolkit to practice a 5-minute mindfulness meditation. Notice how you feel before and after.",
-      "day90_title": "90 Days: A New Beginning",
-      "day90_desc": "Completing the 90-day program is a monumental achievement. You've built a strong foundation of healthy habits, gained deep insights into your patterns, and developed a toolkit of strategies for long-term well-being.",
-      "day90_challenge_task": "Reflect on your journey. Write a short letter to the person you were on Day 1, acknowledging how far you've come."
-    },
-    "final_cta": {
-      "title": "Ready to Start Your Journey?",
-      "subtitle": "Take the first step towards a healthier, more balanced life. Your path to recovery is waiting.",
-      "button": "Explore Programs"
+    "timeline": {
+      "title": "Your Journey",
+      "day1": "Day 1",
+      "day1_v": "Enroll in a program.",
+      "day3": "Day 3",
+      "day3_v": "First session.",
+      "day7": "Day 7",
+      "day7_v": "First milestone."
     }
   },
-  "programs": {
-      "title": "Your Path to Recovery",
-      "subtitle": "Choose from one of our evidence-based, 90-day programs. Each is designed to provide you with the tools, knowledge, and support you need for lasting change. You can switch programs at any time.",
-      "success_rate": "{rate}% Success Rate",
-      "enroll": "Enroll in this Program",
-      "modal": {
-        "title": "Confirm Enrollment",
-        "text": "You are about to enroll in the '{programName}' program. This will reset your current 90-day progress. Are you sure you want to continue?",
-        "confirm": "Confirm & Enroll",
-        "cancel": "Cancel",
-        "donate": {
-            "title": "Support Our Mission (Optional)",
-            "text": "Aman Digital Care is free for everyone. A small, one-time donation helps us keep it that way and expand our reach. Your support makes a real difference.",
-            "upi_tab": "UPI (India)",
-            "crypto_tab": "Crypto (Global)",
-            "upi_label": "Our UPI ID:",
-            "sol_address_label": "Our Solana (SOL) Address:",
-            "copy_button": "Copy",
-            "copied_button": "Copied!",
-            "scan_qr": "Or scan the QR code",
-            "sol_scan_qr": "Or scan for Solana Pay",
-            "proof_text_start": "To receive a certificate of appreciation, please send a screenshot of your donation to",
-            "proof_text_end": "Thank you!",
-            "confirm_button": "I've Donated",
-            "skip_button": "Skip & Complete Enrollment"
-        },
-        "certificate_form": {
-            "title": "Certificate of Appreciation",
-            "text": "Thank you for your generous support! Please fill out the details below to generate your certificate.",
-            "name_label": "Name on Certificate (Optional)",
-            "amount_label": "Donation Amount (Optional)",
-            "message_label": "A short message for our wall of supporters (Optional)",
-            "message_placeholder": "e.g., 'Keep up the great work!'",
-            "button": "Generate Certificate"
-        },
-        "certificate_display": {
-            "title": "Thank You!",
-            "text": "Your support is invaluable. Here is your certificate.",
-            "download_button": "Download Certificate (SVG)",
-            "finish_button": "Finish & Go to Dashboard"
-        }
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We're here to help with technical support or partnership inquiries.",
+    "info": {
+      "title": "Contact Information",
+      "email": "Email ID: officialamanfoundation@gmail.com",
+      "support_email": "officialamanfoundation@gmail.com",
+      "phone": "Location: New Delhi, India"
     },
-    "login_prompt": {
-        "title": "Please Login",
-        "text": "To enroll in a program and save your progress, please create a profile or log in.",
-        "cancel": "Cancel",
-        "login_button": "Login / Sign Up"
+    "form": {
+      "name": "Your Name",
+      "email": "Your Email ID",
+      "message": "Message",
+      "button": "Send Message"
+    },
+    "success": {
+      "title": "Message Sent",
+      "message": "Thank you! We will get back to you as soon as possible."
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your recovery data and account preferences.",
+    "logged_in_as": "Logged in as:",
+    "age_label": "Your Age",
+    "age_placeholder": "Enter your age",
+    "age_input_placeholder": "e.g. 25",
+    "gender_label": "Gender Identity",
+    "gender_placeholder": "Select gender",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "gender_nonbinary": "Non-binary",
+    "gender_prefer_not_say": "Prefer not to say",
+    "save_button": "Save Profile",
+    "saved_button": "Profile Saved ✓",
+    "logout": "Logout",
+    "login_button": "Start My Journey",
+    "email_placeholder": "Email ID",
+    "anonymous_title": "Anonymous Mode",
+    "anonymous_text": "You are currently using the app anonymously. Log in to sync your data across devices.",
+    "email_invalid_error": "Please enter a valid Email ID.",
+    "data_management": {
+      "title": "Data & Privacy",
+      "description": "Export or delete your local data."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Enable daily check-ins and encouragement.",
+      "status_granted": "Status: Enabled",
+      "status_denied": "Status: Disabled (Check browser settings)",
+      "status_prompt": "Status: Not configured",
+      "enable_button": "Enable Notifications",
+      "disable_button": "Notifications Active",
+      "token_label": "Registration ID:"
+    },
+    "export": {
+      "button": "Export My Data",
+      "modal": {
+        "title": "Export Data",
+        "text": "This will download a JSON file of all your logs and progress.",
+        "confirm": "Download",
+        "cancel": "Cancel"
+      }
+    },
+    "delete": {
+      "button": "Delete My Account",
+      "error": "Email ID does not match.",
+      "modal": {
+        "title": "Delete Account?",
+        "text": "This is permanent. All your local logs will be erased.",
+        "confirm": "Delete Everything",
+        "cancel": "Cancel"
+      }
     }
   },
   "dashboard": {
     "loading": "Loading your dashboard...",
     "greeting": {
-        "morning": "Good Morning",
-        "afternoon": "Good Afternoon",
-        "evening": "Good Evening"
-    },
-    "program_status": "Day {day} of your {programName} program.",
-    "change_program_link": "Want to change your program? Click here.",
-    "challenge_title": "Today's Challenge: {title}",
-    "challenge_task_label": "Your Task:",
-    "challenge_button": {
-        "complete": "Mark as Complete",
-        "completed": "Completed!"
-    },
-    "mood": {
-        "title": "How are you feeling?",
-        "happy": "Happy",
-        "neutral": "Neutral",
-        "sad": "Sad"
-    },
-    "journal": {
-        "title": "Daily Journal",
-        "reminder": "Taking a few moments to write can bring clarity.",
-        "placeholder": "What's on your mind today?",
-        "save": "Save Entry",
-        "saved": "Saved!"
-    },
-    "goals": {
-        "title": "My Goals",
-        "placeholder": "Add a new personal goal...",
-        "add": "Add",
-        "delete_confirm": "Are you sure you want to delete this goal?",
-        "edit": "Edit goal",
-        "save": "Save",
-        "cancel": "Cancel"
-    },
-    "progress_title": "90-Day Progress",
-    "progress_day_1": "Day 1",
-    "progress_day_current": "Day {day}",
-    "progress_day_90": "Day 90",
-    "completion": {
-        "title": "Congratulations!",
-        "subtitle": "You've successfully completed the {programName} program. This is a monumental achievement, and we are incredibly proud of you.",
-        "summary_title": "Your 90-Day Journey",
-        "challenges_completed": "Challenges Completed",
-        "journal_entries": "Journal Entries",
-        "button_new_program": "Choose a New Program",
-        "button_review_journey": "Review Your Journey"
-    },
-    "ai_insight": {
-        "title": "Aman's Daily Focus",
-        "loading": "Preparing your daily focus..."
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
     },
     "persona": {
-        "title": "Choose Your AI Persona",
-        "description": "Select the type of support you'd like from Aman today."
-    },
-    "suggested_resource": {
-        "title": "A Resource For You"
-    },
-    "milestone_unlocked": {
-        "title": "Milestone Unlocked!",
-        "dismiss": "Got it!"
-    },
-    "proactive_checkin": {
-        "title": "A Gentle Check-in",
-        "text": "I notice things might be feeling a bit heavy lately. Remember that feelings are like clouds passing by. The Guided Breathing exercise in the AI Toolkit is always here if you need a moment of calm.",
-        "talk_button": "Talk it Out with Aman"
-    },
-    "toolkit_prompt": {
-        "button": "Open AI Toolkit"
-    },
-    "new_features_toast": "✨ New features like Sober Circle & Relapse Planning are now live!",
-    "wellness": {
-        "title": "Daily Wellness Log",
-        "sleep": "Hours Slept",
-        "activity": "Activity Level",
-        "activity_low": "Low",
-        "activity_moderate": "Moderate",
-        "activity_high": "High",
-        "save": "Save",
-        "saved": "Saved!"
-    },
-    "prevention_plan": {
-        "title": "Relapse Prevention Plan",
-        "description": "Proactively prepare for challenging moments by creating your personal prevention plan.",
-        "create_button": "Create My Plan",
-        "review_button": "Review & Edit Plan",
-        "my_why": "My 'Why'",
-        "top_triggers": "Top Triggers"
+      "title": "Select AI Voice Persona"
     },
     "garden": {
-        "title": "Growth Garden",
-        "description": "Your garden flourishes as you progress on your journey.",
-        "pot_tooltip": "Your journey's foundation.",
-        "stem_tooltip": "Stem height represents your program progress. Day {day} of 90.",
-        "leaves_tooltip": "Each leaf represents completed challenges. Total: {count}.",
-        "flowers_tooltip": "Flowers bloom based on your journal streak. Current streak: {count} days."
+      "pot_tooltip": "Your foundation of recovery",
+      "stem_tooltip": "Growth reaching day {day}",
+      "leaves_tooltip": "{count} challenges completed",
+      "flowers_tooltip": "Journal streak of {count} days"
     },
-    "ai_sponsor": {
-      "title": "A Message from Aman",
-      "fallback_title": "A Gentle Reminder",
-      "listen_echo_button": "Listen to an Echo"
-    },
+    "progress_title": "Program Progress",
     "today_focus": {
       "title": "Today's Focus",
-      "challenge_title": "Today's Challenge:",
-      "journal_title": "Daily Reflection",
-      "journal_prompt": "Take a moment to write down your thoughts.",
-      "journal_button": "Start Writing",
-      "view_analytics_link": "View trends & insights"
+      "view_analytics_link": "View Trends",
+      "challenge_title": "Daily Challenge",
+      "journal_title": "Journal Reflection",
+      "journal_prompt": "How are you feeling about your progress today?",
+      "journal_button": "Write Entry"
+    },
+    "mood": {
+      "title": "How are you feeling?",
+      "happy": "Happy",
+      "neutral": "Neutral",
+      "sad": "Sad"
+    },
+    "challenge_button": {
+      "complete": "Mark as Complete",
+      "completed": "Challenge Finished ✓"
     }
   },
   "analytics": {
-    "title": "Your Journey Analytics",
-    "subtitle": "Visualize your progress, celebrate your milestones, and gain insights into your recovery journey.",
-    "no_program": "You are not currently enrolled in a program.",
-    "select_program_link": "Select a program to start tracking your progress.",
-    "program_progress": {
-        "title": "Program Progress"
-    },
+    "title": "Recovery Insights",
+    "subtitle": "Visualize your path to wellness.",
+    "no_program": "No active program found.",
+    "select_program_link": "Select a Program",
+    "program_progress": { "title": "Program Day" },
     "stat": {
-        "progress_subtitle": "of 90 days",
-        "challenges_subtitle": "completed"
+      "progress_subtitle": "Days Completed",
+      "challenges_subtitle": "Wins Logged"
     },
     "streak": {
-        "title": "Journal Streak",
-        "days": "Days"
-    },
-    "insights": {
-        "title": "AI Insights (Last 30 Days)",
-        "error": "Could not generate AI insights at this time. Please try again later."
-    },
-    "mood": {
-        "title": "Mood Trend (Last 30 Days)"
-    },
-    "mood_distribution": {
-        "title": "Overall Mood Distribution"
-    },
-    "mood_dist": {
-        "happy": "Happy Days",
-        "neutral": "Neutral Days",
-        "sad": "Sad Days"
-    },
-    "activity_calendar": {
-        "title": "Activity Calendar (Last 35 Days)",
-        "days": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
-        "legend": {
-            "none": "No Activity",
-            "challenge": "Challenge",
-            "journal": "Journal",
-            "both": "Both"
-        },
-        "tooltip": {
-            "no_activity": "No activity on {date}",
-            "journal": "Journal entry on {date}",
-            "challenge": "Challenge completed on {date}",
-            "journal_challenge": "Journal & Challenge on {date}"
-        }
+      "title": "Journal Streak",
+      "days": "Consecutive Days"
     },
     "milestones": {
-        "title": "Milestones Achieved",
-        "empty": "Your first milestone is just around the corner!"
+      "title": "Achievements",
+      "empty": "Your first milestone is waiting!"
     },
-    "no_mood_data": "Log your mood on the dashboard to see your trend here.",
-    "recent_entries": {
-        "title": "Recent Journal Entries"
+    "mood": { "title": "Mood Patterns" },
+    "wellness": { 
+      "title": "Sleep & Activity",
+      "no_data": "No sleep or activity data logged yet.",
+      "sleep_label": "Sleep",
+      "activity_label": "Activity"
     },
-    "no_journal_entries": "No journal entries yet.",
-    "wellness": {
-        "title": "Wellness Trends (Last 30 Days)",
-        "no_data": "Log your wellness on the dashboard to see your trend here.",
-        "sleep_label": "Sleep",
-        "activity_label": "Activity"
+    "recent_entries": { "title": "Recent Journaling" },
+    "no_journal_entries": "No entries yet.",
+    "insights": {
+      "title": "Aman's Analysis",
+      "error": "Could not generate insights right now."
+    },
+    "mood_distribution": { "title": "Emotional Balance" },
+    "mood_dist": {
+      "happy": "Positive",
+      "neutral": "Stable",
+      "sad": "Low"
     }
   },
-  "resources": {
-    "title": "Recovery Resources",
-    "subtitle": "A curated collection of articles, exercises, and guides to support you at every stage of your journey.",
-    "read_more": "Learn More"
+  "mood_chart": {
+    "no_data": "Log your mood daily to see trends."
   },
-  "about": {
-    "title": "About Aman Digital Care",
-    "subtitle": "A non-profit initiative dedicated to providing accessible and confidential mental health and addiction support.",
-    "mission": {
-        "title": "Our Mission",
-        "p1": "To leverage technology to provide free, confidential, and immediate support for individuals struggling with addiction and mental health challenges. We believe everyone deserves a chance to heal, regardless of their circumstances.",
-        "p2": "Aman Digital Care is built on the principles of empathy, accessibility, and evidence-based care, making recovery support available to anyone, anytime."
+  "programs": {
+    "title": "Recovery Programs",
+    "subtitle": "90-day structured paths built on clinical evidence.",
+    "enroll": "Begin Program",
+    "success_rate": "{rate}% Success Rate",
+    "login_prompt": {
+      "title": "Registration Required",
+      "text": "Please create a profile or log in to enroll in a structured recovery program.",
+      "cancel": "Cancel",
+      "login_button": "Go to Profile"
     },
-    "legacy": {
-        "title": "Rooted in a Legacy of Care",
-        "p1": "Aman Digital Care is more than just an application; it's the digital evolution of a mission that began in 2001. Our founder's family has operated a de-addiction, rehabilitation, and mental health NGO for over two decades, providing offline support to more than 200,000 individuals on their path to recovery.",
-        "p2": "Our journey began in Delhi, India, working with incarcerated individuals struggling with addiction in Tihar Jail. This deep, real-world experience, born from a commitment to help those in the most challenging circumstances, is the bedrock of our approach. From those humble beginnings, the Aman Foundation is now transforming into the world's best mental health companion, bringing decades of compassionate, effective care into the digital space to support you."
-    },
-    "values": {
-        "title": "Our Core Values",
-        "accessibility": {
-            "title": "Accessibility",
-            "description": "Providing free and immediate support to anyone in need, breaking down barriers to care."
-        },
-        "empathy": {
-            "title": "Empathy",
-            "description": "Creating a non-judgmental, compassionate space where users feel safe and understood."
-        },
-        "integrity": {
-            "title": "Integrity",
-            "description": "Upholding the highest standards of user privacy and data security, ensuring a trustworthy experience."
-        }
-    },
-    "foundation": {
-        "title": "The AMAN AI Foundation",
-        "description": "Aman Digital Care is a flagship project of the AMAN AI Foundation, a non-profit organization focused on using artificial intelligence for social good. Our work is supported by volunteers and donors who share our vision of a healthier world."
-    },
-    "cta": {
-        "title": "Join the Journey",
-        "description": "Ready to take the first step? Explore our programs and begin your path to a healthier life today.",
-        "button": "Explore Programs"
-    }
-  },
-  "contact": {
-    "title": "Get in Touch",
-    "subtitle": "We'd love to hear from you. Whether you have a question, feedback, or a partnership inquiry, please reach out.",
-    "info": {
-        "title": "Contact Information",
-        "email": "Email: officialamanfoundation@gmail.com",
-        "phone": "Phone: +91-8800685335",
-        "support_prefix": "For support, email us at ",
-        "support_email": "officialamanfoundation@gmail.com"
-    },
-    "form": {
-        "name": "Full Name",
-        "email": "Email Address",
-        "message": "Your Message",
-        "button": "Send Message"
-    },
-    "success": {
-        "title": "Message Sent!",
-        "message": "Thank you for reaching out. We've received your message and will get back to you shortly."
-    }
-  },
-  "profile": {
-    "title": "My Profile",
-    "subtitle": "Manage your account and preferences.",
-    "logged_in_as": "You are logged in as:",
-    "logout": "Log Out",
-    "anonymous_title": "You're in Anonymous Mode",
-    "anonymous_text": "Your progress is saved on this device. To sync your data across devices, please log in with your email.",
-    "email_placeholder": "Enter your email address",
-    "age_placeholder": "Your Age (optional, for personalization)",
-    "login_button": "Login / Sign Up",
-    "email_invalid_error": "Please enter a valid email address.",
-    "age_label": "Your Age (for personalized wellness advice)",
-    "age_input_placeholder": "e.g., 30",
-    "gender_label": "Your Gender (optional)",
-    "gender_placeholder": "Select your gender...",
-    "gender_male": "Male",
-    "gender_female": "Female",
-    "gender_nonbinary": "Non-binary",
-    "gender_prefer_not_say": "Prefer not to say",
-    "save_button": "Save",
-    "saved_button": "Saved!",
-    "data_management": {
-        "title": "Data Management",
-        "description": "Your privacy is important to us. You have full control over your data."
-    },
-    "export": {
-        "button": "Export My Data",
-        "modal": {
-            "title": "Export Your Data",
-            "text": "This will download a JSON file containing all your user data, including journal entries, goals, and progress. Are you sure you want to continue?",
-            "confirm": "Yes, Export",
-            "cancel": "Cancel"
-        }
-    },
-    "delete": {
-        "button": "Delete My Account & Data",
-        "modal": {
-            "title": "Delete Account",
-            "text": "This action is irreversible and will permanently delete all your data. To confirm, please type your email address below.",
-            "confirm": "I Understand, Delete",
-            "cancel": "Cancel"
-        },
-        "error": "The email address does not match."
-    },
-    "notifications": {
-      "title": "Push Notifications",
-      "description": "Receive gentle check-ins and reminders from your AI Sponsor.",
-      "status_granted": "Status: Notifications are enabled.",
-      "status_denied": "Status: Notifications are disabled. Please enable them in your device settings.",
-      "status_prompt": "Status: Click below to enable notifications.",
-      "enable_button": "Enable Notifications",
-      "disable_button": "Notifications Enabled",
-      "token_label": "Your Push Token:"
-    }
-  },
-  "chatbot": {
-    "title": "Aman AI",
-    "subtitle": "Your 24/7 Companion",
-    "initial_message": "Hello! I'm Aman, your personal recovery companion. I'm here to listen, support, and guide you. How are you feeling today?",
-    "placeholder": "Type your message...",
-    "crisis_button": "I'm in a crisis",
-    "crisis_confirm": "This will trigger a crisis alert. Are you sure you need immediate help?",
-    "error_message": "I'm sorry, I'm having trouble connecting right now. Please check your internet connection and try again.",
-    "retry_button": "Retry",
-    "suggested_prompt_1": "I'm feeling a craving.",
-    "suggested_prompt_2": "Can we do a mindfulness exercise?",
-    "suggested_prompt_3": "Tell me something encouraging."
-  },
-  "toolkit": {
-    "title": "AI Wellness Toolkit",
-    "subtitle": "A collection of AI-powered tools to help you manage cravings, reframe thoughts, and find calm in the moment.",
-    "breathing": {
-        "title": "4-7-8 Breathing Exercise",
-        "description": "Use this simple breathing technique to calm your nervous system and reduce anxiety.",
-        "inhale": "Inhale...",
-        "hold": "Hold...",
-        "exhale": "Exhale...",
-        "start": "Start Exercise",
-        "stop": "Stop"
-    },
-    "meditation": {
-        "title": "AI Guided Meditation",
-        "description": "Tell Aman how you're feeling, and it will generate a short, personalized meditation script just for you.",
-        "placeholder": "e.g., 'I'm feeling anxious about work'",
-        "button": "Generate Meditation"
-    },
-    "cbt": {
-        "title": "AI Cognitive Reframing (CBT)",
-        "description": "Identify and challenge a negative thought. Aman will guide you through a CBT exercise to find a more balanced perspective.",
-        "placeholder": "e.g., 'I feel like I'm going to fail'",
-        "button": "Start CBT Exercise"
-    },
-    "gratitude": {
-        "title": "AI Gratitude Prompt",
-        "description": "Click the button and Aman will generate a unique, insightful prompt to help you cultivate gratitude.",
-        "button": "Generate Gratitude Prompt"
-    },
-    "generating": "Generating...",
-    "error": "I'm sorry, I was unable to generate the exercise. Please try again.",
-    "echoes_of_strength": {
-      "title": "Echoes of Strength",
-      "description": "Transform your personal motivations into powerful audio affirmations. Hear your 'why' spoken back to you in a calm, supportive voice.",
-      "placeholder": "e.g., 'I am strong enough to do this for my children.'",
-      "generate_button": "Generate Echo",
-      "generating": "Generating...",
-      "voice_label": "Select a Voice",
-      "voice_names": {
-        "Kore": "Kore (Female, Calm)",
-        "Puck": "Puck (Male, Energetic)",
-        "Zephyr": "Zephyr (Female, Gentle)",
-        "Fenrir": "Fenrir (Male, Deep)"
+    "modal": {
+      "title": "Enrollment",
+      "text": "Start {programName}? This resets your day count.",
+      "confirm": "Yes, Start Program",
+      "cancel": "Back",
+      "donate": {
+        "title": "Support our Mission",
+        "text": "We are a non-profit. A small donation keeps us free for everyone.",
+        "upi_tab": "UPI",
+        "crypto_tab": "Crypto",
+        "upi_label": "UPI ID",
+        "sol_address_label": "Solana Address",
+        "copy_button": "Copy",
+        "copied_button": "Copied",
+        "scan_qr": "Scan to Pay",
+        "sol_scan_qr": "Scan for SOL",
+        "proof_text_start": "Email screenshot to",
+        "proof_text_end": "to get your certificate.",
+        "confirm_button": "I have donated",
+        "skip_button": "Start Program"
       },
-      "history_title": "My Echoes",
-      "empty_history": "Your generated affirmations will appear here.",
-      "error": "Sorry, I couldn't generate the audio. Please try again."
-    },
-    "future_self_visualization": {
-      "title": "Future Self Visualization",
-      "description": "Describe a future goal or feeling. Aman will generate a personalized guided imagery audio session to help you vividly experience and manifest it.",
-      "placeholder": "e.g., 'Feeling confident and calm at a family gathering.'",
-      "button": "Generate Visualization",
-      "generating_script": "Generating script...",
-      "generating_audio": "Generating audio...",
-      "playing": "Stop Visualization",
-      "error": "Sorry, I couldn't create the visualization. Please try again."
-    },
-    "nutrition_navigator": {
-      "title": "Nutrition Navigator",
-      "description": "Get AI-powered meal ideas and nutritional tips tailored to your recovery goals and preferences.",
-      "placeholder": "e.g., 'healthy snack ideas', 'budget-friendly meals to boost energy'",
-      "button": "Get Nutrition Tips"
-    }
-  },
-  "community": {
-    "title": "Community Wall",
-    "subtitle": "Share your thoughts, successes, and struggles with the community. All posts are anonymous.",
-    "placeholder": "Share something positive...",
-    "share_button": "Share",
-    "hi_button": "👋 Say Hi",
-    "record_voice_note": "Voice Note",
-    "share_photo_button": "Share Photo",
-    "anonymous_user": "Anonymous User",
-    "said_hi": "...just wanted to say hi to everyone!",
-    "empty": "The wall is quiet right now. Be the first to share something!",
-    "recording": "Recording...",
-    "stop_recording": "Stop & Share",
-    "mic_error": "Microphone access is required to record a voice note. Please grant permission in your browser settings.",
-    "voice_note": {
-        "play_aria": "Play voice note",
-        "pause_aria": "Pause voice note"
-    },
-    "report_post": "Report post",
-    "report_confirm_title": "Report Post?",
-    "report_confirm_text": "This post will be hidden from your view. Our team will review it for community guideline violations. Are you sure?",
-    "report_confirm_button": "Yes, Report",
-    "report_cancel_button": "Cancel",
-    "report_success": "Post reported and hidden.",
-    "filter_all": "All",
-    "filter_text": "Text",
-    "filter_voice": "Voice",
-    "filter_photos": "Photos",
-    "filter_hi": "Hi's",
-    "sort_newest": "Newest First",
-    "sort_oldest": "Oldest First"
-  },
-  "group_session": {
-    "title": "AI Group Sessions",
-    "subtitle": "Join an AI-moderated group session on a topic that matters to you. All interactions are anonymous.",
-    "select_topic_title": "Choose a Topic",
-    "disclaimer": "This is an AI-simulated group session for practice and support. The 'peers' are AI-generated.",
-    "author_moderator": "Aman (Moderator)",
-    "author_you": "You",
-    "author_peer": "Anonymous User",
-    "back_to_topics": "Back to Topics",
-    "placeholder": "Share your thoughts...",
-    "loading": "Thinking..."
-  },
-  "group_session_topics": {
-    "gratitude": {
-        "title": "Gratitude Circle",
-        "description": "Share something you're thankful for, big or small.",
-        "initial_message": "Welcome to the Gratitude Circle. Let's take a moment to focus on the positive. What is one thing, no matter how small, that you're grateful for today?"
-    },
-    "celebrating_wins": {
-        "title": "Celebrating Small Wins",
-        "description": "Acknowledge a recent success or step forward in your journey.",
-        "initial_message": "Welcome, everyone. This space is for celebrating our progress. What's a small win you've had recently that you'd like to share?"
-    },
-    "navigating_cravings": {
-        "title": "Navigating a Craving",
-        "description": "Share strategies and get support for managing cravings.",
-        "initial_message": "Welcome. If you're dealing with cravings, you're not alone. What has helped you get through a tough moment, or what challenges are you facing right now?"
-    },
-    "managing_stress": {
-        "title": "Managing Stress",
-        "description": "Discuss healthy ways to cope with stress and anxiety.",
-        "initial_message": "Hello, and welcome. Stress is a major part of life and recovery. Let's talk about it. How has stress been affecting you, and what are some healthy ways you've found to cope?"
-    }
-  },
-  "live_talk": {
-    "title": "Live Talk with Aman",
-    "subtitle": "Have a real-time voice conversation with your AI companion. It's a safe space to talk things through.",
-    "no_program_error": "You need to be enrolled in a program to use Live Talk. Please select a program first.",
-    "mic_permission": "Microphone permission is required. Please enable it in your browser settings to continue.",
-    "start_button": "Start Conversation",
-    "stop_button": "End Conversation",
-    "connecting_button": "Connecting...",
-    "export_transcript": "Export Transcript",
-    "user": "You",
-    "model": "Aman AI",
-    "system": "System",
-    "mood_logged": "Mood logged as {mood}.",
-    "status": {
-        "idle": "Ready to start when you are.",
-        "connecting": "Connecting...",
-        "connected": "Connected. Aman is listening.",
-        "live": "Connected. Aman is listening.",
-        "listening_intently": "Listening intently...",
-        "model_thinking": "Aman is speaking...",
-        "speaking": "Aman is speaking...",
-        "error": "Connection error. Please try again.",
-        "closed": "Session ended."
-    },
-    "ethical_boundary": "Hello, I'm Aman. I want you to know I am an AI and not a licensed therapist, and this conversation is for support, not medical advice.",
-    "initial_greeting": "It's good to hear your voice, {userName}. I see you're on day {day} of the {programName} program. How are things for you today?",
-    "transcript": {
-        "download_filename": "AmanDigitalCare_LiveTalk_{date}.txt",
-        "export_button": "Export Transcript"
-    },
-    "voice_selection": {
-      "title": "Select AI Voice:",
-      "female": "Female",
-      "male": "Male"
-    }
-  },
-  "sober_circle_page": {
-    "title": "Sober Circle",
-    "subtitle": "Discover sober-friendly places and activities near you. Find your new favorite spot for connection and fun.",
-    "placeholder": "e.g., 'coffee shops with good vibes', 'quiet parks', 'late night cafes'",
-    "find_button": "Find Places",
-    "getting_location": "Getting your current location...",
-    "finding_places": "Finding sober-friendly places near you...",
-    "location_denied": "Location access was denied. This feature requires your location to find nearby places.",
-    "error": "Sorry, I couldn't find any places at this time. Please try a different search.",
-    "no_results": "No results found for that search. Try being more general, like 'calm places' or 'bookstores'.",
-    "ai_summary_title": "Aman's Suggestions",
-    "view_on_map": "View on Map"
-  },
-  "prevention_plan_page": {
-    "title": "Relapse Prevention Plan",
-    "subtitle": "Work with Aman AI in a live conversation to build a proactive plan for handling triggers and staying on track.",
-    "transcript_title": "Live Conversation",
-    "no_program_error": "You need to be enrolled in a program to create a Prevention Plan.",
-    "select_program_link": "Select a program to get started.",
-    "initial_greeting": "Welcome. I'm here to help you build a strong relapse prevention plan. This is a powerful step in your recovery. We'll do this together, one step at a time.",
-    "plan_title": "My Prevention Plan",
-    "my_why_title": "My 'Why' (My Motivation)",
-    "triggers_title": "My Triggers",
-    "coping_title": "My Coping Strategies",
-    "support_title": "My Support Network",
-    "save_button": "Save & Return to Dashboard",
-    "plan_saved": "Plan Saved!",
-    "delete_item_aria": "Delete item"
-  },
-  "conversation_practice": {
-    "title": "AI Conversation Practice",
-    "subtitle": "Build confidence by practicing difficult conversations in a safe, judgment-free space with a responsive AI partner.",
-    "select_scenario": "1. Select a Scenario",
-    "select_persona": "2. Choose who to talk to",
-    "back_to_scenarios": "‹ Back to Scenarios",
-    "end_session": "End Practice Session",
-    "feedback_title": "Your Feedback",
-    "generating_feedback": "Aman is preparing your feedback...",
-    "practice_again": "Practice Another Scenario",
-    "scenarios": {
-      "refusing_drink": {
-        "title": "Refusing a Drink at a Party",
-        "description": "Practice saying \"no\" confidently when offered a drink in a social setting."
+      "certificate_form": {
+        "title": "Certificate Details",
+        "text": "Help us personalize your recognition.",
+        "name_label": "Name on Certificate",
+        "amount_label": "Contribution Amount",
+        "message_label": "Note for the team",
+        "message_placeholder": "Optional",
+        "button": "Generate Certificate"
       },
-      "explaining_recovery": {
-        "title": "Explaining Your Recovery",
-        "description": "Practice talking about your recovery journey to someone who is curious."
-      },
-      "setting_boundary": {
-        "title": "Setting a Boundary",
-        "description": "Practice setting a healthy boundary with a friend or family member."
-      },
-      "opening_up_anxiety": {
-        "title": "Opening Up About Anxiety",
-        "description": "Practice talking about what anxiety feels like to a concerned friend or partner."
-      },
-      "handling_unsolicited_advice": {
-        "title": "Handling Unsolicited Advice",
-        "description": "Practice responding to well-meaning but unhelpful advice about your mental health."
-      },
-      "turning_down_hard_drugs": {
-        "title": "Turning Down Hard Drugs",
-        "description": "Practice a high-stakes refusal with an acquaintance from your past."
-      },
-      "declining_cannabis": {
-        "title": "Declining Cannabis Socially",
-        "description": "Practice refusing cannabis in a casual social setting where others are partaking."
-      },
-      "talking_to_doctor": {
-        "title": "Talking to a Doctor",
-        "description": "Practice clearly describing your mental health symptoms to a healthcare professional."
+      "certificate_display": {
+        "title": "Recognition Earned",
+        "text": "Thank you for your kindness. You can download your certificate below.",
+        "download_button": "Download Certificate",
+        "finish_button": "Continue to Dashboard"
       }
     }
   },
-  "utils": {
-    "user_name": {
-      "guest": "Guest"
+  "live_talk": {
+    "title": "Live Voice Chat",
+    "subtitle": "Speak directly with Aman AI for real-time support and grounding.",
+    "start_button": "Start Conversation",
+    "stop_button": "End Session",
+    "connecting_button": "Connecting...",
+    "user": "You",
+    "model": "Aman AI",
+    "error_mic": "Microphone access is required for Live Talk.",
+    "status": {
+      "idle": "Ready",
+      "connecting": "Connecting",
+      "connected": "Active",
+      "live": "Live",
+      "closed": "Ended",
+      "error": "Failed"
     },
-    "time": {
-      "just_now": "just now",
-      "minute_ago": "{count} minute ago",
-      "minutes_ago": "{count} minutes ago",
-      "hour_ago": "{count} hour ago",
-      "hours_ago": "{count} hours ago",
-      "day_ago": "{count} day ago",
-      "days_ago": "{count} days ago"
+    "voice_selection": {
+      "title": "AI Voice Selection",
+      "female": "Female (Zephyr)",
+      "male": "Male (Fenrir)"
     }
+  },
+  "toolkit": {
+    "title": "AI Toolkit",
+    "subtitle": "Interactive exercises for mental clarity and stability.",
+    "generating": "Generating...",
+    "error": "AI could not generate this tool right now.",
+    "breathing": {
+      "title": "Breathing Guide",
+      "description": "Slow down and center yourself with guided breathing cycles.",
+      "start": "Start Cycle",
+      "stop": "Stop",
+      "inhale": "Inhale",
+      "hold": "Hold",
+      "exhale": "Exhale"
+    },
+    "meditation": {
+      "title": "Guided Meditation",
+      "description": "Generate a custom meditation script based on your current state.",
+      "placeholder": "How are you feeling right now? (e.g., anxious, restless, tired)",
+      "button": "Create Meditation"
+    },
+    "cbt": {
+      "title": "CBT Thought Reframer",
+      "description": "Break down and reframe negative thought patterns.",
+      "placeholder": "Enter a negative thought you're having...",
+      "button": "Analyze Thought"
+    },
+    "gratitude": {
+      "title": "Gratitude Journaling",
+      "description": "A unique prompt to help you find the positive in your day.",
+      "button": "Get Daily Prompt"
+    },
+    "nutrition_navigator": {
+      "title": "Nutrition Guide",
+      "description": "Actionable meal ideas and tips for physical recovery.",
+      "placeholder": "What are your health goals or dietary needs?",
+      "button": "Get Wellness Plan"
+    },
+    "echoes_of_strength": {
+      "title": "Echoes of Strength",
+      "description": "Turn your personal affirmations into spoken words of power.",
+      "placeholder": "Enter an affirmation (e.g., 'I am stronger than my cravings')",
+      "voice_label": "Select Voice",
+      "voice_names": {
+        "Kore": "Empathetic Kore",
+        "Puck": "Friendly Puck",
+        "Zephyr": "Calm Zephyr",
+        "Fenrir": "Strong Fenrir"
+      },
+      "generate_button": "Synthesize Affirmation",
+      "generating": "Creating Echo...",
+      "history_title": "My Strength Echoes",
+      "empty_history": "No echo affirmations saved yet.",
+      "error": "Failed to create echo."
+    },
+    "future_self_visualization": {
+      "title": "Future Visualization",
+      "description": "A guided audio meditation focusing on your long-term success.",
+      "placeholder": "Describe one goal you've achieved in your future...",
+      "button": "Create Audio Journey",
+      "generating_script": "Writing script...",
+      "generating_audio": "Synthesizing voice...",
+      "playing": "Playing Audio",
+      "error": "Failed to create journey."
+    }
+  },
+  "prevention_plan_page": {
+    "title": "Relapse Prevention Plan",
+    "subtitle": "Your digital safety net. Speak with Aman AI to build your personalized plan.",
+    "initial_greeting": "Let's build your safety net. Why is recovery important to you today?",
+    "transcript_title": "Conversation Context",
+    "my_why_title": "My Core Motivation",
+    "triggers_title": "Identified Triggers",
+    "coping_title": "Coping Strategies",
+    "support_title": "Support Network",
+    "save_button": "Lock Plan to Device"
+  },
+  "sober_circle_page": {
+    "title": "Sober Circle",
+    "subtitle": "Discover safe spaces and sober-friendly activities in your community.",
+    "placeholder": "What are you looking for? (e.g., coffee shops, hiking trails, libraries)",
+    "find_button": "Find Places",
+    "getting_location": "Accessing your location...",
+    "finding_places": "Searching for sober spaces...",
+    "location_denied": "Location access denied. Please enable location to find nearby places.",
+    "error": "Search failed. Please check your connection.",
+    "ai_summary_title": "Aman's Recommendation",
+    "view_on_map": "View on Maps",
+    "no_results": "No relevant places found nearby."
+  },
+  "conversation_practice": {
+    "title": "Conversation Lab",
+    "subtitle": "Practice difficult real-world conversations in a safe, AI-guided environment.",
+    "select_persona": "Choose a Conversation Partner",
+    "back_to_scenarios": "Change Scenario",
+    "end_session": "Finish & Get Feedback",
+    "feedback_title": "Performance Analysis",
+    "generating_feedback": "Aman is analyzing your conversation...",
+    "practice_again": "Practice Another Scenario"
+  },
+  "group_session": {
+    "title": "Group Sessions",
+    "subtitle": "Participate in anonymous, AI-moderated support circles.",
+    "select_topic_title": "Choose a Topic",
+    "author_moderator": "Moderator (Aman AI)",
+    "author_you": "You",
+    "author_peer": "Participant",
+    "disclaimer": "This is a simulated group session for support and reflection.",
+    "back_to_topics": "Leave Session",
+    "loading": "Connecting to group...",
+    "placeholder": "Share your thoughts with the group..."
+  },
+  "group_session_topics": {
+    "gratitude": {
+      "title": "Practicing Gratitude",
+      "description": "Discussing things we are thankful for in recovery.",
+      "initial_message": "Welcome everyone. Today we're sharing one thing we're grateful for today, no matter how small. Who would like to start?"
+    },
+    "celebrating_wins": {
+      "title": "Celebrating Wins",
+      "description": "Sharing milestones and positive achievements.",
+      "initial_message": "Let's celebrate our progress! Share a recent win you've had in your journey. We're here to cheer you on."
+    },
+    "navigating_cravings": {
+      "title": "Managing Cravings",
+      "description": "Sharing strategies for handling difficult moments.",
+      "initial_message": "Cravings are a natural part of the journey. What's a strategy that has helped you stay grounded recently?"
+    },
+    "managing_stress": {
+      "title": "Stress & Wellness",
+      "description": "Tips for emotional balance and health.",
+      "initial_message": "Stress can be a major trigger. How are you taking care of your mental health today?"
+    }
+  },
+  "chatbot": {
+    "title": "Aman Support",
+    "subtitle": "Your private AI companion",
+    "initial_message": "Hello. I'm Aman. How are you feeling on your journey today?",
+    "placeholder": "Tell me anything...",
+    "error_message": "I'm having trouble connecting right now. Please try again soon.",
+    "suggested_prompt_1": "I'm having a craving",
+    "suggested_prompt_2": "I need a quick meditation",
+    "suggested_prompt_3": "Tell me a recovery story",
+    "crisis_button": "Need Urgent Help?",
+    "crisis_confirm": "I can help guide you to professional resources. Should we look at crisis helplines?"
   },
   "gemini": {
-    "daily_focus_fallback": "Remember to be kind to yourself today. Every step forward, no matter how small, is progress."
+    "daily_focus_fallback": "Today is a new opportunity to grow. Focus on your breath and stay present."
   },
-  "mood_chart": {
-    "no_data": "Log your mood on the dashboard to see your trend here."
+  "utils": {
+    "user_name": { "guest": "Friend" },
+    "time": { 
+      "just_now": "just now",
+      "minute_ago": "1m ago",
+      "minutes_ago": "{count}m ago",
+      "hour_ago": "1h ago",
+      "hours_ago": "{count}h ago",
+      "day_ago": "1d ago",
+      "days_ago": "{count}d ago"
+    }
   },
   "certificate": {
-    "title": "Certificate of Appreciation",
-    "presented_to": "Presented to",
-    "recognition_text": "In grateful recognition of your generous donation of {amount} via {method}. Your support helps keep Aman Digital Care free and accessible to all.",
+    "title": "CERTIFICATE OF KINDNESS",
     "foundation_name": "AMAN AI Foundation",
-    "issued_on": "Issued On",
-    "anonymous_donor": "A Generous Supporter",
-    "a_generous_donation": "a generous donation"
-  },
-  "approach_page": {
-    "title": "Our Evidence-Informed Approach",
-    "subtitle": "Grounded in clinical science, powered by compassionate AI.",
-    "section1_title": "Built on Proven Methods",
-    "section1_p1": "Aman Digital Care is an evidence-informed tool built on established therapeutic principles. Our programs and the AI's guidance draw from gold-standard methods used in addiction and mental health treatment:",
-    "section1_item1_title": "Cognitive Behavioral Therapy (CBT)",
-    "section1_item1_text": "The 'gold standard' in therapy. We help you identify, challenge, and reframe the negative thought patterns that drive addictive behaviors.",
-    "section1_item2_title": "Mindfulness",
-    "section1_item2_text": "Rooted in practices like MBSR (Mindfulness-Based Stress Reduction), we guide you to stay present, manage stress, and navigate cravings without judgment.",
-    "section1_item3_title": "Motivational Interviewing (MI)",
-    "section1_item3_text": "A collaborative style used by therapists to help you find and strengthen your own internal motivation for lasting change.",
-    "section2_title": "How We Use AI Responsibly",
-    "section2_p1": "Your companion, Aman AI, is powered by Google's advanced models, specifically trained by us for this supportive role. It is designed to be a safe, non-judgmental listener that can apply the principles above in conversation, help you practice new skills, and offer encouragement 24/7.",
-    "disclaimer_title": "Important Clinical Disclaimer",
-    "disclaimer_text": "Aman Digital Care is a supportive tool, not a medical device or a healthcare provider. Our service does not provide diagnosis or treatment and is not a substitute for care from a qualified professional. Please consult a licensed healthcare provider for any medical advice.",
-    "section3_title": "Our Commitment to Safety",
-    "section3_p1": "Your safety is our highest priority. Our AI is trained to recognize crisis language and guide you toward immediate help. The SOS button is always available in the app to connect you with professional crisis resources from around the world.",
-    "section4_title": "Your Personal Recovery Toolkit",
-    "section4_p1": "We believe in empowering you with the tools for self-guided recovery. Aman Digital Care is a comprehensive toolkit designed to be your primary companion, providing the support, structure, and strategies you need to navigate your journey independently.",
-    "cta_button": "Explore Your AI Toolkit"
-  },
-  "policies_page": {
-    "title": "Policies & Legal",
-    "subtitle": "Our commitment to transparency, privacy, and safety.",
-    "privacy": {
-      "title": "Privacy Policy",
-      "description": "How we handle your data with respect and confidentiality."
-    },
-    "terms": {
-      "title": "Terms of Service",
-      "description": "The rules for using our application and services."
-    },
-    "disclaimer": {
-      "title": "Clinical Disclaimer",
-      "description": "Important information about the scope and limitations of our service."
-    },
-    "cookies": {
-      "title": "Cookie & Local Storage Policy",
-      "description": "How we use browser storage to make the app work for you."
-    }
+    "issued_on": "Issued on",
+    "presented_to": "Presented to",
+    "recognition_text": "for contributing {amount} via {method} to help make global mental health support free for everyone.",
+    "anonymous_donor": "Generous Supporter",
+    "a_generous_donation": "a kind contribution"
   },
   "seo": {
-    "keywords": {
-      "default": "addiction recovery, mental health support, sobriety app, free mental health, AI therapist, digital wellness, recovery companion, CBT app, mindfulness for addiction, confidential support, substance abuse help, mental wellness journey, addiction chatbot, evidence-based recovery, cognitive behavioral therapy, free wysa alternative, anonymous sobriety support, relapse prevention tool, AI for mental health, digital therapeutics, mental well-being, sobriety coach, online addiction support, virtual sponsor, emotional support AI, self-guided recovery, free addiction counseling app, AI mental wellness coach, daily sobriety tracker, sober living, mental fitness, emotional health, addiction help free"
-    },
-    "home": {
-      "title": "Aman Digital Care | Free AI for Addiction & Mental Health",
-      "description": "Begin your recovery with Aman Digital Care, a free AI companion for addiction & mental health. Get 24/7 confidential support, daily guidance, and proven programs. Start your journey today."
-    },
-    "programs": {
-      "title": "Evidence-Based Recovery Programs | Aman Digital Care",
-      "description": "Choose a structured 90-day recovery program for addiction and mental wellness. Our free, evidence-based plans use CBT and mindfulness to guide you to sobriety."
-    },
-    "analytics": {
-      "title": "Track Your Recovery Progress | Aman Digital Care",
-      "description": "Visualize your recovery journey with Aman Digital Care. Track your mood, daily progress, and journal streak with our powerful analytics dashboard."
-    },
-    "resources": {
-      "title": "Free Addiction Recovery Resources | Aman Digital Care",
-      "description": "Explore our free library of expert articles, guided exercises, and recovery tools designed to support your sobriety and mental wellness journey at every step."
-    },
-    "about": {
-      "title": "Our Mission & Legacy | About Aman Digital Care",
-      "description": "Discover the mission of Aman Digital Care. From helping inmates in Tihar Jail, Delhi, to becoming a global mental health companion, our legacy is built on 20+ years of real-world recovery support."
-    },
-    "approach": {
-      "title": "Evidence-Informed Approach | Aman Digital Care",
-      "description": "Learn the science behind Aman Digital Care. Our evidence-informed approach uses CBT, Mindfulness, and MI principles for safe and effective digital recovery support."
-    },
-    "contact": {
-      "title": "Contact Aman Digital Care | Support & Inquiries",
-      "description": "Have a question or feedback? Contact the Aman Digital Care team. We're here to help with support, partnerships, and any other inquiries."
-    },
-    "profile": {
-      "title": "My Profile | Aman Digital Care",
-      "description": "Manage your Aman Digital Care account, data, and preferences."
-    },
-    "community": {
-      "title": "Anonymous Community Wall | Aman Digital Care",
-      "description": "Share your journey and connect with a supportive, anonymous community of peers in recovery. You are not alone."
-    },
-    "group_session": {
-      "title": "AI-Simulated Group Sessions | Aman Digital Care",
-      "description": "Join anonymous, AI-moderated group sessions on topics like gratitude, managing stress, and celebrating wins. Practice sharing in a safe space."
-    },
-    "live_talk": {
-      "title": "Live Voice Chat with AI Companion | Aman Digital Care",
-      "description": "Have a real-time, confidential voice conversation with your AI companion, Aman, for immediate, judgment-free support whenever you need it."
-    },
-    "toolkit": {
-      "title": "AI Wellness Toolkit for Recovery | Aman Digital Care",
-      "description": "Use AI-powered tools like guided visualizations, meal planners, CBT exercises, and audio affirmations to support your well-being and manage cravings."
-    },
-    "sober_circle": {
-      "title": "Sober-Friendly Place Finder | Aman Digital Care",
-      "description": "Discover sober-friendly places, events, and activities near you. Find your new favorite spot for connection and fun to support your recovery lifestyle."
-    },
-    "prevention_plan": {
-      "title": "Build a Relapse Prevention Plan | Aman Digital Care",
-      "description": "Collaborate with your AI companion in a live voice session to build a personalized, proactive relapse prevention plan and identify your coping strategies."
-    },
-    "conversation_practice": {
-      "title": "AI Conversation Practice for Sobriety | Aman Digital Care",
-      "description": "Build confidence by practicing difficult conversations (like refusing a drink or setting boundaries) in a safe, judgment-free space with an AI role-play partner."
-    },
-    "privacy_policy": {
-      "title": "Privacy Policy | Aman Digital Care",
-      "description": "Read our Privacy Policy to understand how Aman Digital Care handles your data. We prioritize your privacy with local storage and full data control."
-    },
-    "terms_of_service": {
-      "title": "Terms of Service | Aman Digital Care",
-      "description": "Review the Terms of Service for using the Aman Digital Care application, including our medical disclaimer and user responsibilities."
-    },
-    "disclaimer": {
-      "title": "Clinical Disclaimer | Aman Digital Care",
-      "description": "Important disclaimer regarding the use of Aman Digital Care. Our app is a supportive tool, not a substitute for professional medical advice."
-    },
-    "cookie_policy": {
-      "title": "Cookie & Local Storage Policy | Aman Digital Care",
-      "description": "Learn about how Aman Digital Care uses local storage to save your progress and preferences, and how to manage your data."
-    }
+    "home": { "title": "Aman Digital Care | AI Recovery", "description": "Free, confidential AI companion for addiction recovery." },
+    "analytics": { "title": "My Insights | Aman AI", "description": "Track your healing progress." },
+    "community": { "title": "Community Wall | Aman AI", "description": "Anonymous shared experiences." },
+    "programs": { "title": "Recovery Programs | Aman AI", "description": "Clinical 90-day paths." },
+    "profile": { "title": "My Profile | Aman AI", "description": "Manage your private data." },
+    "contact": { "title": "Contact Us | Aman AI", "description": "Get in touch with the team." },
+    "live_talk": { "title": "Live Talk | Aman AI", "description": "Voice chat with AI." },
+    "toolkit": { "title": "AI Toolkit | Aman AI", "description": "CBT and Mindfulness tools." },
+    "sober_circle": { "title": "Sober Circle | Aman AI", "description": "Find sober-friendly spaces." },
+    "conversation_practice": { "title": "Practice | Aman AI", "description": "Difficult conversation practice." },
+    "group_session": { "title": "Support Groups | Aman AI", "description": "Simulated group sessions." },
+    "prevention_plan": { "title": "Relapse Plan | Aman AI", "description": "My recovery safety net." },
+    "keywords": { "default": "addiction help, sobriety companion, mental health AI" }
+  },
+  "about_page": {
+    "title": "Our Legacy",
+    "subtitle": "20 years of clinical experience meets modern AI."
+  },
+  "approach_page": {
+    "title": "The Aman Methodology",
+    "subtitle": "Scientific foundations for lasting change."
+  },
+  "policies_page": {
+    "title": "Legal & Ethics",
+    "subtitle": "How we keep your journey safe and private.",
+    "privacy": { "title": "Privacy Policy", "description": "Your data never leaves your phone." },
+    "terms": { "title": "Terms of Service", "description": "Guidelines for using our foundation's tools." },
+    "disclaimer": { "title": "Clinical Disclaimer", "description": "Important medical context." },
+    "cookies": { "title": "Cookie Policy", "description": "We use local storage, not tracking cookies." }
+  },
+  "resources": {
+    "title": "Recovery Library",
+    "subtitle": "Knowledge is power in the path to wellness.",
+    "read_more": "Read Full Article"
   }
 }

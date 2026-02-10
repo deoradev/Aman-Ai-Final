@@ -132,7 +132,8 @@ const AppContent: React.FC = () => {
             <Route path="/toolkit" element={<PageWrapper><ToolkitPage /></PageWrapper>} />
             <Route path="/conversation-practice" element={<PageWrapper><ConversationPracticePage /></PageWrapper>} />
             <Route path="/prevention-plan" element={<PageWrapper><PreventionPlanPage /></PageWrapper>} />
-            <Route path="/sober-circle" element={<Route element={<SoberCirclePage />} />} />
+            {/* Fix: Removed broken recursive Route usage and implemented correct PageWrapper pattern */}
+            <Route path="/sober-circle" element={<PageWrapper><SoberCirclePage /></PageWrapper>} />
             <Route path="/about" element={<PageWrapper><AboutPage /></PageWrapper>} />
             <Route path="/our-approach" element={<PageWrapper><ApproachPage /></PageWrapper>} />
             <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />

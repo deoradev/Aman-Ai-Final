@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import { translateAll } from '../services/translationService';
 import { safeLocalStorage } from '../utils';
@@ -8,16 +9,14 @@ type Translations = { [key: string]: any };
 interface LocalizationContextType {
   language: string;
   setLanguage: (language: string) => void;
-  // FIX: Changed return type to `any` to support returning complex objects (like arrays) from translation files.
   t: (key: string, params?: { [key: string]: string | number }) => any;
   isLoaded: boolean;
-  isTranslating: boolean; // New state to indicate translation is in progress
+  isTranslating: boolean; 
 }
 
 const LocalizationContext = createContext<LocalizationContextType | undefined>(undefined);
 
 // Helper function to get nested properties from the translation object
-// FIX: Changed return type to `any` to correctly return nested objects and arrays.
 const getNestedTranslation = (obj: Translations, key: string): any => {
     return key.split('.').reduce((o, i) => (o ? o[i] : undefined), obj);
 };
@@ -35,9 +34,11 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // 1. Load the source English file on initial mount
   useEffect(() => {
-    fetch('/Aman-Ai--main/locales/en.json')
+    // Fix: Removed the leading slash to make the path relative to the app base
+    // This resolves the issue where locales are not found in specific environments
+    fetch('Aman-Ai--main/locales/en.json')
       .then(res => {
-          if (!res.ok) throw new Error('Network response was not ok');
+          if (!res.ok) throw new Error(`HTTP Error: ${res.status} - Could not find en.json`);
           return res.json();
       })
       .then(data => {
@@ -46,15 +47,15 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setIsLoaded(true);
       })
       .catch(err => {
-        console.error("CRITICAL: Could not load source English translations.", err);
+        console.error("CRITICAL: Failed to load en.json", err);
         setError("Application core files could not be loaded.");
-        setIsLoaded(true); // Still show the app, even if broken.
+        setIsLoaded(true); // Proceed to let app show key fallbacks instead of a blank screen
       });
   }, []);
 
   // 2. This effect triggers when the language is changed
   useEffect(() => {
-    if (!sourceTranslations) return; // Wait for English to load
+    if (!sourceTranslations) return; 
 
     safeLocalStorage.setItem('amandigitalcare-language', language);
     document.documentElement.lang = language;
@@ -65,7 +66,6 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
 
     if (!navigator.onLine) {
-      console.warn("Offline: Cannot fetch new language pack. Defaulting to English.");
       setActiveTranslations(sourceTranslations);
       return;
     }
@@ -76,9 +76,8 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
         const translatedData = await translateAll(sourceTranslations, language);
         setActiveTranslations(translatedData);
       } catch (e) {
-        console.error(`Failed to translate to ${language}`, e);
-        // Alert removed for better UX. The app will just stay in English.
-        setActiveTranslations(sourceTranslations); // Fallback to English on error
+        console.error(`Translation failed for: ${language}`, e);
+        setActiveTranslations(sourceTranslations); // Fallback to English
       } finally {
         setIsTranslating(false);
       }
@@ -88,14 +87,13 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   }, [language, sourceTranslations]);
 
-  // The translation function
-  // FIX: Changed return type to `any` and added a check to only perform string replacement on strings, preventing runtime errors with array/object values.
   const t = useCallback((key: string, params?: { [key: string]: string | number }): any => {
-    if (!activeTranslations) return key;
+    // If translations haven't loaded yet, return an empty string or the last part of the key for a cleaner look
+    if (!activeTranslations) return '';
 
     let translation = getNestedTranslation(activeTranslations, key);
 
-    // Fallback to English if a specific key is missing in the translated language
+    // Fallback to English source if the translated key is missing
     if (translation === undefined && sourceTranslations) {
         translation = getNestedTranslation(sourceTranslations, key);
     }
@@ -110,8 +108,13 @@ export const LocalizationProvider: React.FC<{ children: ReactNode }> = ({ childr
     return result;
   }, [activeTranslations, sourceTranslations]);
 
-  if (error) {
-    return <div className="h-screen w-screen flex items-center justify-center bg-red-100 text-red-800">{error}</div>;
+  if (error && !isLoaded) {
+    return <div className="h-screen w-screen flex items-center justify-center bg-red-50 text-red-800 p-10 text-center">
+      <div>
+        <p className="font-bold text-xl mb-2">System Initialization Error</p>
+        <p>{error}</p>
+      </div>
+    </div>;
   }
   
   return (

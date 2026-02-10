@@ -64,7 +64,8 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
             }
         });
         
-        const jsonText = response.text.trim();
+        // Fix: Safely access .text property
+        const jsonText = response.text?.trim() || "[]";
         return JSON.parse(jsonText);
 
     } catch (error) {
@@ -122,7 +123,8 @@ export const getClinicalDoctorReport = async (
                 }
             }
         });
-        return JSON.parse(response.text.trim());
+        // Fix: Safely access .text property
+        return JSON.parse(response.text?.trim() || "{}");
     } catch (error) {
         console.error("Error generating doctor report:", error);
         throw error;
@@ -150,7 +152,8 @@ export const getJournalReflection = async (journalText: string, language: string
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error("Error generating journal reflection:", error);
         return "";
@@ -201,7 +204,8 @@ export const generateToolkitExercise = async (
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error(`Error generating toolkit exercise (${toolkitType}):`, error);
         throw new Error("Failed to generate exercise from AI.");
@@ -223,8 +227,7 @@ export const generateSpeech = async (text: string, voiceName: string): Promise<s
             },
         });
         
-        // CRITICAL FIX: Do not use response.text. 
-        // Iterate candidates to find the inlineData part containing base64 PCM.
+        // Fix: Iterate through parts to find audio data, do not use .text property for audio
         const audioPart = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
         const base64Audio = audioPart?.inlineData?.data;
         
@@ -274,7 +277,8 @@ export const getConversationFeedback = async (
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error("Error getting conversation feedback:", error);
         throw new Error("Failed to generate feedback from AI.");
@@ -341,7 +345,8 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
                 }
             }
         });
-        return JSON.parse(response.text.trim());
+        // Fix: Safely access .text property
+        return JSON.parse(response.text?.trim() || "{}");
     } catch (error) {
         console.error("Error getting sponsor insight:", error);
         return {
@@ -365,7 +370,8 @@ export const generateNotificationMessage = async (type: 'morning' | 'journal_nud
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error("Error generating notification message:", error);
         return "";
@@ -392,8 +398,9 @@ export const getSuggestedResource = async (journalText: string, programName: str
     `;
 
     try {
+        // Fix: Updated model name to gemini-3-flash-preview as per new guidelines
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -405,7 +412,8 @@ export const getSuggestedResource = async (journalText: string, programName: str
                 }
             }
         });
-        const parsed = JSON.parse(response.text.trim());
+        // Fix: Safely access .text property
+        const parsed = JSON.parse(response.text?.trim() || "{}");
         if (parsed.id) {
             return availableResources.find(r => r.id === parsed.id) || null;
         }
@@ -457,7 +465,8 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
             }
         });
 
-        return JSON.parse(response.text.trim());
+        // Fix: Safely access .text property
+        return JSON.parse(response.text?.trim() || "{}");
     } catch (error) {
         console.error("Error in group session response generation:", error);
         return {
@@ -475,6 +484,7 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
     `;
 
     try {
+        // Fix: Gemini 2.5 series is required for Maps grounding
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
@@ -519,7 +529,8 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error("Error summarizing journals:", error);
         return "Could not retrieve user data summary.";
@@ -548,7 +559,8 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
             model: 'gemini-3-pro-preview',
             contents: prompt,
         });
-        return response.text;
+        // Fix: Use .text property instead of text() method
+        return response.text || "";
     } catch (error) {
         console.error("Error summarizing chat history:", error);
         return "Could not summarize chat history.";

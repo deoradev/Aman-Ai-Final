@@ -1,7 +1,9 @@
 
-# Allow all major search engines to crawl Aman Digital Care
+# Global robots configuration for Aman Digital Care
 User-agent: *
 Allow: /
+
+# Exclude private user areas from search indexing
 Disallow: /dashboard
 Disallow: /profile
 Disallow: /analytics
@@ -9,6 +11,5 @@ Disallow: /live-talk
 Disallow: /toolkit
 Disallow: /conversation-practice
 
-# SEO best practices
 Sitemap: https://amandigitalcare.com/sitemap.xml
 Host: https://amandigitalcare.com
