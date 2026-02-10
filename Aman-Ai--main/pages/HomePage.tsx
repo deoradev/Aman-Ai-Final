@@ -19,6 +19,64 @@ const SecurityBadge: React.FC = () => (
     </div>
 );
 
+const HowItWorksSection: React.FC = () => {
+    return (
+        <section className="py-24 bg-white dark:bg-base-900 relative overflow-hidden">
+             {/* Decorative Background Blob */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-50/50 dark:bg-primary-900/5 rounded-full blur-[100px] -z-10"></div>
+
+            <div className="container mx-auto px-4 max-w-6xl">
+                <div className="text-center mb-20 animate-on-scroll">
+                    <span className="px-4 py-2 rounded-full bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-[10px] font-black uppercase tracking-widest border border-primary-200/50 dark:border-primary-700/30">
+                        Our Methodology
+                    </span>
+                    <h2 className="text-4xl md:text-6xl font-black text-base-900 dark:text-white mt-8 tracking-tighter">
+                        Holistic Healing <br/>
+                        <span className="text-primary-500">In Your Pocket.</span>
+                    </h2>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-12 relative">
+                    {/* Connecting Line (Desktop) */}
+                    <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-transparent via-primary-200 dark:via-primary-800 to-transparent z-0"></div>
+
+                    {[
+                        {
+                            title: "Structure",
+                            desc: "Choose a free, 90-day clinical program tailored to your specific recovery needs.",
+                            icon: "📍",
+                            delay: "delay-100"
+                        },
+                        {
+                            title: "Support",
+                            desc: "Talk to Aman, your 24/7 AI companion trained in CBT, empathy, and crisis support.",
+                            icon: "🤝",
+                            delay: "delay-200"
+                        },
+                        {
+                            title: "Strength",
+                            desc: "Build resilience with daily tools like journaling, mood tracking, and mindfulness.",
+                            icon: "🛡️",
+                            delay: "delay-300"
+                        }
+                    ].map((item, idx) => (
+                        <div key={idx} className={`relative z-10 flex flex-col items-center text-center group animate-on-scroll ${item.delay}`}>
+                            <div className="w-24 h-24 bg-white dark:bg-base-800 rounded-full border-4 border-base-50 dark:border-base-900 shadow-xl flex items-center justify-center text-4xl mb-8 group-hover:-translate-y-2 transition-transform duration-500 relative">
+                                {item.icon}
+                                <div className="absolute inset-0 bg-primary-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500"></div>
+                            </div>
+                            <h3 className="text-2xl font-black text-base-900 dark:text-white mb-3">{item.title}</h3>
+                            <p className="text-base-600 dark:text-base-400 font-medium max-w-xs leading-relaxed">
+                                {item.desc}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
 const FounderQuoteSection: React.FC = () => (
     <section className="bg-primary-500 text-white py-24 px-6 relative overflow-hidden">
         <div className="container mx-auto max-w-4xl text-center relative z-10">
@@ -165,6 +223,8 @@ const HomePage: React.FC = () => {
             </div>
         </section>
 
+        <HowItWorksSection />
+
         <ComparisonSection />
 
         <FounderQuoteSection />
@@ -246,6 +306,7 @@ const HomePage: React.FC = () => {
         }
         .delay-100 { animation-delay: 0.3s; }
         .delay-200 { animation-delay: 0.4s; }
+        .delay-300 { animation-delay: 0.5s; }
     `}</style>
     </>
   );
