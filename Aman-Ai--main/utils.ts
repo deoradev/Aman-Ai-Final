@@ -1,3 +1,4 @@
+
 import { JournalEntry, Program, Persona, Milestone, MoodEntry, Goal, ChatMessage } from './types';
 import { type Blob as GenAIBlob } from '@google/genai';
 import { PERSONAS } from './constants';
@@ -158,7 +159,24 @@ export const buildLiveTalkSystemInstruction = (t: (key: string, params?: { [key:
 export const buildPreventionPlanSystemInstruction = (t: (key: string) => string): string | null => {
     const context = getUserContext();
     if (!context) return null;
-    return `You are Aman AI coach. Build Relapse Prevention Plan. Language: ${context.language}. Initial: ${t('prevention_plan_page.initial_greeting')}`;
+    return `You are Aman AI, an expert recovery coach helping the user build a digital Relapse Prevention Plan.
+    Your goal is to interview the user to populate 4 specific sections:
+    1. My Core Motivation (why they want to recover)
+    2. Triggers (people, places, emotions)
+    3. Coping Strategies (tools they can use)
+    4. Support Network (names and roles/numbers)
+
+    Current Language: ${context.language}.
+    
+    CRITICAL INSTRUCTION FOR TOOL USE:
+    - As soon as the user provides ANY information relevant to the 4 sections above, you MUST call the 'updatePlan' tool immediately.
+    - Do not wait for the user to finish listing everything. Capture partial information as it comes.
+    - For example, if the user says "I do it for my kids", call updatePlan({ myWhy: "My kids" }) immediately.
+    - If the user lists triggers, call updatePlan({ triggers: [...] }) immediately.
+    - Do not just verbally acknowledge the input (e.g., "That's a great motivation"). You MUST save it using the tool first.
+    - This is a digital form filling exercise conducted via chat. The priority is saving the data.
+    
+    Initial Greeting to use: ${t('prevention_plan_page.initial_greeting')}`;
 };
 
 export const calculateMilestones = (data: { currentDay: number; journalStreak: number; completedChallenges: number }): Milestone[] => {

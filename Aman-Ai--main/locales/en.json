@@ -1,3 +1,4 @@
+
 {
   "nav": {
     "home": "Home",
@@ -29,6 +30,38 @@
     "subtitle": "Your confidential companion for addiction recovery and mental wellness.",
     "copyright": "© {year} Aman Digital Care. A non-profit initiative by AMAN AI Foundation. All rights reserved.",
     "policies": "Policies & Legal"
+  },
+  "community": {
+    "title": "Community Wall",
+    "subtitle": "Share your journey anonymously. You are not alone.",
+    "placeholder": "Share a thought, a win, or just say hi...",
+    "hi_button": "Say Hi",
+    "record_voice_note": "Voice Note",
+    "share_photo_button": "Share Photo",
+    "share_button": "Share Post",
+    "recording": "Recording...",
+    "stop_recording": "Stop",
+    "mic_error": "Microphone access denied.",
+    "filter_all": "All",
+    "filter_text": "Text",
+    "filter_voice": "Voice",
+    "filter_photos": "Photos",
+    "filter_hi": "Waves",
+    "sort_newest": "Newest First",
+    "sort_oldest": "Oldest First",
+    "anonymous_user": "Anonymous Friend",
+    "said_hi": "sent a wave",
+    "empty": "No posts yet. Be the first to share!",
+    "report_post": "Report Post",
+    "report_confirm_title": "Report Content",
+    "report_confirm_text": "Are you sure you want to report this post? It will be hidden from your feed.",
+    "report_confirm_button": "Report",
+    "report_cancel_button": "Cancel",
+    "report_success": "Post reported.",
+    "voice_note": {
+        "play_aria": "Play voice note",
+        "pause_aria": "Pause voice note"
+    }
   },
   "onboarding": {
     "welcome": {
