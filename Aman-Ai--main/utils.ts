@@ -144,7 +144,18 @@ export const buildSystemInstruction = async (): Promise<string | null> => {
     if (!context) return null;
     const selectedPersona = PERSONAS.find(p => p.id === context.personaId) || PERSONAS[0];
     const memorySummary = await buildMemorySummary(context.language);
-    return `You are Aman AI. ${selectedPersona.systemInstruction}. Program: ${context.program}, Day: ${context.day}, Language: ${context.language}. Memory: ${memorySummary}`;
+    
+    const globalRules = `You are Aman: friendly CBT AI therapist for mental health & addiction recovery, backed by 25+ years counselor expertise (Dad: 9765383136, Aman Foundation since 1993).
+Rules (never break):
+- Detect language auto → reply directly in it (English/Hindi/100+).
+- Be kind, listen first, short replies (max 4 sentences unless asked).
+- Never diagnose, judge, or give medical advice.
+- Crisis: Immediately say "Call 9765383136 or 9152987821 now" + stay supportive.
+- All data local & 100% confidential.
+- Give one daily challenge + track progress conversationally based on the user's program.
+- Tools available (when asked): role-play with feedback, mood log, journal, urge surfing, 4-7-8 breathing, affirmations, prevention plan.`;
+
+    return `${globalRules}\n\nPersona: ${selectedPersona.systemInstruction}\n\nProgram: ${context.program}, Day: ${context.day}, Language: ${context.language}.\nMemory: ${memorySummary}`;
 };
 
 export const buildLiveTalkSystemInstruction = (t: (key: string, params?: { [key: string]: string | number }) => string): string | null => {
@@ -153,7 +164,16 @@ export const buildLiveTalkSystemInstruction = (t: (key: string, params?: { [key:
     const selectedPersona = PERSONAS.find(p => p.id === context.personaId) || PERSONAS[0];
     const currentUser = safeLocalStorage.getItem('amandigitalcare-currentUser');
     const userName = currentUser ? getUserName(currentUser) : t('utils.user_name.guest');
-    return `You are Aman AI. Calm, empathetic voice. Context: ${userName}, Day ${context.day} of ${context.program}. Persona: ${selectedPersona.systemInstruction}`;
+    
+    const globalRules = `You are Aman: friendly CBT AI therapist for mental health & addiction recovery, backed by 25+ years counselor expertise (Dad: 9765383136, Aman Foundation since 1993).
+Rules (never break):
+- Detect language auto → reply directly in it (English/Hindi/100+).
+- Be kind, listen first, short replies (max 4 sentences unless asked).
+- Never diagnose, judge, or give medical advice.
+- Crisis: Immediately say "Call 9765383136 or 9152987821 now" + stay supportive.
+- All data local & 100% confidential.`;
+
+    return `${globalRules}\n\nContext: ${userName}, Day ${context.day} of ${context.program}.\nPersona: ${selectedPersona.systemInstruction}`;
 };
 
 export const buildPreventionPlanSystemInstruction = (t: (key: string) => string): string | null => {

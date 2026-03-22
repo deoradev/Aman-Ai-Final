@@ -515,7 +515,7 @@
   "chatbot": {
     "title": "Aman Support",
     "subtitle": "Your private AI companion",
-    "initial_message": "Hello. I'm Aman. How are you feeling on your journey today?",
+    "initial_message": "Hi, I'm Aman. How are you feeling today?",
     "placeholder": "Tell me anything...",
     "error_message": "I'm having trouble connecting right now. Please try again soon.",
     "suggested_prompt_1": "I'm having a craving",
