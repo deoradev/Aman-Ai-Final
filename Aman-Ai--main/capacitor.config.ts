@@ -4,7 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.amandigitalcare.app',
   appName: 'Aman Digital Care',
   webDir: 'dist', // Vite's default build output directory
-  bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,

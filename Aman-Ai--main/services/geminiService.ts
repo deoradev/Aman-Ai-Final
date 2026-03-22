@@ -44,7 +44,7 @@ export const getAnalyticsInsights = async (data: AnalyticsData): Promise<AIInsig
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -107,7 +107,7 @@ export const getClinicalDoctorReport = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -149,7 +149,7 @@ export const getJournalReflection = async (journalText: string, language: string
     `;
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
@@ -201,7 +201,7 @@ export const generateToolkitExercise = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
@@ -274,7 +274,7 @@ export const getConversationFeedback = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
@@ -330,7 +330,7 @@ export const getSponsorInsight = async (data: SponsorInsightData): Promise<AIIns
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -367,7 +367,7 @@ export const generateNotificationMessage = async (type: 'morning' | 'journal_nud
     `;
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
@@ -442,7 +442,7 @@ export const getGroupSessionResponse = async (userMessage: string, topicTitle: s
 
      try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3.1-pro-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -526,7 +526,7 @@ export const summarizeRecentJournals = async (entries: JournalEntry[], language:
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
@@ -556,7 +556,7 @@ export const summarizeChatHistory = async (messages: ChatMessage[], language: st
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
         });
         // Fix: Use .text property instead of text() method
