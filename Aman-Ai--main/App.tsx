@@ -102,14 +102,14 @@ const AppContent: React.FC = () => {
   
   if (!isLoaded) {
     return (
-      <div className="flex flex-col min-h-screen bg-base-50 dark:bg-black justify-center items-center">
+      <div className="flex flex-col min-h-screen bg-base-50 dark:bg-base-950 justify-center items-center">
         <PageLoader />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-50 dark:bg-black text-base-800 dark:text-base-200 selection:bg-primary-500/30">
+    <div className="flex flex-col min-h-screen bg-base-50 dark:bg-base-950 text-base-900 dark:text-base-50 selection:bg-primary-500/30">
       <div className="animated-gradient-bg"></div>
       <Suspense fallback={null}>
         {showLanguageModal && <LanguageModal onSelectLanguage={handleLanguageSelect} />}
@@ -159,15 +159,15 @@ const AppContent: React.FC = () => {
           width: 100%;
           height: 100%;
           z-index: 0;
-          background: radial-gradient(circle at 10% 20%, theme(colors.primary.100 / 0.5), transparent 40%),
-                      radial-gradient(circle at 80% 90%, theme(colors.secondary.100 / 0.4), transparent 50%),
-                      theme(colors.base.50);
+          background: radial-gradient(circle at 10% 20%, rgba(var(--color-primary-100), 0.5), transparent 40%),
+                      radial-gradient(circle at 80% 90%, rgba(var(--color-secondary-500), 0.2), transparent 50%),
+                      rgba(var(--color-base-50), 1);
           background-size: 200% 200%;
         }
-        html.dark .animated-gradient-bg {
-          background: radial-gradient(circle at 10% 20%, theme(colors.primary.900 / 0.3), transparent 40%),
-                      radial-gradient(circle at 80% 90%, theme(colors.secondary.900 / 0.2), transparent 50%),
-                      #000000;
+        .dark .animated-gradient-bg {
+          background: radial-gradient(circle at 10% 20%, rgba(var(--color-primary-900), 0.3), transparent 40%),
+                      radial-gradient(circle at 80% 90%, rgba(var(--color-secondary-500), 0.1), transparent 50%),
+                      rgba(var(--color-base-950), 1);
         }
         @media (prefers-reduced-motion: no-preference) {
           .animated-gradient-bg {

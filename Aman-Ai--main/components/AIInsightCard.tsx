@@ -87,19 +87,19 @@ const SponsorInsightCard: React.FC<SponsorInsightCardProps> = ({ moods, journalE
     };
 
     return (
-        <section className="bg-white/40 dark:bg-base-800/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-700/30 relative overflow-hidden group">
+        <section className="bg-white/40 dark:bg-base-900/40 backdrop-blur-xl p-8 rounded-3xl shadow-soft border border-white/20 dark:border-base-800 relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-1 h-full bg-primary-500" />
             <h2 className="text-lg font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-6">Aman's Deep Insight</h2>
             
             {isLoading ? (
                  <div className="flex flex-col gap-4">
-                    <div className="h-4 bg-base-200 dark:bg-base-700 rounded-full w-3/4 animate-pulse" />
-                    <div className="h-4 bg-base-200 dark:bg-base-700 rounded-full w-full animate-pulse" />
+                    <div className="h-4 bg-base-200 dark:bg-base-800 rounded-full w-3/4 animate-pulse" />
+                    <div className="h-4 bg-base-200 dark:bg-base-800 rounded-full w-full animate-pulse" />
                 </div>
             ) : insight ? (
                 <>
                     <div className="flex items-start gap-5">
-                        <div className="text-4xl bg-base-100 dark:bg-base-900 p-3 rounded-2xl shadow-inner">{getIcon(insight.type)}</div>
+                        <div className="text-4xl bg-base-100 dark:bg-base-800 p-3 rounded-2xl shadow-inner">{getIcon(insight.type)}</div>
                         <div className="flex-1">
                             <h3 className="font-bold text-base-900 dark:text-white text-lg leading-tight mb-2">{insight.title}</h3>
                             <p className="text-base-600 dark:text-base-300 text-sm leading-relaxed italic">"{insight.text}"</p>

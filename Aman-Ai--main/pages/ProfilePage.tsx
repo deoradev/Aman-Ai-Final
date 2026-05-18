@@ -11,13 +11,13 @@ const ExportModal: React.FC<{ onConfirm: () => void; onClose: () => void; }> = (
     const { t } = useLocalization();
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16">
-            <div className="bg-base-50 dark:bg-base-800 rounded-2xl shadow-soft-lg max-w-md w-full">
+            <div className="bg-base-50 dark:bg-base-950 rounded-2xl shadow-soft-lg max-w-md w-full border border-base-200 dark:border-base-800">
                 <div className="p-6">
                     <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-primary-500 mb-4">{t('profile.export.modal.title')}</h2>
                     <p className="text-base-600 dark:text-base-300 mb-6">{t('profile.export.modal.text')}</p>
                     <div className="flex justify-end space-x-4">
-                        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-600 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-500 transition-colors">
+                        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-800 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-700 transition-colors">
                             {t('profile.export.modal.cancel')}
                         </button>
                         <button onClick={onConfirm} className="px-4 py-2 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600 transition-colors">
@@ -51,7 +51,7 @@ const DeleteModal: React.FC<{
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-16">
-            <div className="bg-base-50 dark:bg-base-800 rounded-2xl shadow-soft-lg max-w-md w-full">
+            <div className="bg-base-50 dark:bg-base-950 rounded-2xl shadow-soft-lg max-w-md w-full border border-base-200 dark:border-base-800">
                 <div className="p-6">
                     <div className="flex justify-center mb-4"><Logo /></div>
                     <h2 className="text-2xl font-bold text-warning-500 mb-4">{t('profile.delete.modal.title')}</h2>
@@ -60,12 +60,12 @@ const DeleteModal: React.FC<{
                         type="email"
                         value={confirmEmail}
                         onChange={(e) => { setConfirmEmail(e.target.value); setError(''); }}
-                        className="w-full px-3 py-2 border border-base-300 dark:border-base-600 rounded-lg focus:ring-warning-500 focus:border-warning-500 bg-white dark:bg-base-700 text-base-800 dark:text-white"
+                        className="w-full px-3 py-2 border border-base-300 dark:border-base-700 rounded-lg focus:ring-warning-500 focus:border-warning-500 bg-white dark:bg-base-800 text-base-800 dark:text-white"
                         placeholder={currentUser}
                     />
                     {error && <p className="text-warning-500 text-xs mt-1">{error}</p>}
                     <div className="flex justify-end space-x-4 mt-6">
-                        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-600 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-500 transition-colors">
+                        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-800 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-700 transition-colors">
                             {t('profile.delete.modal.cancel')}
                         </button>
                         <button onClick={handleDelete} disabled={!isMatch} className="px-4 py-2 bg-warning-500 text-white font-bold rounded-lg hover:bg-warning-600 transition-colors disabled:bg-warning-300 dark:disabled:bg-warning-800 disabled:cursor-not-allowed">
@@ -202,9 +202,9 @@ const ProfilePage: React.FC = () => {
         description={t('seo.profile.description')}
         noIndex={true}
     />
-    <div className="flex-grow flex items-center justify-center py-12">
+    <div className="flex-grow flex items-center justify-center py-12 dark:bg-base-950 transition-colors duration-500">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft-lg overflow-hidden">
+        <div className="max-w-md mx-auto bg-white/60 dark:bg-base-900/60 backdrop-blur-md rounded-2xl shadow-soft-lg overflow-hidden border border-white/20 dark:border-base-800">
           <div className="p-8">
             <h1 className="text-2xl font-bold text-primary-600 dark:text-primary-400 text-center">{t('profile.title')}</h1>
             <p className="text-center text-base-600 dark:text-base-300 mt-2">{t('profile.subtitle')}</p>

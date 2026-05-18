@@ -25,8 +25,8 @@ const Modal: React.FC<{
     onClose: () => void;
     children: React.ReactNode;
 }> = ({ onClose, children }) => (
-    <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-        <div className="bg-base-50 dark:bg-base-800 rounded-2xl shadow-soft-lg max-w-md w-full relative m-4 transform transition-all duration-300 scale-95 opacity-0 animate-enter">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
+        <div className="bg-base-50 dark:bg-base-900 rounded-2xl shadow-soft-lg max-w-md w-full relative m-4 transform transition-all duration-300 scale-95 opacity-0 animate-enter border border-base-200 dark:border-base-800">
             <button onClick={onClose} className="absolute top-3 right-3 p-1 text-base-400 hover:text-base-600 dark:hover:text-base-200" aria-label="Close modal">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
             </button>
@@ -66,19 +66,19 @@ const DonationContent: React.FC<{ onDonated: (method: 'UPI' | 'Crypto') => void,
 
   return (
     <div className="p-6 text-center">
-      <h2 className="text-2xl font-bold text-primary-500 mb-2">{t('programs.modal.donate.title')}</h2>
+      <h2 className="text-2xl font-bold text-primary-500 dark:text-primary-400 mb-2">{t('programs.modal.donate.title')}</h2>
       <p className="text-base-600 dark:text-base-300 mb-6">{t('programs.modal.donate.text')}</p>
 
-      <div className="flex justify-center mb-6 border-b border-base-200 dark:border-base-700">
+      <div className="flex justify-center mb-6 border-b border-base-200 dark:border-base-800">
         <button
           onClick={() => setActiveTab('upi')}
-          className={`px-6 py-2 text-sm font-semibold transition-colors ${activeTab === 'upi' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-base-500 hover:text-base-700'}`}
+          className={`px-6 py-2 text-sm font-semibold transition-colors ${activeTab === 'upi' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-base-500 hover:text-base-700 dark:hover:text-base-300'}`}
         >
           {t('programs.modal.donate.upi_tab')}
         </button>
         <button
           onClick={() => setActiveTab('crypto')}
-          className={`px-6 py-2 text-sm font-semibold transition-colors ${activeTab === 'crypto' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-base-500 hover:text-base-700'}`}
+          className={`px-6 py-2 text-sm font-semibold transition-colors ${activeTab === 'crypto' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-base-500 hover:text-base-700 dark:hover:text-base-300'}`}
         >
           {t('programs.modal.donate.crypto_tab')}
         </button>
@@ -86,11 +86,11 @@ const DonationContent: React.FC<{ onDonated: (method: 'UPI' | 'Crypto') => void,
 
       {activeTab === 'upi' && (
         <div className="animate-fade-in">
-          <div className="bg-base-100 dark:bg-base-700/50 p-4 rounded-lg mb-4">
-            <label className="text-sm font-semibold text-base-600 dark:text-base-300">{t('programs.modal.donate.upi_label')}</label>
+          <div className="bg-base-100 dark:bg-base-800 p-4 rounded-lg mb-4">
+            <label className="text-sm font-semibold text-base-600 dark:text-base-400">{t('programs.modal.donate.upi_label')}</label>
             <div className="flex items-center justify-center gap-2 mt-1">
-                <p className="font-mono text-lg text-primary-600 dark:text-primary-300">{UPI_ID}</p>
-                <button onClick={handleUpiCopy} className={`px-3 py-1 text-xs font-semibold rounded-full ${isUpiCopied ? 'bg-accent-500 text-white' : 'bg-base-200 dark:bg-base-600 text-base-700 dark:text-base-200'}`}>
+                <p className="font-mono text-lg text-primary-600 dark:text-primary-400">{UPI_ID}</p>
+                <button onClick={handleUpiCopy} className={`px-3 py-1 text-xs font-semibold rounded-full ${isUpiCopied ? 'bg-accent-500 text-white' : 'bg-base-200 dark:bg-base-700 text-base-700 dark:text-base-200'}`}>
                     {isUpiCopied ? t('programs.modal.donate.copied_button') : t('programs.modal.donate.copy_button')}
                 </button>
             </div>
@@ -104,11 +104,11 @@ const DonationContent: React.FC<{ onDonated: (method: 'UPI' | 'Crypto') => void,
 
       {activeTab === 'crypto' && (
          <div className="animate-fade-in">
-          <div className="bg-base-100 dark:bg-base-700/50 p-4 rounded-lg mb-4">
-            <label className="text-sm font-semibold text-base-600 dark:text-base-300">{t('programs.modal.donate.sol_address_label')}</label>
+          <div className="bg-base-100 dark:bg-base-800 p-4 rounded-lg mb-4">
+            <label className="text-sm font-semibold text-base-600 dark:text-base-400">{t('programs.modal.donate.sol_address_label')}</label>
             <div className="flex items-center justify-center gap-2 mt-1 flex-wrap break-all">
-                <p className="font-mono text-md text-primary-600 dark:text-primary-300">{SOLANA_ADDRESS}</p>
-                <button onClick={handleSolCopy} className={`px-3 py-1 text-xs font-semibold rounded-full ${isSolCopied ? 'bg-accent-500 text-white' : 'bg-base-200 dark:bg-base-600 text-base-700 dark:text-base-200'}`}>
+                <p className="font-mono text-md text-primary-600 dark:text-primary-400">{SOLANA_ADDRESS}</p>
+                <button onClick={handleSolCopy} className={`px-3 py-1 text-xs font-semibold rounded-full ${isSolCopied ? 'bg-accent-500 text-white' : 'bg-base-200 dark:bg-base-700 text-base-700 dark:text-base-200'}`}>
                     {isSolCopied ? t('programs.modal.donate.copied_button') : t('programs.modal.donate.copy_button')}
                 </button>
             </div>
@@ -120,7 +120,7 @@ const DonationContent: React.FC<{ onDonated: (method: 'UPI' | 'Crypto') => void,
         </div>
       )}
 
-      <div className="mt-6 p-3 bg-base-100 dark:bg-base-700/50 rounded-lg text-sm text-base-600 dark:text-base-300 border border-base-200 dark:border-base-700">
+      <div className="mt-6 p-3 bg-base-100 dark:bg-base-800 rounded-lg text-sm text-base-600 dark:text-base-300 border border-base-200 dark:border-base-700">
         <p>
             {t('programs.modal.donate.proof_text_start')}{' '}
             <a 
@@ -134,10 +134,10 @@ const DonationContent: React.FC<{ onDonated: (method: 'UPI' | 'Crypto') => void,
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
-        <button onClick={() => onDonated(activeTab === 'upi' ? 'UPI' : 'Crypto')} className="w-full px-4 py-3 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600">
+        <button onClick={() => onDonated(activeTab === 'upi' ? 'UPI' : 'Crypto')} className="w-full px-4 py-3 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600 transition-colors">
           {t('programs.modal.donate.confirm_button')}
         </button>
-        <button onClick={onSkip} className="w-full text-sm font-semibold text-base-600 dark:text-base-300 hover:underline">
+        <button onClick={onSkip} className="w-full text-sm font-semibold text-base-600 dark:text-base-400 hover:underline">
           {t('programs.modal.donate.skip_button')}
         </button>
       </div>
@@ -158,13 +158,13 @@ const ConfirmationContent: React.FC<{ programName: string; onConfirm: () => void
   const { t } = useLocalization();
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold text-primary-500 mb-4">{t('programs.modal.title')}</h2>
+      <h2 className="text-2xl font-bold text-primary-500 dark:text-primary-400 mb-4">{t('programs.modal.title')}</h2>
       <p className="text-base-600 dark:text-base-300 mb-6">{t('programs.modal.text', { programName })}</p>
       <div className="flex justify-end space-x-4">
-        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-600 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-500">
+        <button onClick={onClose} className="px-4 py-2 bg-base-200 dark:bg-base-800 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-700 transition-colors">
           {t('programs.modal.cancel')}
         </button>
-        <button onClick={onConfirm} className="px-4 py-2 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600">
+        <button onClick={onConfirm} className="px-4 py-2 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600 transition-colors">
           {t('programs.modal.confirm')}
         </button>
       </div>
@@ -176,13 +176,13 @@ const LoginPromptContent: React.FC<{ onClose: () => void; onLogin: () => void; }
   const { t } = useLocalization();
   return (
     <div className="p-6 text-center">
-      <h2 className="text-2xl font-bold text-primary-500 mb-4">{t('programs.login_prompt.title')}</h2>
+      <h2 className="text-2xl font-bold text-primary-500 dark:text-primary-400 mb-4">{t('programs.login_prompt.title')}</h2>
       <p className="text-base-600 dark:text-base-300 mb-6">{t('programs.login_prompt.text')}</p>
       <div className="flex justify-center space-x-4">
-        <button onClick={onClose} className="px-6 py-2 bg-base-200 dark:bg-base-600 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-500">
+        <button onClick={onClose} className="px-6 py-2 bg-base-200 dark:bg-base-800 text-base-800 dark:text-base-200 rounded-lg hover:bg-base-300 dark:hover:bg-base-700 transition-colors">
           {t('programs.login_prompt.cancel')}
         </button>
-        <button onClick={onLogin} className="px-6 py-2 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600">
+        <button onClick={onLogin} className="px-6 py-2 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-600 transition-colors">
           {t('programs.login_prompt.login_button')}
         </button>
       </div>
@@ -276,16 +276,16 @@ const CertificateDisplayContent: React.FC<{ data: CertificateData, onFinish: () 
     
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold text-primary-500 mb-2 text-center">{t('programs.modal.certificate_display.title')}</h2>
+            <h2 className="text-2xl font-bold text-primary-500 dark:text-primary-400 mb-2 text-center">{t('programs.modal.certificate_display.title')}</h2>
             <p className="text-base-600 dark:text-base-300 mb-4 text-center">{t('programs.modal.certificate_display.text')}</p>
-            <div className="bg-base-100 dark:bg-base-700/50 p-2 rounded-lg">
+            <div className="bg-white p-2 rounded-lg shadow-inner">
                 <CertificateSVG data={data} />
             </div>
             <div className="mt-6 flex flex-col gap-3">
-                <button onClick={handleDownload} className="w-full px-4 py-3 bg-accent-500 text-white font-bold rounded-lg hover:bg-accent-600">
+                <button onClick={handleDownload} className="w-full px-4 py-3 bg-accent-500 text-white font-bold rounded-lg hover:bg-accent-600 transition-colors">
                     {t('programs.modal.certificate_display.download_button')}
                 </button>
-                <button onClick={onFinish} className="w-full text-sm font-semibold text-base-600 dark:text-base-300 hover:underline">
+                <button onClick={onFinish} className="w-full text-sm font-semibold text-base-600 dark:text-base-400 hover:underline">
                     {t('programs.modal.certificate_display.finish_button')}
                 </button>
             </div>
@@ -313,23 +313,23 @@ const CertificateFormContent: React.FC<{ onSubmit: (data: Omit<CertificateData, 
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold text-primary-500 mb-2 text-center">{t('programs.modal.certificate_form.title')}</h2>
+            <h2 className="text-2xl font-bold text-primary-500 dark:text-primary-400 mb-2 text-center">{t('programs.modal.certificate_form.title')}</h2>
             <p className="text-base-600 dark:text-base-300 mb-6 text-center">{t('programs.modal.certificate_form.text')}</p>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label htmlFor="cert-name" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('programs.modal.certificate_form.name_label')}</label>
-                    <input type="text" id="cert-name" value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-white/50 dark:bg-base-700/50 border border-base-300 dark:border-base-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"/>
+                    <input type="text" id="cert-name" value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-base-50/50 dark:bg-base-800/50 border border-base-300 dark:border-base-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-base-900 dark:text-white"/>
                 </div>
                 <div>
                     <label htmlFor="cert-amount" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('programs.modal.certificate_form.amount_label')}</label>
-                    <input type="text" id="cert-amount" value={amount} onChange={e => setAmount(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-white/50 dark:bg-base-700/50 border border-base-300 dark:border-base-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"/>
+                    <input type="text" id="cert-amount" value={amount} onChange={e => setAmount(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-base-50/50 dark:bg-base-800/50 border border-base-300 dark:border-base-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-base-900 dark:text-white"/>
                 </div>
                 <div>
                     <label htmlFor="cert-message" className="block text-sm font-medium text-base-700 dark:text-base-300">{t('programs.modal.certificate_form.message_label')}</label>
-                    <textarea id="cert-message" value={message} onChange={e => setMessage(e.target.value)} rows={2} placeholder={t('programs.modal.certificate_form.message_placeholder')} className="mt-1 block w-full px-3 py-2 bg-white/50 dark:bg-base-700/50 border border-base-300 dark:border-base-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"></textarea>
+                    <textarea id="cert-message" value={message} onChange={e => setMessage(e.target.value)} rows={2} placeholder={t('programs.modal.certificate_form.message_placeholder')} className="mt-1 block w-full px-3 py-2 bg-base-50/50 dark:bg-base-800/50 border border-base-300 dark:border-base-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-base-900 dark:text-white"></textarea>
                 </div>
                 <div className="pt-2">
-                    <button type="submit" className="w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-600">
+                    <button type="submit" className="w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-600 transition-colors">
                         {t('programs.modal.certificate_form.button')}
                     </button>
                 </div>
@@ -342,13 +342,13 @@ const CertificateFormContent: React.FC<{ onSubmit: (data: Omit<CertificateData, 
 const ProgramCard: React.FC<{ program: Program; onEnroll: (program: Program) => void; }> = ({ program, onEnroll }) => {
   const { t } = useLocalization();
   return (
-    <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700 flex flex-col">
+    <div className="bg-base-50 dark:bg-base-900 rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-800 flex flex-col group hover:border-primary-500/30 transition-all">
       <div className="p-6">
         <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400">{program.name}</h2>
         <p className="mt-2 text-base-600 dark:text-base-300 flex-grow">{program.description}</p>
         <p className="mt-4 font-semibold text-accent-600 dark:text-accent-400">{t('programs.success_rate', { rate: program.successRate })}</p>
       </div>
-      <div className="p-6 bg-base-100/50 dark:bg-base-700/30">
+      <div className="p-6 bg-base-100 dark:bg-base-800/50">
         <h3 className="font-semibold text-base-800 dark:text-base-200 mb-2">Key Features:</h3>
         <ul className="space-y-1 text-sm text-base-700 dark:text-base-300">
           {program.features.map((feature, i) => <li key={i} className="flex items-start"><span className="text-primary-500 mr-2 mt-1">&#10003;</span> {feature}</li>)}
@@ -470,10 +470,10 @@ const ProgramsPage: React.FC = () => {
             canonicalUrl={`${baseUrl}/#/programs`}
             schema={programsSchema}
         />
-        <div className="py-16">
+        <div className="py-16 bg-base-50 dark:bg-base-950 transition-colors duration-500 min-h-screen">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-400">{t('programs.title')}</h1>
+                    <h1 className="text-4xl font-extrabold text-primary-600 dark:text-primary-500">{t('programs.title')}</h1>
                     <p className="mt-4 text-lg text-base-600 dark:text-base-300 max-w-3xl mx-auto">{t('programs.subtitle')}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">

@@ -30,7 +30,7 @@ const ClinicalSyncCard: React.FC<ClinicalSyncCardProps> = ({ moods, journals, pr
     };
 
     return (
-        <section className="bg-white/80 dark:bg-base-900/80 backdrop-blur-2xl p-8 rounded-[2.5rem] shadow-soft border border-white/40 dark:border-white/10 relative overflow-hidden">
+        <section className="bg-white/80 dark:bg-base-900/80 backdrop-blur-2xl p-8 rounded-[2.5rem] shadow-soft border border-white/40 dark:border-base-800 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4">
                 <div className="bg-primary-500/10 text-primary-600 dark:text-primary-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
                     HIPAA Friendly Mode
@@ -56,7 +56,7 @@ const ClinicalSyncCard: React.FC<ClinicalSyncCardProps> = ({ moods, journals, pr
                     className="w-full bg-base-900 text-white dark:bg-base-100 dark:text-base-900 font-black py-4 rounded-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                     {isLoading ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white dark:border-base-900/30 dark:border-t-base-900 rounded-full animate-spin" />
                     ) : 'Prepare Medical Summary'}
                 </button>
             ) : (
@@ -109,7 +109,7 @@ const ClinicalSyncCard: React.FC<ClinicalSyncCardProps> = ({ moods, journals, pr
                                 </section>
                             </div>
 
-                            <section className="p-6 bg-base-50 dark:bg-base-900 rounded-3xl border border-base-200 dark:border-base-700">
+                            <section className="p-6 bg-base-50 dark:bg-base-950 rounded-3xl border border-base-200 dark:border-base-800">
                                 <h4 className="text-[10px] font-black uppercase text-base-400 tracking-[0.2em] mb-3">Professional Concerns</h4>
                                 <ul className="space-y-2">
                                     {report.concerns.map((c, i) => (
@@ -118,7 +118,7 @@ const ClinicalSyncCard: React.FC<ClinicalSyncCardProps> = ({ moods, journals, pr
                                 </ul>
                             </section>
                         </div>
-                        <div className="p-8 bg-base-100 dark:bg-base-900/50 text-center">
+                        <div className="p-8 bg-base-100 dark:bg-base-950/50 text-center">
                             <p className="text-[9px] font-bold text-base-500 uppercase tracking-widest">Confidential Report for Professional Use Only</p>
                         </div>
                     </div>

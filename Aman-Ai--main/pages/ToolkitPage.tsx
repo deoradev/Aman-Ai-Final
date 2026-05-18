@@ -56,7 +56,7 @@ const GeneratorCard: React.FC<GeneratorCardProps> = ({ type, title, description,
     }
 
     return (
-        <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
+        <div className="bg-white/60 dark:bg-base-900/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-800">
             <div className="p-6">
                 <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">{title}</h2>
                 <p className="text-base-600 dark:text-base-300 mb-4">{description}</p>
@@ -67,14 +67,14 @@ const GeneratorCard: React.FC<GeneratorCardProps> = ({ type, title, description,
                         placeholder={placeholder}
                         onKeyPress={handleKeyPress}
                         rows={2}
-                        className="w-full p-2 border border-base-300 dark:border-base-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white/50 dark:bg-base-700/50 text-base-800 dark:text-white mb-4"
+                        className="w-full p-2 border border-base-300 dark:border-base-700 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white/50 dark:bg-base-800/50 text-base-800 dark:text-base-100 mb-4"
                         disabled={!isOnline}
                     />
                 )}
                 <button
                     onClick={handleSubmit}
                     disabled={status === 'loading' || !isOnline || (hasInputField && !userInput.trim())}
-                    className="w-full bg-base-800 text-white dark:bg-base-200 dark:text-base-900 font-bold py-3 px-6 rounded-lg hover:bg-base-700 dark:hover:bg-base-300 transition-colors disabled:bg-base-400 dark:disabled:bg-base-600 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full bg-base-800 text-white dark:bg-base-200 dark:text-base-900 font-bold py-3 px-6 rounded-lg hover:bg-base-700 dark:hover:bg-base-300 transition-colors disabled:bg-base-400 dark:disabled:bg-base-700 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                     {status === 'loading' ? (
                         <>
@@ -90,7 +90,7 @@ const GeneratorCard: React.FC<GeneratorCardProps> = ({ type, title, description,
                 </button>
             </div>
             {(status === 'success' || status === 'error') && (
-                 <div className="p-6 bg-base-50/50 dark:bg-base-900/30 border-t border-base-200 dark:border-base-700">
+                 <div className="p-6 bg-base-50/50 dark:bg-base-950/30 border-t border-base-200 dark:border-base-800">
                     <div className={status === 'error' ? 'text-warning-500' : ''}>
                         <SimpleMarkdownRenderer content={result} />
                     </div>
@@ -168,7 +168,7 @@ const AudioGeneratorCard: React.FC<{
     }
 
     return (
-        <div className="bg-white/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700">
+        <div className="bg-white/60 dark:bg-base-900/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-800">
             <div className="p-6">
                 <h2 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">{title}</h2>
                 <p className="text-base-600 dark:text-base-300 mb-4">{description}</p>
@@ -177,13 +177,13 @@ const AudioGeneratorCard: React.FC<{
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder={placeholder}
                     rows={2}
-                    className="w-full p-2 border border-base-300 dark:border-base-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white/50 dark:bg-base-700/50 text-base-800 dark:text-white mb-4"
+                    className="w-full p-2 border border-base-300 dark:border-base-700 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white/50 dark:bg-base-800/50 text-base-800 dark:text-base-100 mb-4"
                     disabled={!isOnline || (status !== 'idle' && status !== 'error')}
                 />
                  <button
                     onClick={status === 'playing' ? handleStop : handleGenerate}
                     disabled={!isOnline || (status !== 'idle' && status !== 'playing' && status !== 'error') || (status === 'idle' && !userInput.trim())}
-                    className={`w-full font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${status === 'playing' ? 'bg-warning-500 text-white hover:bg-warning-600' : 'bg-base-800 text-white dark:bg-base-200 dark:text-base-900 hover:bg-base-700 dark:hover:bg-base-300 disabled:bg-base-400 dark:disabled:bg-base-600 disabled:cursor-not-allowed'}`}
+                    className={`w-full font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${status === 'playing' ? 'bg-warning-500 text-white hover:bg-warning-600' : 'bg-base-800 text-white dark:bg-base-200 dark:text-base-900 hover:bg-base-700 dark:hover:bg-base-300 disabled:bg-base-400 dark:disabled:bg-base-700 disabled:cursor-not-allowed'}`}
                 >
                    {getButtonContent()}
                 </button>

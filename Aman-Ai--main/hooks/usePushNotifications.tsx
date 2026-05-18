@@ -4,7 +4,7 @@ import { PushNotifications, Token, PushNotificationSchema, ActionPerformed } fro
 import { VAPID_PUBLIC_KEY } from '../constants';
 import { urlBase64ToUint8Array } from '../utils';
 
-type PermissionState = 'prompt' | 'granted' | 'denied';
+type PermissionState = 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied';
 
 interface PushNotificationsContextType {
   permissionStatus: PermissionState;

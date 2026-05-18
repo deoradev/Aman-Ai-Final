@@ -142,7 +142,7 @@ const DashboardPage: React.FC = () => {
     <>
       <SEOMeta title="Wellness Command Center | Aman AI" description="Confidential digital therapeutic dashboard." noIndex={true} />
       <PullToRefresh onRefresh={() => window.location.reload()}>
-        <div className="min-h-screen py-10 px-4 lg:px-8">
+        <div className="min-h-screen py-10 px-4 lg:px-8 dark:bg-base-950 transition-colors duration-500">
           <div className="container mx-auto">
             {/* Forbes-Class Header Section */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-8 animate-fade-in-up">
@@ -158,7 +158,7 @@ const DashboardPage: React.FC = () => {
                     <span className="text-xs font-bold text-base-500 italic">Day {currentDay} of 90</span>
                 </div>
               </div>
-              <div className="bg-white/40 dark:bg-base-800/40 backdrop-blur-3xl p-5 rounded-[2.5rem] shadow-soft-lg border border-white/20 dark:border-base-700/30 flex items-center gap-8 group">
+              <div className="bg-white/40 dark:bg-base-900/40 backdrop-blur-3xl p-5 rounded-[2.5rem] shadow-soft-lg border border-white/20 dark:border-base-800 flex items-center gap-8 group">
                 <ProgressRing percentage={(currentDay/90)*100} day={currentDay} />
                 <div className="border-l border-base-200 dark:border-base-700 h-16" />
                 <div className="text-center pr-6">
@@ -190,7 +190,7 @@ const DashboardPage: React.FC = () => {
                 ))}
 
                 {/* Persona Switcher Section */}
-                <section className="bg-white/40 dark:bg-base-900/40 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-soft border border-white/20 dark:border-base-700/30">
+                <section className="bg-white/40 dark:bg-base-900/40 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-soft border border-white/20 dark:border-base-800">
                     <h2 className="text-xs font-black text-primary-500 uppercase tracking-[0.3em] mb-6">{t('dashboard.persona.title')}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {PERSONAS.map(p => (
@@ -229,13 +229,13 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-10">
-                    <section className="bg-white/30 dark:bg-base-800/30 backdrop-blur-3xl p-8 rounded-[2rem] shadow-soft border border-white/20 dark:border-base-700/30">
+                    <section className="bg-white/30 dark:bg-base-900/30 backdrop-blur-3xl p-8 rounded-[2rem] shadow-soft border border-white/20 dark:border-base-800">
                         <h2 className="text-xs font-black text-base-400 uppercase tracking-[0.3em] mb-6">Garden Evolution</h2>
                         <GrowthGarden day={currentDay} journalStreak={journalStreak} completedChallenges={completedChallengesCount} />
                     </section>
                 </div>
 
-                <section ref={journalSectionRef} className="bg-white/50 dark:bg-base-800/50 backdrop-blur-3xl p-10 rounded-[2.5rem] shadow-soft border border-white/20 dark:border-base-700/30">
+                <section ref={journalSectionRef} className="bg-white/50 dark:bg-base-900/50 backdrop-blur-3xl p-10 rounded-[2.5rem] shadow-soft border border-white/20 dark:border-base-800">
                     <h2 className="text-3xl font-black text-base-900 dark:text-white tracking-tighter mb-8">Clinical Reflection</h2>
                     <textarea 
                         value={journalText}

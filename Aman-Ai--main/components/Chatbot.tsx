@@ -153,7 +153,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
   };
 
   if (isInitializing && messages.length === 0) return (
-     <div className="flex flex-col h-full bg-base-50/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700 items-center justify-center p-4">
+     <div className="flex flex-col h-full bg-base-50/60 dark:bg-base-900/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-800 items-center justify-center p-4">
          <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
      </div>
   );
@@ -170,10 +170,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
       cancelText="Cancel"
       variant="warning"
     />
-    <div className="flex flex-col h-full bg-base-50/60 dark:bg-base-800/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-700 relative">
+    <div className="flex flex-col h-full bg-base-50/60 dark:bg-base-900/60 backdrop-blur-md rounded-2xl shadow-soft overflow-hidden border border-base-200 dark:border-base-800 relative">
       
       {/* Enhanced Header with Persona Selection */}
-      <div className="p-4 bg-primary-500 text-white shadow-md relative z-20">
+      <div className="p-4 bg-primary-600 dark:bg-primary-700 text-white shadow-md relative z-20">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm text-xl text-white">
@@ -205,7 +205,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
                             onClick={() => handlePersonaSelect(p.id)}
                             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPersonaId === p.id ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : 'hover:bg-base-100 dark:hover:bg-base-700 text-base-800 dark:text-base-200'}`}
                         >
-                            <div className="w-8 h-8 rounded-full bg-base-200 dark:bg-base-600 flex items-center justify-center text-lg">
+                            <div className="w-8 h-8 rounded-full bg-base-200 dark:bg-base-700 flex items-center justify-center text-lg">
                                 <div dangerouslySetInnerHTML={{ __html: p.icon }} className="w-5 h-5 fill-current" />
                             </div>
                             <div className="text-left">
@@ -224,11 +224,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
         )}
       </div>
 
-      <div className="flex-grow p-4 overflow-y-auto bg-base-100/50 dark:bg-base-900/30" onClick={() => setIsPersonaMenuOpen(false)}>
+      <div className="flex-grow p-4 overflow-y-auto bg-base-100/50 dark:bg-base-950/50" onClick={() => setIsPersonaMenuOpen(false)}>
         <div className="space-y-4" role="log" aria-live="polite">
           {messages.map((msg, index) => (
             <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] px-4 py-2 rounded-2xl ${msg.role === 'user' ? 'bg-base-800 dark:bg-base-600 text-white rounded-br-none' : 'bg-white dark:bg-base-700 text-base-800 dark:text-base-200 border border-base-200 dark:border-base-600 rounded-bl-none'}`}>
+                <div className={`max-w-[85%] px-4 py-2 rounded-2xl ${msg.role === 'user' ? 'bg-base-800 dark:bg-base-700 text-white rounded-br-none shadow-sm' : 'bg-white dark:bg-base-800 text-base-800 dark:text-base-100 border border-base-200 dark:border-base-700 rounded-bl-none shadow-sm'}`}>
                   <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                 </div>
             </div>
@@ -236,7 +236,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
           {showSuggestions && (
             <div className="flex flex-col items-start gap-2 pt-2">
               {suggestedPrompts.map((prompt, i) => (
-                <button key={i} onClick={() => handleSend(prompt)} className="px-3 py-1.5 bg-white dark:bg-base-700 border border-base-300 dark:border-base-600 rounded-full text-sm text-primary-600 dark:text-primary-400 hover:bg-base-50 transition-colors shadow-sm">
+                <button key={i} onClick={() => handleSend(prompt)} className="px-3 py-1.5 bg-white dark:bg-base-800 border border-base-300 dark:border-base-700 rounded-full text-sm text-primary-600 dark:text-primary-400 hover:bg-base-50 dark:hover:bg-base-700 transition-colors shadow-sm">
                   {prompt}
                 </button>
               ))}
@@ -245,10 +245,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ proactiveMessage, personaId, onPerson
           <div ref={messagesEndRef} />
         </div>
       </div>
-      <div className="p-4 bg-white/80 dark:bg-base-800/80 border-t border-base-200 dark:border-base-700">
+      <div className="p-4 bg-white/80 dark:bg-base-900/80 border-t border-base-200 dark:border-base-800">
         <div className="flex items-center space-x-2">
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder={t('chatbot.placeholder')} disabled={isLoading || !isOnline} className="flex-grow px-4 py-2 bg-base-100 dark:bg-base-700 border border-base-300 dark:border-base-600 text-base-800 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500" />
-          <button onClick={() => handleSend()} disabled={isLoading || !input.trim() || !isOnline} className="bg-primary-500 text-white p-3 rounded-full hover:bg-primary-600 transition-colors shadow-md disabled:bg-base-300 dark:disabled:bg-base-700"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg></button>
+          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder={t('chatbot.placeholder')} disabled={isLoading || !isOnline} className="flex-grow px-4 py-2 bg-base-100 dark:bg-base-800 border border-base-300 dark:border-base-700 text-base-800 dark:text-base-100 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <button onClick={() => handleSend()} disabled={isLoading || !input.trim() || !isOnline} className="bg-primary-600 dark:bg-primary-500 text-white p-3 rounded-full hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors shadow-md disabled:bg-base-300 dark:disabled:bg-base-800"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg></button>
         </div>
       </div>
       <style>{`

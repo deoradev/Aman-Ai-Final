@@ -484,9 +484,9 @@ export const findSoberFriendlyPlaces = async (query: string, location: { latitud
     `;
 
     try {
-        // Fix: Gemini 2.5 series is required for Maps grounding
+        // Fix: Gemini 3 series is recommended for Maps grounding
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
                 tools: [{ googleMaps: {} }],

@@ -128,7 +128,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-    <header className="bg-white/70 dark:bg-base-900/70 backdrop-blur-3xl shadow-soft sticky top-0 z-40 border-b border-white/10 dark:border-base-800/40 h-20">
+    <header className="bg-base-50/70 dark:bg-base-950/70 backdrop-blur-3xl shadow-soft sticky top-0 z-40 border-b border-base-200/40 dark:border-base-800/40 h-20">
       {isTranslating && (
         <div className="absolute top-full left-0 w-full bg-primary-500 text-white text-[9px] font-black py-1 px-4 text-center z-30 uppercase tracking-[0.4em] shadow-lg animate-pulse">
           Translating to {targetLanguageName}...
@@ -169,15 +169,15 @@ const Header: React.FC = () => {
           <div className="hidden lg:flex items-center gap-6">
             <NavLink
                 to="/profile"
-                className={({ isActive }) => `flex items-center gap-3 pl-3 pr-6 py-2 rounded-full border border-base-200 dark:border-base-700 transition-all hover:border-primary-500 ${isActive ? 'bg-primary-500 text-white border-primary-500 shadow-xl shadow-primary-500/30' : 'bg-white/50 dark:bg-base-800/50 text-base-800 dark:text-base-200 shadow-soft'}`}
+                className={({ isActive }) => `flex items-center gap-3 pl-3 pr-6 py-2 rounded-full border border-base-200 dark:border-base-800 transition-all hover:border-primary-500 ${isActive ? 'bg-primary-500 text-white border-primary-500 shadow-xl shadow-primary-500/30' : 'bg-base-100/50 dark:bg-base-800/50 text-base-800 dark:text-base-100 shadow-soft'}`}
             >
-              <div className="w-6 h-6 rounded-full bg-base-100 dark:bg-base-900 flex items-center justify-center overflow-hidden border border-black/5">
+              <div className="w-6 h-6 rounded-full bg-base-200 dark:bg-base-700 flex items-center justify-center overflow-hidden border border-black/5">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>
               </div>
               <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[120px]">{currentUser ? getUserName(currentUser) : t('nav.login')}</span>
             </NavLink>
             
-            <button onClick={toggleTheme} className="p-2.5 rounded-2xl bg-base-50 dark:bg-base-800 text-base-600 dark:text-base-300 hover:text-primary-500 transition-all border border-base-200 dark:border-base-700 active:scale-90 shadow-sm">
+            <button onClick={toggleTheme} className="p-2.5 rounded-2xl bg-base-100 dark:bg-base-800 text-base-600 dark:text-base-400 hover:text-primary-500 transition-all border border-base-200 dark:border-base-700 active:scale-90 shadow-sm">
               {theme === 'light' ? (
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
               ) : (
@@ -190,7 +190,7 @@ const Header: React.FC = () => {
              <button onClick={toggleTheme} className="p-2 rounded-xl bg-base-100 dark:bg-base-800 text-base-600 dark:text-base-400">
                 {theme === 'light' ? <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg> : <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464A1 1 0 106.465 13.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm-1.414-2.12a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" /></svg>}
              </button>
-             <button onClick={() => setMobileMenuOpen(true)} className="p-2 text-base-800 dark:text-white">
+             <button onClick={() => setMobileMenuOpen(true)} className="p-2 text-base-950 dark:text-white">
                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
              </button>
           </div>

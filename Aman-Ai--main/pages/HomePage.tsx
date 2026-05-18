@@ -21,13 +21,13 @@ const SecurityBadge: React.FC = () => (
 
 const HowItWorksSection: React.FC = () => {
     return (
-        <section className="py-24 bg-white dark:bg-base-900 relative overflow-hidden">
+        <section className="py-24 bg-base-50 dark:bg-base-950 relative overflow-hidden transition-colors duration-500">
              {/* Decorative Background Blob */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-50/50 dark:bg-primary-900/5 rounded-full blur-[100px] -z-10"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-100/20 dark:bg-primary-900/10 rounded-full blur-[100px] -z-10"></div>
 
             <div className="container mx-auto px-4 max-w-6xl">
                 <div className="text-center mb-20 animate-on-scroll">
-                    <span className="px-4 py-2 rounded-full bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-[10px] font-black uppercase tracking-widest border border-primary-200/50 dark:border-primary-700/30">
+                    <span className="px-4 py-2 rounded-full bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-[10px] font-black uppercase tracking-widest border border-primary-200/50 dark:border-primary-800/50">
                         Our Methodology
                     </span>
                     <h2 className="text-4xl md:text-6xl font-black text-base-900 dark:text-white mt-8 tracking-tighter">
@@ -38,7 +38,7 @@ const HowItWorksSection: React.FC = () => {
 
                 <div className="grid md:grid-cols-3 gap-12 relative">
                     {/* Connecting Line (Desktop) */}
-                    <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-transparent via-primary-200 dark:via-primary-800 to-transparent z-0"></div>
+                    <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-transparent via-base-200 dark:via-base-800 to-transparent z-0"></div>
 
                     {[
                         {
@@ -61,7 +61,7 @@ const HowItWorksSection: React.FC = () => {
                         }
                     ].map((item, idx) => (
                         <div key={idx} className={`relative z-10 flex flex-col items-center text-center group animate-on-scroll ${item.delay}`}>
-                            <div className="w-24 h-24 bg-white dark:bg-base-800 rounded-full border-4 border-base-50 dark:border-base-900 shadow-xl flex items-center justify-center text-4xl mb-8 group-hover:-translate-y-2 transition-transform duration-500 relative">
+                            <div className="w-24 h-24 bg-base-50 dark:bg-base-900 rounded-full border-4 border-base-100 dark:border-base-800 shadow-xl flex items-center justify-center text-4xl mb-8 group-hover:-translate-y-2 transition-transform duration-500 relative">
                                 {item.icon}
                                 <div className="absolute inset-0 bg-primary-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500"></div>
                             </div>
@@ -112,58 +112,58 @@ const ComparisonSection: React.FC = () => {
     );
 
     return (
-        <section className="py-24 bg-base-50 dark:bg-base-950 px-4">
+        <section className="py-24 bg-base-50 dark:bg-base-950 px-4 transition-colors duration-500">
             <div className="container mx-auto max-w-2xl text-center">
                 <p className="text-primary-500 font-black uppercase tracking-[0.3em] text-[10px] mb-4">A Better Path</p>
                 <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter text-base-900 dark:text-white leading-[0.9]">
                     A Better Path <br /><span className="text-primary-500">to Wellness.</span>
                 </h2>
                 
-                <div className="bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 rounded-[2.5rem] shadow-soft-xl overflow-hidden">
+                <div className="bg-base-50 dark:bg-base-900 border border-base-200 dark:border-base-800 rounded-[2.5rem] shadow-soft-xl overflow-hidden">
                     {/* Header Row */}
-                    <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 bg-base-50/50 dark:bg-base-900/50">
+                    <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 bg-base-100/50 dark:bg-base-800/50">
                         <div className="py-6 px-2 flex items-center justify-center">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-base-400">Values</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-base-400 dark:text-base-500">Values</span>
                         </div>
-                        <div className="py-6 px-2 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-50/50 dark:bg-primary-900/10">
+                        <div className="py-6 px-2 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-500/10">
                             <div className="bg-primary-500 text-white px-3 py-1.5 rounded-lg shadow-lg shadow-primary-500/30">
                                 <span className="text-[10px] font-black uppercase tracking-widest">Aman AI</span>
                             </div>
                         </div>
                         <div className="py-6 px-2 flex items-center justify-center">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-base-400">Traditional</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-base-400 dark:text-base-500">Traditional</span>
                         </div>
                     </div>
 
                     {/* Rows */}
-                    <div className="text-sm font-bold text-base-900 dark:text-white">
-                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-50 dark:hover:bg-base-800/30 transition-colors">
+                    <div className="text-sm font-bold text-base-900 dark:text-base-100">
+                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-100 dark:hover:bg-base-800 transition-colors">
                             <div className="py-6 px-4 flex items-center justify-start md:justify-center">Cost</div>
-                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-50/10 dark:bg-primary-900/5 text-primary-600 dark:text-primary-400 font-black">
+                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-500/5 text-primary-600 dark:text-primary-400 font-black">
                                 Free Forever
                             </div>
                             <div className="py-6 px-4 flex items-center justify-center opacity-50"><CrossIcon /></div>
                         </div>
                         
-                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-50 dark:hover:bg-base-800/30 transition-colors">
+                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-100 dark:hover:bg-base-800 transition-colors">
                             <div className="py-6 px-4 flex items-center justify-start md:justify-center">Availability</div>
-                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-50/10 dark:bg-primary-900/5">
+                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-500/5">
                                 <CheckIcon />
                             </div>
                             <div className="py-6 px-4 flex items-center justify-center opacity-50"><CrossIcon /></div>
                         </div>
 
-                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-50 dark:hover:bg-base-800/30 transition-colors">
+                        <div className="grid grid-cols-3 border-b border-base-100 dark:border-base-800 hover:bg-base-100 dark:hover:bg-base-800 transition-colors">
                             <div className="py-6 px-4 flex items-center justify-start md:justify-center">Privacy</div>
-                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-50/10 dark:bg-primary-900/5">
+                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-500/5">
                                 <CheckIcon />
                             </div>
                             <div className="py-6 px-4 flex items-center justify-center opacity-50"><CrossIcon /></div>
                         </div>
 
-                        <div className="grid grid-cols-3 hover:bg-base-50 dark:hover:bg-base-800/30 transition-colors">
+                        <div className="grid grid-cols-3 hover:bg-base-100 dark:hover:bg-base-800 transition-colors">
                             <div className="py-6 px-4 flex items-center justify-start md:justify-center">Full Anonymity</div>
-                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-50/10 dark:bg-primary-900/5">
+                            <div className="py-6 px-4 flex items-center justify-center border-x border-base-100 dark:border-base-800 bg-primary-500/5">
                                 <CheckIcon />
                             </div>
                             <div className="py-6 px-4 flex items-center justify-center opacity-50"><CrossIcon /></div>
@@ -191,13 +191,13 @@ const HomePage: React.FC = () => {
     <>
     {showOnboarding && <Onboarding onClose={() => setShowOnboarding(false)} />}
     <SEOMeta title={t('seo.home.title')} description={t('seo.home.description')} />
-    <div className="bg-white dark:bg-base-900">
+    <div className="bg-base-50 dark:bg-base-950 transition-colors duration-500">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden pt-20">
             {/* Background Atmosphere */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary-100/40 rounded-full blur-[120px] animate-pulse-slow"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-100/30 rounded-full blur-[100px] animate-pulse-slow animation-delay-2000"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary-100/40 dark:bg-primary-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-100/30 dark:bg-amber-900/10 rounded-full blur-[100px] animate-pulse-slow animation-delay-2000"></div>
             </div>
             
             <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
@@ -216,7 +216,7 @@ const HomePage: React.FC = () => {
                     <NavLink to="/dashboard" className="w-full sm:w-auto bg-primary-500 text-white font-black py-5 px-12 rounded-[2rem] text-xl hover:scale-105 transition-all shadow-2xl shadow-primary-500/30 uppercase tracking-widest active:scale-95">
                         {t('home.hero.button')}
                     </NavLink>
-                    <NavLink to="/about" className="w-full sm:w-auto bg-white dark:bg-white/5 text-base-900 dark:text-white border border-base-200 dark:border-white/10 font-black py-5 px-12 rounded-[2rem] text-xl hover:bg-base-50 dark:hover:bg-white/10 transition-all uppercase tracking-widest">
+                    <NavLink to="/about" className="w-full sm:w-auto bg-base-100 dark:bg-base-800 text-base-900 dark:text-base-100 border border-base-200 dark:border-base-700 font-black py-5 px-12 rounded-[2rem] text-xl hover:bg-base-200 dark:hover:bg-base-700 transition-all uppercase tracking-widest active:scale-95">
                         Our Story
                     </NavLink>
                 </div>
@@ -230,24 +230,24 @@ const HomePage: React.FC = () => {
         <FounderQuoteSection />
 
         {/* Feature Bento Grid (Simplified) */}
-        <section className="py-24 px-4 bg-base-50 dark:bg-base-900">
+        <section className="py-24 px-4 bg-base-50 dark:bg-base-950 transition-colors duration-500">
             <div className="container mx-auto max-w-6xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white dark:bg-base-800/60 rounded-[2.5rem] p-10 shadow-soft border border-base-100 dark:border-white/5 flex flex-col justify-between min-h-[300px] group hover:border-primary-500/30 transition-all">
-                        <div className="w-16 h-16 bg-primary-50 dark:bg-primary-900/20 rounded-2xl flex items-center justify-center text-3xl mb-6">💬</div>
+                    <div className="bg-base-50 dark:bg-base-900 rounded-[2.5rem] p-10 shadow-soft border border-base-100 dark:border-base-800 flex flex-col justify-between min-h-[300px] group hover:border-primary-500/30 transition-all">
+                        <div className="w-16 h-16 bg-primary-500/10 rounded-2xl flex items-center justify-center text-3xl mb-6">💬</div>
                         <div>
                             <h3 className="text-3xl font-black tracking-tight mb-4 text-base-900 dark:text-white">24/7 Companion</h3>
                             <p className="text-lg text-base-600 dark:text-base-400 font-medium">Always awake, always listening. No judgment, just support whenever you need it.</p>
                         </div>
                     </div>
-                    <div className="bg-base-900 text-white rounded-[2.5rem] p-10 shadow-soft border border-base-800 flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
+                    <div className="bg-base-950 dark:bg-base-900 text-base-50 dark:text-base-100 rounded-[2.5rem] p-10 shadow-soft border border-base-800 dark:border-base-700 flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity">
                             <Logo size="large" />
                         </div>
                         <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-6 backdrop-blur-sm">🔒</div>
                         <div className="relative z-10">
                             <h3 className="text-3xl font-black tracking-tight mb-4">Local Privacy</h3>
-                            <p className="text-lg text-base-400 font-medium">Your data stays on your device. We don't see your journals, logs, or chats.</p>
+                            <p className="text-lg text-base-400 dark:text-base-300 font-medium">Your data stays on your device. We don't see your journals, logs, or chats.</p>
                         </div>
                     </div>
                 </div>
@@ -255,7 +255,7 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Final CTA */}
-        <section className="py-32 text-center px-4 bg-white dark:bg-base-950">
+        <section className="py-32 text-center px-4 bg-base-50 dark:bg-base-950 transition-colors duration-500">
              <div className="max-w-4xl mx-auto">
                 <h2 className="text-5xl md:text-7xl font-black text-base-900 dark:text-white tracking-tighter mb-8 leading-[0.9]">
                     Ready to begin?
